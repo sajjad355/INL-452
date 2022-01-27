@@ -1,0 +1,60 @@
+.textarea{
+  border-radius: 3px;
+  border-color: lightgrey;
+  display: block;
+}
+
+.read-message{
+  padding: 5px;
+}
+
+.intellilab-review-buttons {
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  // padding: 0 1rem;
+
+  .reject-btn-red{
+    background-color: red;
+  }
+
+  button{
+    width: 80px;
+    height: 100%;
+    margin-left: 1rem;
+    background-color: #17a2b8;
+    color: white;
+    border-radius: 0.5rem;
+    outline: none;
+    border: none;
+    transition: all ease-in 0.3s;
+
+    &:hover{
+      cursor: pointer;
+      transition: all ease-out 0.3s;
+      -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+      -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+      box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+    }
+  }
+
+  span{
+    transition: all ease-in 0.3s;
+    border-radius: 1rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover{
+      cursor: pointer;
+      transition: all ease-out 0.3s;
+      background-color: #e7e7e8;
+    }
+  }
+}

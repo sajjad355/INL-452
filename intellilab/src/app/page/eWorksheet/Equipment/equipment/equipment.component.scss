@@ -1,0 +1,138 @@
+.orange600 { color: #FB8C00 }
+.font-heavy { font-weight: bolder; }
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+.cursor-pointer:hover{cursor: pointer;}
+
+
+.color-warn { color: #f44336 }
+.material-icons.md-36 { font-size: 36px; }
+.warn-container {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.margin-left-8{ margin-left: 8px;  }
+.margin-right-18{ margin-right: 18px;}
+.margin-left-15{ margin-left: 15px;  }
+.margin-left-15{ margin-left: 30px;  }
+.margin-bottom-15{ margin-bottom: 15px; }
+.width-100p {width: 100%}
+.relative-top-right {
+  position: relative;
+  bottom: 35px;
+  right: 16px;
+}
+
+.cat-style {
+  height: 20px;
+  width: 120px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(52, 207, 83);
+  color: white;
+  border-radius: 10px;
+  transition: width 300ms ease;
+}
+
+.warn-style {
+  height: 20px;
+  width: 120px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: orange;
+  color: white;
+  border-radius: 10px;
+  transition: width 300ms ease;
+}
+
+.cat-style:hover{
+  width: 240px;
+}
+
+.warn-style:hover{
+  width: 240px;
+}
+.space{
+  // border: green 2px solid;
+  width: 50px;
+  display: inline-block;
+}
+
+.orange600 { color: #FB8C00 }
+.font-heavy { font-weight: bolder; }
+
+.color-warn { color: #f44336 }
+.material-icons.md-36 { font-size: 36px; }
+.warn-container {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.margin-left-15{ margin-left: 15px;  }
+
+
+.relative-top-right {
+  position: relative;
+  bottom: 35px;
+  right: 16px;
+}
+
+.cat-style {
+  height: 20px;
+  width: 200px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(52, 207, 83);
+  color: white;
+  border-radius: 10px;
+  margin-right: 10px;
+  transition: width 300ms ease;
+}
+
+.cat-style:hover{
+  width: 300px;
+}
+
+.mat-row.item-animation{
+  transition: all 300ms ease-out;
+}
+
+.mat-row.item-animation:hover {
+  background-color: rgb(30, 99, 201, 0.3);
+}
+
+.btn-size-150 {width: 150px;}
+
+.warn-btn-animation{
+  transition: font-size 300ms ease
+}
+
+.warn-btn-animation:hover {
+  border: 2px #f44336 solid;
+  background-color: white;
+  color: #f44336;
+  font-size: large;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-row:nth-child(even){
+  background-color:rgb(240, 240, 240);
+  }
+
+.search-container{
+  width: 90%;
+  margin: 0 auto;
+  // border: red 2px solid;
+}

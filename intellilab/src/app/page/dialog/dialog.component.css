@@ -1,0 +1,31 @@
+div {
+  height: 150px;
+  width: 300px;
+  /* border: 2px blue solid; */
+  font-family: "Raleway", sans-serif;
+}
+
+mat-dialog-content {
+  /* border: 1px red solid; */
+  text-align: center;
+  font-weight: bolder;
+  margin-bottom: 70px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: space-around;
+  /* border: 1px green solid; */
+}
+
+.confirm-btn:hover {
+  border: 2px #3f51b5 solid;
+  background-color: white;
+  color: #3f51b5;
+}
+
+.cancel-btn:hover {
+  border: 2px #f44336 solid;
+  background-color: white;
+  color: #f44336;
+}

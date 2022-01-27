@@ -1,0 +1,263 @@
+
+
+
+
+
+
+.padding-left-30 {padding-left: 30px;}
+.margin-left-20 {margin-left: 20px;}
+
+
+//  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
+
+
+$--main-color: #b6ceff;
+$--hover-color: #527cff;
+$--icon: "\f105";
+$--border-color: #ddd;
+
+
+* {
+box-sizing: border-box;
+}
+
+.wrapper {
+  font-family: 'Roboto', sans-serif;
+  // box-shadow: 0px 0px 10px #b6ceff;
+  // border-bottom: 2px #b6ceff solid;
+  // -webkit-box-shadow: 0px 8px 8px 0px rgba(182, 206, 255,1);
+  // -moz-box-shadow: 0px 8px 8px 0px rgba(182, 206, 255,1);
+  // box-shadow: 0px 8px 8px 0px rgba(182, 206, 255,1);
+  // width: 70vw;
+  // margin: 20px auto;
+  margin-top: 20px;
+  width: 100%;
+  background-color: white;
+}
+.step-label, .step-label:visited {
+text-decoration: none;
+color: #b6ceff;
+transition: color ease-in-out .3s, background ease-in-out .2s;
+}
+
+.header-stepper {
+// border: green 2px solid;
+margin: 0 auto;
+overflow: hidden;
+border-bottom: 1px dotted #ddd;
+margin-bottom: 10px;
+
+}
+
+.ws-tab-container {
+
+  min-height: 45px;
+  padding: 20px 10px 0 10px;
+}
+.ws-tab-content {
+  //  display: flex;
+  //  flex-flow: column nowrap;
+  height: 100%;
+  // padding: 15px 20px;
+}
+
+.logo-and-nav-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stepper-nav-wrap {
+// padding-left: 30px;
+font-size: 20px;
+font-weight: 300;
+color: #b6ceff;
+overflow: hidden;
+width: fit-content;
+// border: red 2px solid;
+//  width: 100%;
+}
+
+//  .logo-wrap {
+//    padding: 0 20px;
+//    border: green 1px solid
+//  }
+
+.steps {
+//  display: flex;
+white-space: nowrap;
+// overflow: hidden;
+overflow: scroll;
+// margin-left: 20px;
+// padding-right: 30px;
+}
+
+.breadcrumb-wrap {
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+flex: 0 auto;
+flex-shrink: 1000;
+display: inline-block;
+padding: 15px 5px 5px 0px;
+border-bottom: 1px solid transparent;
+color: #b6ceff;
+position: relative;
+transition: transform ease-in-out .3s;
+
+&:hover {
+  flex: 1 0 auto;
+  opacity: 1;
+  color:  #527cff;
+  transform: translatey(-5px);
+  transition: none;
+
+   .step-label {
+      color:  #527cff;
+      }
+  .sep {
+    i {
+        transform: translatex(8px);
+        color:  #527cff;
+        transition: transform ease-in-out .3s;
+      }
+  }
+  opacity: 1;
+  transition: transform ease-in-out .4s;
+
+  ~ .single-breadcrumb-wrap {
+    transition: transform ease-in-out .4s;
+  }
+}
+
+//First Breadcrumb
+&:first-child {
+  flex: 0 0 auto;
+  flex-shrink: 0.5;
+ //  font-weight: normal;
+ //  color:  #527cff;
+ //  opacity: 1;
+
+  &:after {
+    left: 0;
+  }
+  .sep {
+    display: none;
+  }
+}
+
+}
+
+//Underline effect
+.breadcrumb-wrap:after {
+ margin-top: 10px;
+ padding-bottom: 2px;
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 28px;
+  top: 36px;
+  width: 100%;
+  height: 1px;
+  background: #527cff;
+
+  transform: scale3d(0,1,1);
+  transform-origin: 0% 50%;
+  transition: transform ease-in-out .15s .10s,
+              opacity ease-in-out .25s;
+  opacity: .5;
+}
+//hover effect
+.breadcrumb-wrap:hover:after {
+  transform: scale3d(1,1,1);
+  opacity: 1;
+  transition: opacity ease-in-out .1s, transform ease-in-out .3s;
+
+}
+
+.breadcrumb {
+flex: 0 1 auto;
+}
+.sep {
+padding-left: 10px;
+padding-right: 10px;
+//  display: inline-flex;
+//  border: none;
+
+
+i.fa:before {
+  content: "\f105";
+  transition: transform ease-in-out .2s;
+}
+}
+
+
+
+.breadcrumb-wrap:hover{
+cursor: pointer;
+font-weight: normal;
+
+}
+
+.breadcrumb{
+//  border: palegreen 2px solid;
+display: inline;
+background-color: white;
+border: none;
+}
+
+.select-effect{
+  font-weight: normal;
+  color:  #527cff;
+  opacity: 1;
+}
+
+.hide{
+display: none;
+}
+
+
+// .ws-tab-complete {
+//     color: 5px solid rgb(52, 207, 83) !important;
+// }
+
+
+.lock-screen-panel{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.5;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.locker{
+  position: absolute;
+  left: 20px;
+}
+
+.opacity-05{
+  opacity: .5;
+}
+
+.opacity-05:hover{
+  opacity: 1;
+}
+
+.locker:hover{
+  cursor: pointer;
+}
+
+.unlock-btn{
+  position: relative;
+  top: 20%;
+  opacity: 1;
+  outline-style: none;
+  outline: none;
+  border-radius: 50px;
+  background-color: white;
+}

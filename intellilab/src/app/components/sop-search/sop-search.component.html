@@ -1,0 +1,28 @@
+<table class="table table-sm table-borderless">
+  <tr>
+    <td style="width:80%;">                
+      <input autocomplete="off" 
+        type="text"
+        class="form-control input-sm"
+        (keyup.enter)="searchSop()"
+        [(ngModel)]="currentSopName"
+        [ngModelOptions]="{standalone: true}" >
+
+      <div class="search-result" *ngIf="sopSearchResults">
+         
+      <div class="search-result-inner" *ngIf="sopSearchResults.length > 0">
+        <p class="search-result-item" 
+          *ngFor="let searchResult of sopSearchResults" 
+          (click)="selectSop(searchResult)">
+          {{searchResult.name}}{{ (searchResult.name && searchResult.name.length > 0 && searchResult.recipeIdentifier && searchResult.recipeIdentifier.length > 0) && ', ' }}{{searchResult.recipeIdentifier}}</p>
+        </div>
+        <p *ngIf="!findSop" class="no-result">No result found</p>
+      </div>      
+    </td>
+    <td style="width:20%;">   
+      <label type="button" class="btn icon-btn" (click)="searchSop()">
+        <i class="fas fa-search"></i>
+      </label>
+    </td>
+  </tr>
+</table>    

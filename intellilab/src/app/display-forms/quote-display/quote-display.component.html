@@ -1,0 +1,467 @@
+<div class="sale-form"
+     [class.blur-container]="isLoading">
+
+
+      <h2>
+        <div class="quote-header-container" style="text-align:right;">
+          <h1>QUOTE</h1>
+          <button  (click)="cancelEdit()"><i class="fas fa-times"></i></button>
+        </div>
+         <div class="quote-operation-container" *ngIf="!isNew&&!editingEnabled">
+            <span *ngIf="!isNew && !quote.complete && !quote.expired && !editingEnabled && canManageSales" (click)="editingEnabled = true">
+              Edit
+            </span>
+
+            <span *ngIf="!isNew&&!editingEnabled" (click)="open(prePDF, 'pdf')">
+              PDF
+            </span>
+
+        </div>
+      </h2>
+
+  <div *ngIf="message" class="alert alert-warning">{{message}}</div>
+  <table class="table table-form">
+    <tr>
+      <td rowspan="4" style="padding:0px;">
+        <div class="bubble">
+          <div class="inner-bubble">
+            <div class="objversion">Version {{quote.revision}}</div>
+            <div class="objnumber">{{quote.quoteNumber}}</div>
+          </div>
+          <div class="banner"
+               [class.complete-banner]="quote.complete"
+               [class.expire-banner]="quote.expired"
+               *ngIf="quote.complete||quote.expired">
+            {{quote.expired?'EXPIRED':'COMPLETED'}}
+          </div>
+        </div>
+
+      </td>
+      <td colspan="1" style="overflow: visible; position: relative;">
+        <span class="field-title">Created on</span>
+        <div class="inputGroup" *ngIf="editingEnabled">
+          <input
+            readonly
+            class="form-control font-12"
+            angular-mydatepicker
+            name="createdDate"
+            [(ngModel)]="createdDate"
+            [options]="myDatePickerOptions"
+            (dateChanged)="changeCreatedDate($event)"
+            #dp2="angular-mydatepicker"
+            (click)="dp2.toggleCalendar()"/>
+          <div class="input-group-append">
+            <button type="button" class="btn btn-secondary" (click)="dp2.clearDate()">
+              ×
+            </button>
+          </div>
+        </div>
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{quote.createdDate | date: dateFormatDisplay}}
+        </span>
+      </td>
+      <td colspan="1">
+        <span class="field-title">Active</span>
+
+        <input *ngIf="editingEnabled"
+               type="checkbox"
+               [(ngModel)]="quote.active"
+               id="activeCheckBox" >
+
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{quote.active}}
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="overflow: visible; position: relative;">
+        <span class="field-title">Expire on</span>
+
+        <div class="inputGroup" *ngIf="editingEnabled">
+          <input
+            readonly
+            class="form-control font-12"
+            angular-mydatepicker
+            name="expirationDate"
+            [(ngModel)]="expirationDate"
+            [options]="myDatePickerOptions"
+            (dateChanged)="changeExpirationDate($event)"
+            #dp2="angular-mydatepicker"
+            (click)="dp2.toggleCalendar()"/>
+          <div class="input-group-append">
+            <button type="button" class="btn btn-secondary" (click)="dp2.clearDate()">
+              ×
+            </button>
+          </div>
+        </div>
+
+
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+            {{quote.expirationDate | date: dateFormatDisplay}}
+       </span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <span class="field-title">Payment Type</span>
+        <select *ngIf="editingEnabled"
+                 class="form-control"
+                 #ptype
+                 (change)="quote.paymentType = ptype.value">
+          <option *ngFor="let payType of paymentTypes"
+                  [value]="payType"
+                  [selected]="quote.paymentType == payType">{{payType}}</option>
+        </select>
+        <span class="form-control" *ngIf="!editingEnabled">{{quote.paymentType}}</span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1">
+        <span class="field-title">Currency</span>
+        <select *ngIf="editingEnabled"
+                 class="form-control"
+                 #ctype
+                 (change)="quote.currency = ctype.value">
+          <option *ngFor="let currency of currencyOptions"
+                  [value]="currency"
+                  [selected]="quote.currency == currency">{{currency}}</option>
+        </select>
+        <span class="form-control"
+              *ngIf="!editingEnabled">{{quote.currency}}
+        </span>
+      </td>
+      <td colspan="1">
+        <span class="field-title">Currency Rate</span>
+        <input *ngIf="editingEnabled"
+               class="form-control"
+               type="number"
+               [(ngModel)]="quote.currencyRate">
+        <span class="form-control"
+               *ngIf="!editingEnabled">
+              {{quote.currencyRate}}
+        </span>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="3">
+        <app-client-search [editingEnabled]="editingEnabled"
+                           [currentClient]="quote.clientCompany"
+                           [currentContact]="quote.clientContact"
+                           [currentShippingAddress]="quote.shippingAddress"
+                           [useOptionalFields]="false"
+                           (clientSelected)="selectClientForQuote($event)"
+                           (contactSelected)="selectContactForQuote($event)"
+                           (shippingAddressSelected)="selectShippingAddressForQuote($event)">
+        </app-client-search>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td colspan="3">
+        <span class="field-title">Order Information</span>
+        <table *ngIf="!editingEnabled" class="table table-bordered table-small">
+          <tr>
+            <th>Catalog Number</th>
+            <th>Name</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Sub Total Cost</th>
+            <th>Discount(%)</th>
+            <th>Discount Value</th>
+            <th>Final Cost</th>
+          </tr>
+          <ng-container *ngFor="let line of quote.lineItems; let i = index">
+            <tr>
+              <td>{{line.catalogNumber}}</td>
+              <td>{{line.name}}<br>{{line.size}}</td>
+              <td>{{line.price | currency: 'USD' : '' }}</td>
+              <td>{{line.itemQuantity}}</td>
+              <td>{{(line.price * line.itemQuantity) | currency: 'USD' : '' }}</td>
+              <td>{{line.itemDiscount}} %</td>
+              <td>{{(((line.price * line.itemQuantity) * line.itemDiscount)/100) | currency: 'USD' : '' }}</td>
+              <td>{{line.totalPrice | currency : 'USD' : '' }}</td>
+            </tr>
+            <tr>
+              <td colspan="8">
+                <span style="white-space:pre-wrap;"><b>Note:</b> {{line.footNote}}</span>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+        <table *ngIf="editingEnabled" class="table table-bordered table-small" >
+          <tr>
+            <th style="width:5%">&nbsp;</th>
+            <th style="width:20%">Catalog Number</th>
+            <th style="width:20%">Name</th>
+            <th style="width:10%">Unit Price</th>
+            <th style="width:8%">Qty.</th>
+            <th style="width:10%">Sub Total</th>
+            <th style="width:8%">Disc. (%)</th>
+            <th style="width:9%">Disc. Value</th>
+            <th style="width:10%">Final Cost</th>
+          </tr>
+
+          <ng-container *ngFor="let line of quote.lineItems; let i = index">
+            <tr class="edit-row-form">
+              <td>
+                <button class="btn btn-outline-danger icon-btn" (click)="removeLine(i)">
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
+              <td>
+                <app-sales-item-search
+                  [currentCatalogNumber]="line.catalogNumber"
+                  (itemSelected)="setLineItemSalesItem(i,$event)">
+                </app-sales-item-search>
+              </td>
+              <td>{{line.name}}</td>
+              <td>
+                <input #unitPrice
+                       class="w-100"
+                       type="number"
+                       [value]="line.price"
+                       (change)="unitPriceChanged(i,unitPrice.value)">
+              </td>
+              <td>
+                <input type="number"
+                       class="w-100"
+                       #quantity
+                       size="1"
+                       [value]="line.itemQuantity"
+                       (change)="quantityChanged(i,quantity.value)">
+              </td>
+              <td>{{(line.price * line.itemQuantity) | currency: 'USD' : '' }}</td>
+              <td>
+                <input type="number"
+                       class="w-100"
+                       #discount
+                       size="1"
+                       [value]="line.itemDiscount"
+                       (change)="discountChanged(i, discount.value)">
+              </td>
+              <td>{{(((line.price * line.itemQuantity) * line.itemDiscount)/100) | currency: 'USD': ''  }}</td>
+              <td>
+                <input type="text"
+                       class="w-100"
+                       #totalPrice
+                       size="8"
+                       [value]="line.totalPrice.toFixed(2)"
+                       (change)="totalPriceChanged(i, totalPrice.value)">
+              </td>
+            </tr>
+            <tr>
+              <td colspan="9" >
+                <b>Note:</b>
+                <textarea #fn
+                          maxlength="500"
+                          class="form-control"
+                          (keyup)="charcount = fn.value.length"
+                          (change)="setFootnote(fn.value, i)"
+                          [value]="line.footNote"></textarea>
+                <span class="font-count">{{charcount==undefined?0:charcount}}/255</span>
+              </td>
+            </tr>
+          </ng-container>
+          <tr>
+            <td colspan="9" style="text-align: center;">
+              <button style="width: 150px;" class="btn btn-info" (click)="addQuoteLine()">
+                <i class="far fa-plus-square"></i>
+              </button>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td colspan="3" *ngIf="editingEnabled">
+        <span class="field-title">Include shipping, handling and tax?</span>
+        <div class="form-control client-select">
+          <label style="width:35%;margin-bottom:0px;">
+            <input type="radio"
+                   [checked]="includeFeeAndTax==true"
+                   (change)="includeFeeAndTax=true"> Yes
+          </label>
+          <label style="margin-bottom:0px;">
+            <input type="radio"
+                  [checked]="includeFeeAndTax==false"
+                  (change)="includeFeeAndTax=false"> No
+          </label>
+        </div>
+      </td>
+    </tr>
+    <tr *ngIf="includeFeeAndTax==true && editingEnabled">
+      <td colspan="1">
+        <span class="field-title">Handling Fee</span>
+        <input #fee
+               *ngIf="editingEnabled"
+               class="form-control"
+               [(ngModel)]="quote.handlingFee">
+      </td>
+      <td colspan="1">
+        <span class="field-title">Shipping Fee</span>
+        <input #fee
+               *ngIf="editingEnabled"
+               class="form-control"
+               [(ngModel)]="quote.shippingFee">
+      </td>
+      <td colspan="1">
+        <span class="field-title">Tax Rate (%)</span>
+        <select *ngIf="editingEnabled"
+                 class="form-control"
+                 [(ngModel)]="quote.taxRate"
+                 #taxselect
+                 (change)="setTax()">
+
+          <option *ngFor="let rate of taxRates.settingValues"
+                  [value]="rate.value"
+                  [selected]="quote.taxRate==rate.value">
+                  {{rate.value}}
+          </option>
+        </select>
+      </td>
+    </tr>
+    <tr *ngIf="!editingEnabled">
+      <td colspan="1">
+        <span class="field-title">Handling Fee</span>
+        <span class="form-control">{{quote?.handlingFee | currency: 'USD' : '' }}</span>
+      </td>
+      <td colspan="1">
+        <span class="field-title">Shipping Fee</span>
+        <span class="form-control">{{quote?.shippingFee | currency: 'USD' : '' }}</span>
+      </td>
+      <td colspan="1">
+        <span class="field-title">Tax</span>
+        <span class="form-control">{{quote?.tax | currency: 'USD' : '' }}</span>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td colspan="3"  *ngIf="editingEnabled">
+        <span class="field-title">Note:</span>
+        <textarea class="form-control"
+                 [(ngModel)]="quote.note"
+                 rows="2"
+                 placeholder="Additional Note (Optional)"></textarea>
+      </td>
+    </tr>
+    <tr *ngIf="!editingEnabled">
+      <td colspan="3" >
+        <span class="field-title">Note:</span>
+        <span class="form-control angular-with-newlines">{{quote?.note}}</span>
+      </td>
+    </tr>
+
+
+
+    <tr>
+      <td colspan="3"
+          *ngIf="!editingEnabled&&!isNew&&!quote.complete&&!quote.expired"
+          style="text-align: center;">
+        <button class="quote-btn quote-green-btn"
+          (click)="cancelEdit()"
+        >
+          Close
+        </button>
+        <button class="quote-btn quote-yellow-btn"
+                (click)="open(completeWarn, 'completeWarn')">
+          Mark Quote Complete
+        </button>
+      </td>
+    </tr>
+  </table>
+  <div *ngIf="message" class="alert alert-warning">{{message}}</div>
+  <div class="form-group submit-buttons" *ngIf="editingEnabled" style="text-align: center;">
+    <button class="quote-btn quote-green-btn" (click)="saveClicked()">Save</button>
+    <button class="quote-btn quote-red-btn" (click)="cancelEdit()">Cancel</button>
+  </div>
+</div>
+
+<ng-template #prePDF let-c="close">
+  <div class="modal-header">
+    <h4 class="modal-title">
+      Quote Setting
+    </h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label>Terms and Conditions:
+        <button type="button"
+                class="btn btn-outline-secondary help-tooltip"
+                placement="top"
+                ngbTooltip="Terms and conditions which will go at the bottom of the quote">?</button>
+      </label>
+      <div class="form-control">
+         <input class=""
+                type="checkbox"
+                [checked]="isInnoProgram"
+                (click)="isInnoProgram=!isInnoProgram">Is Innovator Program
+      </div>
+      <br>
+      <textarea class="form-control tandc"
+                #tac
+                [value]="termAndCond"
+                (change)="checkTermsAndConditions(tac.value)"
+                rows="5">
+      </textarea>
+    </div>
+  </div>
+  <div class="modal-footer warning">
+    <button class="btn btn-success" (click)="getQuotePDF(); c('');">Generate PDF</button>
+    <button class="btn btn-default" (click)="c('')">Cancel</button>
+  </div>
+</ng-template>
+
+<ng-template #completeWarn let-c="close">
+  <div class="modal-body">
+    By marking "Complete" on the quote, user agree that this quote is the final version which will
+    be no longer available for editing.
+  </div>
+  <div class="modal-footer warning">
+    <button class="btn btn-warning" (click)="setComplete(); c('');">Mark Complete</button>
+    <button class="btn btn-default" (click)="c('')">Cancel</button>
+  </div>
+</ng-template>
+
+<ng-template #changeVersionNumberOption let-c="close" class="versionnumber">
+  <div class="modal-header">
+    <h6 class="modal-title">
+      Do you want to change the version number of quote {{quote.quoteNumber }}?
+    </h6>
+  </div>
+
+  <div class="modal-body">
+      <span class="field-title">Version Number (only positive integer number)</span>
+      <input class="form-control"
+             type="number"
+             [(ngModel)]="quote.revision"
+             id="version"
+             step="1">
+  </div>
+
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-primary"
+            id="updateversion"
+            [disabled]="quote?.revision <= versionNumber"
+            (click)="save(); c('')">
+          Update
+    </button>
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="revertVersionAndSave(); c('');">
+          Cancel
+    </button>
+  </div>
+</ng-template>
+
+<div *ngIf="isLoading" class="loading-screen">
+  <img class="loading-img" src="../../../assets/images/loading.gif">
+</div>

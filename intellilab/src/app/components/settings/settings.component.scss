@@ -1,0 +1,77 @@
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+$primary: mat-palette($mat-cyan, 600, 300, 900);
+
+.settings-table-container {
+  padding: 20px;
+  max-height: calc(100vh - 130px);
+  overflow: scroll;
+}
+
+.setting-table {
+  width: 100%;
+
+  .mat-header-cell {
+    background-color: mat-color($primary);
+    color: mat-color($primary, default-contrast);
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  .mat-column-name {
+    width: 95vw;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f0f0f0;
+  }
+}
+
+.mat-fab.add-new-btn {
+  position: fixed;
+  right: 200px;
+  bottom: 85px;
+  width: 85px;
+  height: 85px;
+}
+
+.mat-drawer-container {
+  height: calc(100vh - 130px);
+  overflow: hidden;
+
+  &.mat-drawer-container-has-open {
+    .mat-drawer-backdrop {
+      position: fixed;
+      top: 0;
+    }
+  }
+}
+
+.settings-table-container {
+  max-height: 100%;
+  overflow: scroll;
+  padding: 0 20px 50px 20px;
+}
+
+.mat-drawer{
+  position: fixed;
+}
+
+.mat-drawer-inner-container {
+  height: 100vh;
+}
+
+.mat-column-name {
+  width: 30%;
+}
+
+.mat-column-description {
+  width: 70%;
+}
+
+.mat-drawer-backdrop.ng-star-inserted.mat-drawer-shown {
+  position: fixed;
+  top: 0;
+}

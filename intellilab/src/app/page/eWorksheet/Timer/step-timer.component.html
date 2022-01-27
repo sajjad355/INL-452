@@ -1,0 +1,76 @@
+<link
+  href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+  rel="stylesheet"
+  type="text/css"
+/>
+<div class="controller-container">
+  <div>
+    <button *ngIf="showStartButton" mat-raised-button color="primary" (click)="startTimer()" class="width-100 primary-btn-animation">
+      <mat-icon>play_arrow</mat-icon>
+    </button>
+
+    <button *ngIf="showStopButton"  mat-raised-button  color="warn"  (click)="killTimer()"  class="width-100 warn-btn-animation">
+      <mat-icon>stop</mat-icon>
+    </button>
+  </div>
+
+  <div>
+    <app-text-field *ngIf="secValue !== 0 && showStartButton"
+    [text]="secValue"
+    [tag]="secValue > 1 ? 'Seconds' : 'Second'">
+    </app-text-field>
+
+    <app-text-field *ngIf="minValue !== 0 && showStartButton"
+    [text]="minValue"
+    [tag]="minValue > 1 ? 'Minutes' : 'Minute'">
+    </app-text-field>
+
+    <app-text-field *ngIf="hrValue !== 0 && showStartButton"
+    [text]="hrValue"
+    [tag]="hrValue > 1 ? 'Hours' : 'Hour'">
+    </app-text-field>
+
+    <app-text-field *ngIf="showOverDueTime"
+    [text]="overDueStr"
+    [tag]="'Over Due Time'">
+    </app-text-field>
+          <!-- <mat-form-field appearance="outline" *ngIf="secValue !== 0 && showStartButton">
+            <mat-label>Seconds</mat-label>
+            <input matInput type="number" [value]="secValue" readonly/>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" *ngIf="minValue !== 0 && showStartButton">
+            <mat-label>Minutes</mat-label>
+            <input matInput type="number" [value]="minValue" readonly/>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" *ngIf="hrValue !== 0 && showStartButton">
+            <mat-label>Hours</mat-label>
+            <input matInput type="number" [value]="hrValue" readonly/>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" *ngIf="showOverDueTime">
+            <mat-label>Over Due Time</mat-label>
+            <input matInput type="text" [value]="overDueStr" readonly/>
+          </mat-form-field> -->
+    </div>
+</div>
+
+<section class="timer">
+      <div class="cd-box">
+        <p class="numbers hours">{{ timeArr[0] }}</p>
+        <br />
+        <p class="strings timeRefHours">Hours</p>
+      </div>
+      <div class="cd-box">
+        <p class="numbers minutes">{{ timeArr[1] }}</p>
+        <br />
+        <p class="strings timeRefMinutes">Minutes</p>
+      </div>
+      <div class="cd-box">
+        <p class="numbers seconds">{{ timeArr[2] }}</p>
+        <br />
+        <p class="strings timeRefSeconds">Seconds</p>
+      </div>
+</section>
+

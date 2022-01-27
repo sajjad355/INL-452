@@ -1,0 +1,169 @@
+<div class="tab-container" [class.blur]="showEditPage">
+  <h2>Sales</h2>
+  <div class="section">
+    <button *ngFor="let t of tabs; let i = index;"
+            [ngClass]="'arrow-btn arrow'+i"
+            [style.width.%]="100/tabs.length"
+            (click)="changeTab(t)"
+            [class.inner-btn]="i<tabs.length-1"
+            [class.active]="currentTab == t">
+      <div class="arrow-body">{{t}}</div>
+    </button>
+  </div>
+  <div>
+    <b>Search {{currentTab}}</b>
+    &nbsp;
+    <label for="activeCheckBox">Active {{currentTab}}s Only:</label>
+    <input type="checkbox"
+           [(ngModel)]="search.active"
+           [ngModelOptions]="{standalone: true}"
+           id="activeCheckBox" >
+ </div>
+  <div class="input-group">
+    <span class="input-group-text" id="basic-addon1">
+      <i class="fa fa-search"
+         aria-hidden="true"
+         (click)="page = 1; searchSales()"></i>
+    </span>
+    <input autocomplete="off"
+           type="text"
+           class="form-control"
+           [placeholder]="'Search ' +currentTab+ ' by ' +currentTab+ ' number'"
+           aria-describedby="basic-addon1"
+           [(ngModel)]="search.searchValue"
+           [ngModelOptions]="{standalone: true}"
+           (keyup.enter)="page = 1; searchSales()">
+  </div>
+  <div class="row control-box">
+    <button class="btn btn-default menu-btn sale-btn newquote"
+            *ngIf="currentTab =='Quote' && canManageSales"
+            (click)="createNewQuote();">
+        <i class="fa fa-plus" aria-hidden="true"></i> New
+    </button>
+    <button class="btn btn-default menu-btn sale-btn newquote"
+            *ngIf="currentTab =='Invoice' && canManageSales"
+            (click)="createNewInvoice();">
+        <i class="fa fa-plus" aria-hidden="true"></i> New
+    </button>
+  </div>
+  <div class="table-container"  *ngIf="currentTab == 'Quote'">
+    <table class="table table-scroll" [class.pop-table]="showEditPage">
+      <thead>
+        <tr>
+          <th colspan="3">Quote Number</th>
+          <th>Revision Number</th>
+          <th colspan="2">Revision Date</th>
+          <th colspan="2">Expiry Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let quote of quotes; let i = index" class="shadow-row" [routerLink]="['/main/sales', quote.quoteId]">
+          <td
+            colspan="3"
+            [id]="quote.quoteId"
+            [class.inactive]="!quote.active"
+            [class.complete]="quote.complete&&quote.active"
+            [class.expire]="quote.expired&&!quote.complete&&quote.active">
+            <a class="quote-name">{{quote.quoteNumber}}</a>
+          </td>
+          <td>{{quote.revision}}</td>
+          <td colspan="2">{{quote.revisionDate | date: dateFormatDisplay}}</td>
+          <td colspan="2">{{quote.expirationDate | date: dateFormatDisplay}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="table-container"  *ngIf="currentTab == 'Invoice'">
+    <table class="table table-scroll" [class.pop-table]="showEditPage">
+      <thead>
+        <tr>
+          <th colspan="3">Invoice Number</th>
+          <th>Revision Number</th>
+          <th colspan="2">Revision Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let invoice of invoices; let i = index" class="shadow-row" (click)="loadInvoice( invoice.invoiceId )">
+          <td colspan="3"
+              [id]="invoice.invoiceId"
+              [class.inactive]="!invoice.active">
+              <a href="javascript:;" class="invoice-name">{{invoice.invoiceNumber}}</a>
+          </td>
+          <td>{{invoice.revision}}</td>
+          <td colspan="2">{{invoice.revisionDate | date: dateFormatDisplay}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+
+  <div *ngIf="search.searchValue==''&&count>10">
+    <p class="page-note"
+       [style.text-align]="'center'">
+       Order {{((page-1)*10)+1}} - {{page*10>count?count:page*10}} of {{count}} {{currentTab}}(s)
+    </p>
+    <ngb-pagination
+                    class="d-flex justify-content-center"
+                    [collectionSize]="count"
+                    [(page)]="page"
+                    [rotate]="true"
+                    [boundaryLinks]="true"
+                    [maxSize]="5"
+                    aria-label="Default pagination"
+                    (pageChange)="currentTab == 'Quote'?loadQuotePage():loadInvoicePage()">
+    </ngb-pagination>
+  </div>
+  <button *ngIf="search.searchValue!=='' && count >= 10"
+           class="btn btn-info"
+           [style.float]="'right'"
+           (click)="page = page + 1; searchSales()">
+           Load Next 10 Results <i class="fas fa-caret-right"></i>
+  </button>
+  <div *ngIf="isLoading==true" class="loading-screen">
+    <img class="loading-img" src="../../../assets/images/loading.gif">
+  </div>
+
+</div>
+
+<div [style.right]="showEditPage?0+'px':-100+'%'" class="slide">
+  <div class="edit-container">
+    <h4>{{isNew ? 'New '+currentTab : selectItem?.name }}</h4>
+    <app-quote-display *ngIf="currentTab == 'Quote' && displayQuote"
+                       [canManageSales]="canManageSales"
+                       [quote]="displayQuote"
+                       [isNew]="isNew"
+                       (updateQuote)="saveQuote($event)"
+                       (cancel)="cancelEdit()">
+    </app-quote-display>
+    <app-invoice-display *ngIf="currentTab == 'Invoice' && displayInvoice"
+                         [canManageSales]="canManageSales"
+                         [invoice]="displayInvoice"
+                         [isNew]="isNew"
+                         (updateInvoice)="saveInvoice($event)"
+                         (cancel)="cancelEdit()">
+    </app-invoice-display>
+
+  </div>
+</div>
+
+<!-- <ng-template #changeVersionNumberOption let-c="close" class="versionnumber">
+    <div class="modal-header">
+      <h6 class="modal-title">
+        Do you want to change the version number of {{currentTab == 'Quote'? 'quote' : 'invoice'}} {{currentTab == 'Quote'? selectItem.quoteNum : selectItem.invoiceNum}}?
+      </h6>
+      <button type="button" class="close" aria-label="Close" (click)="reset(); c('')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+        <span class="field-title">Version Number (only positive integer number)</span>
+        <input class="form-control" type="number" [(ngModel)]="versionNumber" id="version" step="1" (change)="validateVersion()" >
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" id="updateversion" [disabled]="true" (click)="updateVersionNumber(currentTab, selectItem, versionNumber); c('')">Update</button>
+      <button type="button" class="btn btn-outline-dark" (click)="c('')">Cancel</button>
+    </div>
+  </ng-template> -->

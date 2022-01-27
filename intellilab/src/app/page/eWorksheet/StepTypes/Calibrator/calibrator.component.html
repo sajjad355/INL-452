@@ -1,0 +1,116 @@
+
+
+<mat-checkbox *ngIf="mode === 'experiment'" color = "primary" [checked]="isExcluded" (change)="skipStep()" class = "relative-bottom-20">
+  <span class = "skip-text">Skip this step</span>
+</mat-checkbox>
+
+  <form [formGroup]="form" *ngIf="isExcluded === 0">
+
+  <!-- Operation 1 -->
+  <strong>{{sectionLabel}}</strong>
+
+    <div class="padding-left-35p">
+
+        <app-auto-complete *ngIf="mode === 'design'"
+        [controllerName]="'material'"
+        [listContent]="inventoryList"
+        [inputWidth] = "'400px'"
+        [initSelection]="editData && editData.material? editData.material : ''"
+        [matLabel]="materialLabel"
+        (userSelection)="autoUpdate($event, 'item')"
+        (warnData) = "initWarn($event)">
+        </app-auto-complete>
+
+        <div class="warn-container">
+          <app-text-field *ngIf="mode === 'experiment'" [text]="this.editData.material" [tag]="materialLabel"></app-text-field>
+          <app-text-field *ngIf="mode === 'review'" [text]="this.reviewData.material" [tag]="materialLabel"></app-text-field>
+          <span *ngIf="itemExpired && mode === 'experiment'" class="material-icons color-warn md-36 relative-top-right" [matTooltip]="'item is expired'" [matTooltipPosition]="'above'">
+            notification_important
+          </span>
+        </div>
+
+
+        <div class="warn-container">
+          <mat-form-field *ngIf="mode === 'design'" appearance="outline" class="display-block-200">
+            <mat-label>{{supplierLabel}}</mat-label>
+            <input *ngIf="mode === 'design'" matInput type="text" formControlName="supplier" (change) = "updateInfo(); checkInputExist()">
+          </mat-form-field>
+
+          <app-text-field *ngIf="mode === 'experiment'" [text]="this.editData.supplier" [tag]="supplierLabel"></app-text-field>
+          <app-text-field *ngIf="mode === 'review'" [text]="this.reviewData.supplier" [tag]="supplierLabel"></app-text-field>
+
+          <span *ngIf="!supplier_exist" class="material-icons color-warn md-36 relative-top-right" [matTooltip]="toolTipMessage" [matTooltipPosition]="'above'">
+            error
+          </span>
+        </div>
+
+
+    <app-auto-complete *ngIf="materialLotNumList && mode === 'experiment'"
+    [controllerName]="'materialLot_user'"
+    [listContent]="materialLotNumList"
+    [inputWidth] = "'200px'"
+    [initSelection]="editData && editData.materialLot_user? editData.materialLot_user : ''"
+    [listContentType]="'string'"
+    [matLabel]="'Lot Number'"
+    (userSelection)="autoUpdate($event, 'lotNum')">
+    </app-auto-complete>
+
+    <app-text-field *ngIf="mode === 'review' && dataType === 'instance'" [text]="this.reviewData.materialLot_user" [tag]="'Lot Number'"></app-text-field>
+    </div>
+<!-- End of Operation 1 -->
+
+
+<!-- Operation 2 -->
+    <mat-expansion-panel *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance' && fileNum > 0)" class="mat-elevation-z8 margin-top-20 margin-bottom-70 margin-left-1 margin-right-1">
+      <!-- <mat-expansion-panel class="mat-elevation-z8"> -->
+      <mat-expansion-panel-header [collapsedHeight]="'50px'">
+        <mat-panel-title>
+          <div class="panel-title-container">
+            <span class="platemap-counter" matTooltip="The number of attachments" [matTooltipPosition]="'above'">{{fileNum}}</span>
+            <strong class="margin-left-10 italic color-blue">Attachments</strong>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <app-file-upload #fileupload
+      [initData]="files_base64"
+      [enableFileUpload]="this.mode === 'review' ? false : true"
+      (uploadChange)="onFileChange($event)">
+      </app-file-upload>
+    </mat-expansion-panel>
+<!-- End of Operation 2 -->
+
+
+</form>
+
+
+<!-- Comment Display Section for approved and rejected worksheet review -->
+<hr *ngIf="mode === 'review' && dataType === 'instance' && commentData.experimentComment">
+<strong *ngIf="mode === 'review' && dataType === 'instance' && commentData.experimentComment">Experiment Comment</strong>
+
+<div *ngIf="mode === 'review' && dataType === 'instance' && commentData.experimentComment"  class="padding-left-35p">
+  <app-text-field [mode]="'textarea'" [text]="commentData.experimentComment" [tag]="'Comment'"></app-text-field>
+</div>
+
+
+<hr *ngIf="mode === 'review' && dataType === 'instance' && !enableComment && commentData.reviewComment">
+<strong *ngIf="mode === 'review' && dataType === 'instance' && !enableComment && commentData.reviewComment">Review Comment</strong>
+
+<div *ngIf="mode === 'review' && dataType === 'instance' && !enableComment && commentData.reviewComment" class="padding-left-35p">
+  <app-text-field [mode]="'textarea'" [text]="commentData.reviewComment" [tag]="'Comment'"></app-text-field>
+</div>
+
+<button *ngIf="enableComment && !showComment && ((mode === 'review' && dataType === 'instance') || mode === 'experiment')" mat-raised-button color="primary" (click)="showComment = !showComment" class="width-300 display-block primary-btn-animation">{{mode === 'experiment' ? 'Create Experiment Comment' : 'Create Review Comment'}}</button>
+<!-- End of Comment Display Section -->
+
+
+<!-- Comment Section -->
+<div *ngIf="enableComment">
+  <div *ngIf="mode === 'experiment' && showComment === true">
+    <app-step-comment [commentType]="'experiment'" [initCommentData]="commentData.experimentComment" (commentPayload)="updateComment($event)" (cancel)="cancelComment($event)"></app-step-comment>
+  </div>
+
+  <div *ngIf="mode === 'review' && dataType === 'instance' && showComment === true">
+    <app-step-comment [commentType]="'review'" (commentPayload)="updateComment($event)"  (cancel)="cancelComment($event)"></app-step-comment>
+  </div>
+</div>
+<!-- End of Comment Section -->

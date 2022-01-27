@@ -1,0 +1,27 @@
+<table class="table table-sm table-borderless">
+  <tr>
+    <td style="width:80%;">                
+      <input autocomplete="off" 
+             type="text"
+             (keyup.enter)="searchItem()"
+             [(ngModel)]="currentCatalogNumber"
+             [ngModelOptions]="{standalone: true}" >
+
+        <div class="search-result" *ngIf="searchResults">
+          <div class="search-result-inner" *ngIf="searchResults.length > 0">
+            <p class="search-result-item" 
+              *ngFor="let searchResult of searchResults" 
+              (click)="selectItem(searchResult)">
+              {{searchResult.catalogNumber}}, {{searchResult.name}}
+            </p>
+          </div>
+          <p *ngIf="!findItem" class="no-result">No result found</p>
+       </div>      
+    </td>
+    <td style="width:20%;">   
+      <label type="button" class="btn icon-btn" (click)="searchItem()">
+        <i class="fas fa-search"></i>
+      </label>
+    </td>
+  </tr>
+</table>    

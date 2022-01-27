@@ -1,0 +1,607 @@
+<div *ngIf="equipment" style="min-width: 900px;">
+
+  <form class="row pt-2">
+
+    <div class="col-md-12">
+      <div class="row">
+
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="form-group col-md-11" *ngIf="isNew || enableEdit">
+                  <label>
+                    Name
+                    <span class="star">*</span>&nbsp;
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Name of the equipment">
+                      ?
+                    </button>
+                  </label>
+                  <input
+                    autocomplete="off"
+                    #name
+                    [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+                    class="form-control"
+                    type="text"
+                    [(ngModel)]="displayEquipment.name"
+                    [ngModelOptions]="{ standalone: true }" 
+                  />
+                </div>
+                
+                <div class="form-group col-md-6">
+                  <label>
+                    Identifier
+                    <span class="star">*</span>&nbsp;
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Identifier of the equipment">
+                      ?
+                    </button>
+                  </label>
+                  <input
+                    autocomplete="off"
+                    #id
+                    [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+                    class="form-control"
+                    type="text"
+                    [(ngModel)]="displayEquipment.equipmentIdentifier"
+                    [ngModelOptions]="{ standalone: true }" 
+                  />
+                </div>
+            
+                <div class="form-group col-md-6">
+                  <label>
+                    Serial
+                    <span class="star">*</span>&nbsp;
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Serial no. of the equipment">
+                      ?
+                    </button>
+                  </label>
+                  <input
+                    autocomplete="off"
+                    #sn
+                    [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+                    class="form-control"
+                    type="text"
+                    [(ngModel)]="displayEquipment.serial"
+                    [ngModelOptions]="{ standalone: true }" 
+                  />
+                </div>
+              </div>
+            </div>
+    
+        
+            <div class="col-md-12">
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label>
+                    Manufacturer
+                    <span class="star">*</span>&nbsp;
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Manufacturer's name">
+                      ?
+                    </button>
+                  </label>
+                  <input
+                    autocomplete="off"
+                    #manu
+                    [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+                    class="form-control"
+                    type="text"
+                    [(ngModel)]="displayEquipment.manufacturer"
+                    [ngModelOptions]="{ standalone: true }" 
+                  />
+                </div>
+            
+                <div class="form-group col-md-6">
+                  <label>
+                    Model
+                    <span class="star">*</span>&nbsp;
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Model of the equipment">
+                      ?
+                    </button>
+                  </label>
+                  <input
+                    autocomplete="off"
+                    #model
+                    [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+                    class="form-control"
+                    type="text"
+                    [(ngModel)]="displayEquipment.model"
+                    [ngModelOptions]="{ standalone: true }" 
+                  />
+                </div>
+              </div>
+            </div>
+        
+
+
+            <div class="col-md-12">
+              <hr [ngClass]="enableEdit ? '' : 'mt-0'"/>
+            </div>
+
+
+            <div class="col-md-12">
+              <div class="row">
+
+                <div [ngClass]="enableEdit ? 'form-group col-md-6' : 'form-group col-md-4'">
+                  <label>
+                    Calibration Performed
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Calibration performed date">
+                      ?
+                    </button>
+                  </label>
+                  <div class="inputGroup" *ngIf="enableEdit">
+                    <input
+                      readonly
+                      class="form-control font-12"
+                      angular-mydatepicker
+                      name="calibrationPerformed"
+                      [(ngModel)]="calibrationPerformed"
+                      [options]="myDatePickerOptions"
+                      (dateChanged)="OnDateChanged2($event)"
+                      #dp="angular-mydatepicker"
+                      (click)="dp.toggleCalendar()"/>
+                    <div class="input-group-append">
+                      <button type="button" class="btn btn-secondary" (click)="dp.clearDate()">
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                  <!-- <my-date-picker
+                    *ngIf="enableEdit"
+                    name="calibrationPerformed"
+                    [options]="myDatePickerOptions"
+                    [(ngModel)]="calibrationPerformed"
+                    (dateChanged)="OnDateChanged2($event)"
+                  ></my-date-picker> -->
+                  <p
+                    *ngIf="!enableEdit"
+                    class="form-control font-12 pl-0"
+                  >
+                    {{ displayEquipment.calibrationPerformed | date: dateFormatDisplay }}
+                  </p>
+                </div>
+
+                <div [ngClass]="enableEdit ? 'form-group col-md-6' : 'form-group col-md-4'">
+                  <label>
+                    Cal. Schedule Interval
+                    <span class="star">*</span>&nbsp;
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Calibration schedule interval">
+                      ?
+                    </button>
+                  </label>
+                  <input
+                    *ngIf="!enableEdit"
+                    autocomplete="off"
+                    #calInt
+                    [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+                    class="form-control"
+                    type="text"
+                    [(ngModel)]="displayEquipment.calibrationScheduleInterval"
+                    [ngModelOptions]="{ standalone: true }" 
+                  />
+                  <select 
+                    *ngIf="enableEdit"
+                    class="form-control"
+                    [(ngModel)]="displayEquipment.calibrationScheduleInterval"
+                    [ngModelOptions]="{ standalone: true }" 
+                  >
+                    <ng-container
+                      *ngFor="let interval of intervals; let i = index"
+                    >
+                      <option
+                        *ngIf="i !== 0"
+                        [value]="interval"
+                      >
+                        {{ interval }}
+                      </option>
+                    </ng-container>
+                  </select>
+                </div>
+
+                <div class="form-group col-md-4" *ngIf="!enableEdit">
+                  <label>
+                    Is Calibration Due?
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Is calibration due or not">
+                      ?
+                    </button>
+                  </label>
+                  <input
+                    autocomplete="off"
+                    #model
+                    class="form-control readOnly"
+                    type="text"
+                    value="{{ displayEquipment.maintanenceDue ? 'Yes' : 'No' }}"
+                  />
+                </div>
+
+                
+        
+        
+                <div [ngClass]="enableEdit ? 'form-group col-md-6' : 'form-group col-md-4'">
+                  <label>
+                    Last Maint. Performed
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Last maintenance performed date">
+                      ?
+                    </button>
+                  </label>
+                  <div class="inputGroup" *ngIf="enableEdit">
+                    <input
+                      readonly
+                      class="form-control font-12"
+                      angular-mydatepicker
+                      name="lastMaintenancePerformedDate"
+                      [(ngModel)]="lastMaintenancePerformedDate"
+                      [options]="myDatePickerOptions"
+                      (dateChanged)="OnDateChanged($event)"
+                      #dp2="angular-mydatepicker"
+                      (click)="dp2.toggleCalendar()"/>
+                    <div class="input-group-append">
+                      <button type="button" class="btn btn-secondary" (click)="dp2.clearDate()">
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                  <!-- <my-date-picker
+                    *ngIf="enableEdit"
+                    name="lastMaintenancePerformedDate"
+                    [options]="myDatePickerOptions"
+                    [(ngModel)]="lastMaintenancePerformedDate"
+                    (dateChanged)="OnDateChanged($event)"
+                  ></my-date-picker> -->
+                  <p
+                    *ngIf="!enableEdit"
+                    class="form-control font-12 pl-0"
+                  >
+                    {{ displayEquipment.lastMaintenancePerformedDate | date: dateFormatDisplay }}
+                  </p>
+                </div>
+
+
+                <div [ngClass]="enableEdit ? 'form-group col-md-6' : 'form-group col-md-4'">
+                  <label>
+                    Maint. Interval
+                    <span class="star">*</span>&nbsp;
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Maintanence interval of the equipment">
+                      ?
+                    </button>
+                  </label>
+                  <input
+                    *ngIf="!enableEdit"
+                    autocomplete="off"
+                    #maintInt
+                    [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+                    class="form-control"
+                    type="text"
+                    [(ngModel)]="displayEquipment.maintenanceInterval"
+                    [ngModelOptions]="{ standalone: true }" 
+                  />
+                  <select 
+                    *ngIf="enableEdit"
+                    class="form-control"
+                    [(ngModel)]="displayEquipment.maintenanceInterval"
+                    [ngModelOptions]="{ standalone: true }" 
+                  >
+                    <ng-container
+                      *ngFor="let interval of intervals; let i = index"
+                    >
+                      <option
+                        [value]="interval"
+                      >
+                        {{ interval }}
+                      </option>
+                    </ng-container>
+                  </select>
+                </div>
+
+
+                <div class="form-group col-md-4" *ngIf="!enableEdit">
+                  <label>
+                    Is Maintenance Due?
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Is maintenance due or not">
+                      ?
+                    </button>
+                  </label>
+                  <input
+                    autocomplete="off"
+                    #model
+                    class="form-control readOnly"
+                    type="text"
+                    value="{{ displayEquipment.maintanenceDue ? 'Yes' : 'No' }}"
+                  />
+                </div>
+                
+
+                <div class="form-group col-md-12" *ngIf="!enableEdit">
+                  <label>
+                    Is Qualified?
+                    <button type="button"
+                      class="btn btn-outline-secondary help-tooltip"
+                      placement="top"
+                      ngbTooltip="Whether equipment qualified or not">
+                      ?
+                    </button>
+                  </label>
+                  <input
+                    autocomplete="off"
+                    #model
+                    class="form-control readOnly"
+                    type="text"
+                    value="{{ displayEquipment.qualified ? 'Yes' : 'No' }}"
+                  />
+                </div>
+
+              </div>
+            </div>
+        
+          </div>
+        </div>  
+    
+        <div class="col-md-4" *ngIf="displayEquipment.image || enableEdit" >
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label>
+                Image
+              </label>
+              <div class="image-upload">
+                <div class="equipmentImageContainer">
+                  <img *ngIf="displayEquipment.image" [src]="renderImage(displayEquipment.image)" class="equipmentImage"/>
+                </div>
+                <input *ngIf="enableEdit" name="imageUrl" id="uploader" class="mt-3 d-none" type="file" accept="image/*" (change)="handleInputChange($event)" />
+                <button *ngIf="enableEdit" class="btn btn-primary btn-sm mt-3 mr-3" (click)="triggerUpload()">Upload</button>
+                <button *ngIf="enableEdit && displayEquipment.image" class="btn btn-danger btn-sm mt-3" (click)="removeImage()">Remove</button>
+              </div> 
+            </div>
+          </div>
+        </div>
+    
+        <div class="col-md-12">
+          <hr [ngClass]="enableEdit ? '' : 'mt-0'"/>
+        </div>
+
+        <div class="col-md-12">
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label>
+                Building
+                <span class="star">*</span>&nbsp;
+                <button type="button"
+                  class="btn btn-outline-secondary help-tooltip"
+                  placement="top"
+                  ngbTooltip="Building">
+                  ?
+                </button>
+              </label>
+              <input
+                autocomplete="off"
+                #bldng
+                [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+                class="form-control"
+                type="text"
+                [(ngModel)]="displayEquipment.locationBuilding"
+                [ngModelOptions]="{ standalone: true }" 
+              />
+            </div>
+        
+            <div class="form-group col-md-4">
+              <label>
+                Unit
+                <button type="button"
+                  class="btn btn-outline-secondary help-tooltip"
+                  placement="top"
+                  ngbTooltip="Unit">
+                  ?
+                </button>
+              </label>
+              <input
+                autocomplete="off"
+                #unit
+                [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+                class="form-control"
+                type="text"
+                [(ngModel)]="displayEquipment.locationUnit"
+                [ngModelOptions]="{ standalone: true }" 
+              />
+            </div>
+        
+            <div class="form-group col-md-4">
+              <label>
+                Room
+                <button type="button"
+                  class="btn btn-outline-secondary help-tooltip"
+                  placement="top"
+                  ngbTooltip="Room number">
+                  ?
+                </button>
+              </label>
+              <input
+                autocomplete="off"
+                #room
+                [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+                class="form-control"
+                type="text"
+                [(ngModel)]="displayEquipment.locationRoom"
+                [ngModelOptions]="{ standalone: true }" 
+              />
+            </div>
+          </div>
+        </div>
+    
+        <div class="form-group col-md-12">
+          <label>
+            Non-Routine Maint. Comment
+            <button type="button"
+              class="btn btn-outline-secondary help-tooltip"
+              placement="top"
+              ngbTooltip="Non-routine maintenanceInterval comment">
+              ?
+            </button>
+          </label>
+          <p
+            *ngIf="!enableEdit"
+            class="font-12 mb-3 mt-2"
+          >
+           {{displayEquipment.nonRoutineMaintenanceComment}}
+          </p>
+          <textarea
+            *ngIf="enableEdit"
+            autocomplete="off"
+            #Comment
+            maxlength="5000"
+            class="form-control font-12"
+            type="text"
+            [(ngModel)]="displayEquipment.nonRoutineMaintenanceComment"
+            [ngModelOptions]="{ standalone: true }" 
+          >
+          </textarea>
+          <p *ngIf="enableEdit" class="textLengthCounter">{{ displayEquipment.nonRoutineMaintenanceComment ? (5000 - displayEquipment.nonRoutineMaintenanceComment.length) : 5000 }} characters left</p>
+          <!-- <input
+            autocomplete="off"
+            #nonRMC
+            [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+            class="form-control"
+            type="text"
+            [(ngModel)]="displayEquipment.nonRoutineMaintenanceComment"
+            [ngModelOptions]="{ standalone: true }" 
+          /> -->
+        </div>
+    
+        <!-- <div class="form-group col-md-6">
+          <label>
+            Non-Routine Maint. Attachment
+            <span class="star">*</span>&nbsp;
+            <button type="button"
+              class="btn btn-outline-secondary help-tooltip"
+              placement="top"
+              ngbTooltip="Non-routine maintenance attachment">
+              ?
+            </button>
+          </label>
+          <input
+            autocomplete="off"
+            #nonRMA
+            [ngClass]="enableEdit ? 'allowEdit' : 'readOnly'"
+            class="form-control"
+            type="text"
+            [(ngModel)]="displayEquipment.nonRoutineMaintenanceAttachment"
+            [ngModelOptions]="{ standalone: true }" 
+          />
+        </div>   -->
+
+        <div class="col-md-12">
+          <div class="row"> 
+            <div class="form-group col-md-4">
+              <label>
+                <ng-container *ngIf="!enableEdit">Is </ng-container>Active
+                <span class="star">*</span>&nbsp;
+                <button type="button"
+                  class="btn btn-outline-secondary help-tooltip"
+                  placement="top"
+                  ngbTooltip="Whether equipment is active or not">
+                  ?
+                </button>
+              </label>
+              <p
+                *ngIf="!enableEdit"
+              >
+                {{ displayEquipment.active ? 'Yes' : 'No' }}
+              </p>
+              <input
+                *ngIf="enableEdit"
+                class="d-block"
+                type="checkbox"
+                [(ngModel)]="displayEquipment.active"
+                [ngModelOptions]="{ standalone: true }"/>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="col-md-12">
+          <hr [ngClass]="enableEdit ? '' : 'mt-0'"/>
+        </div>
+        
+        <div class="form-group col-md-12">
+          <label>
+            Comment
+            <button type="button"
+              class="btn btn-outline-secondary help-tooltip"
+              placement="top"
+              ngbTooltip="Comment of the equipment">
+              ?
+            </button>
+          </label>
+          <p
+            *ngIf="!enableEdit"
+            class="font-12"
+          >
+           {{displayEquipment.comment}}
+          </p>
+          <textarea
+            *ngIf="enableEdit"
+            autocomplete="off"
+            #Comment
+            maxlength="5000"
+            class="form-control font-12"
+            type="text"
+            [(ngModel)]="displayEquipment.comment"
+            [ngModelOptions]="{ standalone: true }" 
+          >
+          </textarea>
+          <p *ngIf="enableEdit" class="textLengthCounter">{{ displayEquipment.comment ? (5000 - displayEquipment.comment.length) : 5000 }} characters left</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-12 mt-3">
+      <ngb-alert *ngIf="!hideWarning" (close)="hideWarning = true">
+        <ng-container *ngFor="let warning of inputWarning; let i = index">
+          <p>
+            <strong>{{warning}}</strong>
+          </p>
+        </ng-container>
+      </ngb-alert>
+    </div>
+      
+    <div class="col-md-12 pt-3 pb-3">
+      <div class="form-group submit-buttons">
+        <button *ngIf="enableEdit" class="btn btn-primary mr-3" (click)="validateuserinput();">{{isNew?'Save':'Update'}}</button>
+        <button type="button" class="btn btn-primary" (click)="cancelequipment()">Close</button>
+      </div>
+    </div>
+
+  </form>
+</div>

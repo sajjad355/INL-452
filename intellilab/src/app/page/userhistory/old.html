@@ -1,0 +1,63 @@
+<div class="tab-container">
+  <h2>User History</h2>
+  <div class="row control-box" >
+      <div ngbDropdown style="display: inline-block;">
+          <button class="btn btn-default menu-btn" id="dropdownBasic1" ngbDropdownToggle style="font-size:16px;">
+            <i class="fa fa-list" aria-hidden="true" ></i> Edit View</button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button *ngFor="let mode of columnList; let i = index;" class="dropdown-item" (click)="toggleViewCol(i)">
+              <input autocomplete="off" type="checkbox" [checked]="viewColumn[i]">{{mode}}</button>
+          </div>
+        </div>
+
+  </div>
+
+  <div class="section">
+    <button *ngFor="let t of tabs; let i = index;" [ngClass]="'arrow-btn arrow'+i" [style.width.%]="100/tabs.length"
+      (click)="changeTab(t)" [class.inner-btn]="i<tabs.length-1" [class.active]="currentTab == t">
+      <div class="arrow-body">{{t}}</div>
+    </button>
+  </div>
+  <div class="order-tab-content table-container">
+    <div class="input-group">
+      <span class="input-group-text" id="basic-addon1">
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </span>
+        <input autocomplete="off" #search type="text" class="form-control" [placeholder]="'Search by User Name'"
+        aria-describedby="basic-addon1" (keyup.enter)="page = 1; searchByName(search.value) ">
+    </div>
+    <table class="table table-scroll requests">
+      <thead>
+        <tr>
+          <th *ngIf="viewColumn[0]" colspan="5">User</th>
+          <th *ngIf="viewColumn[1]" colspan="1">Page</th>
+          <th *ngIf="viewColumn[2]" colspan="2">Action</th>
+          <th *ngIf="viewColumn[3]" colspan="2">Time</th>
+          <th *ngIf="viewColumn[4]" colspan="8">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of displayedUserHistories; let index=index">
+          <td *ngIf="viewColumn[0]"  colspan="5" class="ordername"  >{{u?.username}}</td>
+          <td *ngIf="viewColumn[1]" colspan="1">{{u?.component}}</td>
+          <td *ngIf="viewColumn[2]" colspan="2">{{u?.activity}}</td>
+          <td *ngIf="viewColumn[3]" colspan="2">{{u?.activityTime|date: dateFormatDisplay}}</td>
+          <td *ngIf="viewColumn[4]" colspan="8" style="white-space:pre-wrap;">{{u?.description}}</td>
+        </tr>
+        <tr *ngIf="periodCount < 1">
+          <td class="empty" colspan="12">Empty</td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="periodCount>10">
+      <p class="page-note" [style.text-align]="'center'"> {{((page-1)*10)+1}} - {{page*10>periodCount?periodCount:page*10}} of {{periodCount}} User Logs
+      </p>
+      <ngb-pagination class="d-flex justify-content-center" [collectionSize]="periodCount" [(page)]="page" [rotate]="true"
+        [boundaryLinks]="true" [maxSize]="5" aria-label="Default pagination" (pageChange)="loadPage()"></ngb-pagination>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-screen">
+      <img class="loading-img" src="../../../assets/images/loading.gif">
+    </div>
+  </div>
+</div>

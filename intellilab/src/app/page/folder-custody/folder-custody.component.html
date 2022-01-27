@@ -1,0 +1,70 @@
+<body>
+  <div class="user-panel header-panel print-none" [style.top.px]="0">
+    <p class="header-brand" style="margin-left: 230px; color: rgb(177, 177, 177); font-size: 14px;">
+      Folder Custody Software
+    </p>
+    <div class="user-box">
+      <figure>
+        <div id="avatar"></div>
+      </figure>
+      <div>
+        Hello {{user?.name}}
+        <button class="btn btn-default icon-btn" (click)="signout()">
+          <i class="fas fa-power-off"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="main">
+    <div class="sidebar print-none">
+      
+
+      <img src="../../../assets//images/somru-logo.png" style="width: 130px; margin-top: 30px; margin-bottom: 30px; margin-left: 10px;"/>
+      <!-- <p class="header-brand">
+        Somru Folder Custodian Management
+      </p> -->
+      <!-- <hr style="width: 190px !important; border-color: rgb(161, 161, 161); margin-top: 20px; margin-bottom: 30px; margin-left: 20px;"/> -->
+      <!-- <figure>
+        <div id="avatar">
+          {{ roleTag }}
+        </div>
+        <figcaption>{{ name }}</figcaption>
+      </figure> -->
+  
+      <nav>
+        <ul>
+          <li>
+            <a routerLinkActive="active" [routerLink]="['/folders/dashboard']">
+              <i class="fa fa-columns mr-3"></i><span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a routerLinkActive="active" [routerLink]="['/folders/list']">
+              <i class="fa fa-folder mr-3"></i><span>List of Folders</span>
+            </a>
+          </li>
+          <!-- <li>
+            <a routerLinkActive="active" [routerLink]="['/folders/locations']">
+              <i class="fa fa-map-marker-alt mr-3"></i><span>Manage Locations</span>
+            </a>
+          </li> -->
+          <li>
+            <a routerLinkActive="active" [routerLink]="['/folders/requests']">
+              <i class="fa fa-quote-right mr-3"></i><span>Transfer Requests</span>
+            </a>
+          </li>
+          <li>
+            <a routerLinkActive="active" [routerLink]="['/main']">
+              <i class="fa fa-arrow-left mr-3"></i><span>IntelliLab Dashboard</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</body>

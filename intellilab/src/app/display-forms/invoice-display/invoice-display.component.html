@@ -1,0 +1,645 @@
+<div class="sale-form"
+     [class.blur-container]="isLoading" >
+
+     <h2>
+      <div class="invoice-header-container" style="text-align:right;">
+        <h1>INVOICE</h1>
+        <button  (click)="cancelEdit()"><i class="fas fa-times"></i></button>
+      </div>
+       <div class="invoice-operation-container" *ngIf="!isNew&&!editingEnabled">
+          <span *ngIf="!isNew && !editingEnabled && canManageSales" (click)="editingEnabled = true">
+            Edit
+          </span>
+
+          <span *ngIf="!isNew&&!editingEnabled" (click)="open(prePDF, 'pdf')">
+            PDF
+          </span>
+
+      </div>
+    </h2>
+
+  <table class="table table-form">
+    <tr>
+      <td rowspan="3" colspan="2" style="padding:0px;">
+        <div class="bubble">
+          <div class="inner-bubble">
+            <div class="objversion">Version {{invoice.revision}}</div>
+            <div class="objnumber">{{invoice.invoiceNumber}}</div>
+          </div>
+        </div>
+      </td>
+      <td colspan="2" style="overflow: visible;">
+        <span class="field-title">Created on</span>
+
+        <div class="inputGroup" *ngIf="editingEnabled">
+          <input
+            required
+            readonly
+            class="form-control font-12"
+            angular-mydatepicker
+            name="mydate"
+            [(ngModel)]="createdDate"
+            [options]="myDatePickerOptions"
+            (dateChanged)="changeCreatedDate($event)"
+            #dp="angular-mydatepicker"
+            (click)="dp.toggleCalendar()"/>
+          <div class="input-group-append">
+            <button type="button" class="btn btn-secondary" (click)="dp.clearDate()">
+              ×
+            </button>
+          </div>
+        </div>
+
+        <!-- <my-date-picker *ngIf="editingEnabled"
+                        name="mydate"
+                        [options]="myDatePickerOptions"
+                        [(ngModel)]="createdDate"
+                        (dateChanged)="changeCreatedDate($event)"
+                        required>
+        </my-date-picker> -->
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.dateCreated | date: dateFormatDisplay}}
+        </span>
+      </td>
+      <td colspan="2" style="overflow: visible;">
+        <span class="field-title">Revised on</span>
+        <span class="form-control">
+              {{invoice.revisionDate | date: dateFormatDisplay}}
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <span class="field-title">Linked Quote Number</span>
+        <app-quote-search *ngIf="editingEnabled"
+                          [currentQuote]="invoice.quote"
+                          (quoteSelected)="selectQuote($event)">
+        </app-quote-search>
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.quote?.quoteNumber? invoice.quote?.quoteNumber : 'N/A' }}
+        </span>
+      </td>
+      <td colspan="1">
+        <span class="field-title">Pro Forma</span>
+        <input *ngIf="editingEnabled"
+               type="checkbox"
+               [(ngModel)]="invoice.proforma"
+               id="proformaCheckBox" >
+
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.proforma}}
+        </span>
+      </td>
+      <td colspan="1">
+        <span class="field-title">Active</span>
+        <input *ngIf="editingEnabled"
+               type="checkbox"
+               [(ngModel)]="invoice.active"
+               id="activeCheckBox" >
+
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.active}}
+        </span>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td colspan="2">
+        <span class="field-title">PO Number</span>
+        <input class="form-control"
+               type="text"
+               #ponum
+               *ngIf="editingEnabled"
+               [value]="invoice.purchaseOrderNumber"
+               (change)="invoice.purchaseOrderNumber = ponum.value">
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.purchaseOrderNumber}}
+        </span>
+      </td>
+
+      <!-- can only change invoice type on new invoices -->
+      <td colspan="2">
+        <span class="field-title">Invoice Type</span>
+        <select class="form-control"
+                *ngIf="isNew"
+                #ioption
+                [value]="invoice.type"
+                (change)="invoice.type=ioption.value;">
+          <option *ngFor="let invoiceOption of invoiceOptions"
+                  [value]="invoiceOption"
+                  [selected]="invoice.type == invoiceOption">
+            {{invoiceOption}}
+          </option>
+        </select>
+        <span class="form-control"
+              *ngIf="!isNew">{{invoice.type}}
+        </span>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="6">
+        <app-client-search [editingEnabled]="editingEnabled"
+                           [currentClient]="invoice.clientCompany"
+                           [currentContact]="invoice.clientContact"
+                           [currentShippingAddress]="invoice.shippingAddress"
+                           [currentBillingAddress]="invoice.billingAddress"
+                           [currentShippingAttention]="invoice.shippingAttention"
+                           [currentBillingAttention]="invoice.billingAttention"
+                           [useOptionalFields]="true"
+                           (clientSelected)="selectClient($event)"
+                           (contactSelected)="selectContact($event)"
+                           (billingAddressSelected)="selectBillingAddress($event)"
+                           (shippingAddressSelected)="selectShippingAddress($event)"
+                           (shippingAttentionSelected)="selectShippingAttention($event)"
+                           (billingAttentionSelected)="selectBillingAttention($event)">
+        </app-client-search>
+      </td>
+    </tr>
+
+
+    <tr>
+
+      <td colspan="3">
+        <span class="field-title">Payment Type</span>
+        <select class="form-control"
+                *ngIf="editingEnabled"
+                #paymentType
+                (change)="invoice.paymentType = paymentType.value">
+          <option *ngFor="let payType of paymentTypes"
+                  [value]="payType"
+                  [selected]="invoice.paymentType == payType">
+              {{payType}}
+          </option>
+        </select>
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.paymentType}}
+        </span>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="3">
+        <span class="field-title">Currency</span>
+        <select *ngIf="editingEnabled"
+                class="form-control"
+                #ptype
+                (change)="invoice.currency = ptype.value">
+          <option *ngFor="let currency of currencyOptions"
+                  [value]="currency"
+                  [selected]="invoice.currency == currency">
+                  {{currency}}
+          </option>
+        </select>
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.currency}}
+        </span>
+      </td>
+      <td colspan="3">
+        <span class="field-title">Currency Rate</span>
+        <input *ngIf="editingEnabled"
+                class="form-control"
+                type="number"
+                [(ngModel)]="invoice.currencyRate">
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.currencyRate}}
+        </span>
+      </td>
+    </tr>
+
+
+
+    <tr>
+      <td colspan="3">
+        <span class="field-title">Shipped Via</span>
+        <input class="form-control"
+               type="text"
+               #shipper
+               *ngIf="editingEnabled"
+               [value]="invoice.courier"
+               (change)="invoice.courier = shipper.value">
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.courier}}
+        </span>
+      </td>
+      <td colspan="3">
+        <span class="field-title">Shipping Term</span>
+        <select class="form-control"
+                *ngIf="editingEnabled"
+                #shipTerm
+                (change)="invoice.shippingTerm = shipTerm.value">
+          <option *ngFor="let term of incoTerm"
+                  [value]="term"
+                  [selected]="invoice.shippingTerm == term">{{term}}</option>
+        </select>
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.shippingTerm}}
+        </span>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td colspan="6">
+
+         <!-- FIRST TYPE - PRODUCT AND CONMERCIAL INVOICE  -->
+
+        <span class="field-title" *ngIf="invoice?.type=='Product Invoice' || invoice?.type=='Commercial Invoice'">Order Information</span>
+        <table class="table table-bordered table-small" *ngIf="invoice.type =='Product Invoice' || invoice?.type=='Commercial Invoice'">
+          <tr>
+            <th *ngIf="editingEnabled" style="width:5%"></th>
+            <th style="width:20%">Catalog Number</th>
+            <th>Name</th>
+            <th>HS Code</th>
+            <th>Pck. Weight (lbs)</th>
+            <th>Unit Price</th>
+            <th>Qty.</th>
+            <th>Sub Total Cost</th>
+            <th>Disc. (%)</th>
+            <th>Disc. Value</th>
+            <th>Final Cost</th>
+          </tr>
+          <ng-container *ngFor="let line of invoice.lineItems; let i = index">
+            <tr *ngIf="!editingEnabled">
+              <td style="width:20%">{{line.catalogNumber}}</td>
+              <td>{{line.name}}</td>
+              <td>{{line.harmonizedSystemCode}}</td>
+              <td>{{line.packageWeight}}</td>
+              <td>{{line.price | currency: 'USD' : ''}}</td>
+              <td>{{line.itemQuantity}}</td>
+              <td>{{(line.price * line.itemQuantity) | currency: 'USD' : ''}}</td>
+              <td>{{line.itemDiscount}} %</td>
+              <td>{{(((line.price * line.itemQuantity) * line.itemDiscount)/100) | currency: 'USD' : '' }}</td>
+              <td>{{line.totalPrice | currency : 'USD' : '' }}</td>
+            </tr>
+            <tr *ngIf="editingEnabled" class="edit-row-form">
+              <td>
+                <button class="btn btn-outline-danger icon-btn" (click)="removeLine(i)">
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
+              <td style="width:20%">
+                <app-sales-item-search
+                  [currentCatalogNumber]="line.catalogNumber"
+                  (itemSelected)="setLineItemSalesItem(i,$event)">
+                </app-sales-item-search>
+              </td>
+              <td>{{line.name}}</td>
+              <td>
+                <input autocomplete="off"
+                       class="w-100"
+                       type="text"
+                       [(ngModel)]="line.harmonizedSystemCode"
+                       name="harmonizedSystemCode" />
+              </td>
+              <td>
+                <input autocomplete="off"
+                             class="w-100"
+                             type="number"
+                             [(ngModel)]="line.packageWeight"
+                             name="packageWeight" />
+
+              </td>
+              <td>
+                <input #unitPrice
+                       class="w-100"
+                       type="number"
+                       [value]="line.price"
+                       (change)="unitPriceChanged(i,unitPrice.value)">
+              </td>
+              <td>
+                <input #quantity
+                       class="w-100"
+                       type="number"
+                       [value]="line.itemQuantity"
+                       (change)="quantityChanged(i,quantity.value)">
+              </td>
+              <td>{{(line.price * line.itemQuantity) | currency: 'USD' : ''}}</td>
+              <td>
+                <input #discount
+                       class="w-100"
+                       type="number"
+                       [value]="line.itemDiscount"
+                       (change)="discountChanged(i, discount.value)">
+              </td>
+              <td>{{(((line.price * line.itemQuantity) * line.itemDiscount)/100) | currency: 'USD' : '' }}</td>
+              <td width="10%">
+                <input type="text"
+                       class="w-100"
+                       #totalPrice
+                       [value]="line.totalPrice.toFixed(2)"
+                       (change)="totalPriceChanged(i, totalPrice.value)">
+              </td>
+            </tr>
+            <tr>
+              <td colspan="11" *ngIf="editingEnabled">
+                <b>Note:</b>
+                <textarea #fn
+                          class="form-control"
+                          maxlength="255"
+                          (keyup)="fn.value=fn.value"
+                         (change)="checkFootnote(fn.value, i)"
+                         [value]="line.footNote">
+                </textarea>
+                <span class="font-count">{{fn.value.length}}/255</span>
+              </td>
+              <td colspan="10" *ngIf="!editingEnabled">
+                <b>Note:</b> {{line.footNote}}
+              </td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="editingEnabled">
+            <td colspan="11"
+                style="text-align: center;">
+              <button style="width: 150px;"
+                      class="btn btn-info"
+                      (click)="addInvoiceLine()">
+                <i class="far fa-plus-square"></i>
+              </button>
+            </td>
+          </tr>
+        </table>
+
+        <!-- SECOND TYPE - SERVICE INVOICE -->
+
+        <span class="field-title" *ngIf="invoice?.type=='Service Invoice'">Order Information</span>
+        <table class="table table-bordered table-small" *ngIf="invoice.type == 'Service Invoice'">
+          <tr>
+            <th *ngIf="editingEnabled" style="width:5%"></th>
+            <th style="width:20%">Catalog Number</th>
+            <th>Description</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Sub Total Cost</th>
+            <th>Discount(%)</th>
+            <th>Discount Value</th>
+            <th>Final Cost</th>
+          </tr>
+          <ng-container *ngFor="let line of invoice.lineItems; let i = index">
+            <tr *ngIf="!editingEnabled">
+              <td>{{line.catalogNumber}}</td>
+              <td>{{line.name}}</td>
+              <td>{{line.price | currency: 'USD' : '' }}</td>
+              <td>{{line.itemQuantity}}</td>
+              <td>{{(line.price * line.itemQuantity) | currency: 'USD' : '' }}</td>
+              <td>{{line.itemDiscount}} %</td>
+              <td>{{(((line.price * line.itemQuantity) * line.itemDiscount)/100) | currency: 'USD' : '' }}</td>
+              <td>{{((1-(line.itemDiscount/100)) * (line.price * line.itemQuantity)) | currency: 'USD' : '' }}</td>
+            </tr>
+            <tr *ngIf="editingEnabled" class="edit-row-form">
+              <td>
+                <button class="btn btn-outline-danger icon-btn" (click)="removeLine(i)">
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
+              <td style="width:20%">
+                <app-sales-item-search
+                  [currentCatalogNumber]="line.catalogNumber"
+                  (itemSelected)="setLineItemSalesItem(i,$event)">
+                </app-sales-item-search>
+              </td>
+              <td>
+                  <input autocomplete="off"
+                         type="text"
+                         [(ngModel)]="line.name"
+                         name="lineName" />
+              </td>
+              <td>
+                <input #unitPrice
+                       class="w-100"
+                       type="number"
+                       [value]="line.price"
+                       (change)="unitPriceChanged(i,unitPrice.value)">
+              </td>
+              <td>
+                  <input autocomplete="off"
+                         type="number"
+                         [(ngModel)]="line.itemQuantity"
+                         name="lineItemQuantity"
+                         (change)="setQuantity(i,lineItemQuanitity.value)" />
+              </td>
+              <td>{{(line.price * line.itemQuantity) | currency: 'USD' : '' }}</td>
+              <td>
+                <input autocomplete="off"
+                       type="number"
+                       [(ngModel)]="line.itemDiscount"
+                       name="lineDiscount"
+                      (change)="setDiscount(i, line.itemDiscount)">
+              </td>
+              <td>{{(((line.price * line.itemQuantity) * line.itemDiscount)/100) | currency: 'USD' : '' }}</td>
+              <td>{{((1-(line.itemDiscount/100)) * (line.price * line.itemQuantity)) | currency: 'USD' : '' }}</td>
+            </tr>
+            <tr>
+              <td colspan="9" *ngIf="editingEnabled">
+                <b>Note:</b>
+                <textarea #fn
+                          class="form-control"
+                          maxlength="255"
+                          (keyup)="fn.value=fn.value"
+                          (change)="checkFootnote(fn.value, i)"
+                          [value]="line.footNote"></textarea>
+                <span class="font-count">{{fn.value.length}}/255</span>
+              </td>
+              <td colspan="8" *ngIf="!editingEnabled">
+                <span style="white-space:pre-wrap;"><b>Note:</b> {{line.footNote}}</span>
+              </td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="editingEnabled">
+            <td colspan="9" style="text-align: center;">
+              <button style="width: 150px;" class="btn btn-info" (click)="addInvoiceLine()">
+                <i class="far fa-plus-square"></i>
+              </button>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+
+    <tr  *ngIf="invoice?.type=='Commercial Invoice'">
+      <td colspan="6">
+        <span class="field-title">Number Packages</span>
+        <input *ngIf="editingEnabled"
+               autocomplete="off"
+               class="w-100"
+               type="number"
+               [(ngModel)]="invoice.numberPackages"
+               name="numberPackages" />
+        <span class="form-control"
+               *ngIf="!editingEnabled">
+               {{invoice.numberPackages}}
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <span class="field-title">Handling Fee</span>
+        <input #fee
+               *ngIf="editingEnabled"
+               class="form-control"
+               [value]="invoice.handlingFee"
+               (change)="setHandlingFee(fee.value)">
+        <span class="form-control"
+               *ngIf="!editingEnabled">
+               {{invoice.handlingFee | currency: 'USD' : '' }}
+        </span>
+      </td>
+      <td colspan="2">
+        <span class="field-title">Shipping Fee</span>
+        <input #fee
+               *ngIf="editingEnabled"
+               class="form-control"
+               [value]="invoice.shippingFee"
+               (change)="setShippingFee(fee.value)">
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.shippingFee | currency: 'USD' : '' }}
+        </span>
+      </td>
+      <td colspan="2">
+        <span class="field-title">{{editingEnabled?'Tax Rate (%)':'Tax'}}</span>
+        <select *ngIf="editingEnabled"
+                 class="form-control"
+                 [(ngModel)]="invoice.taxRate"
+                 #taxselect
+                 (change)="setTax()">
+
+          <option *ngFor="let rate of taxRates.settingValues"
+                  [value]="rate.value"
+                  [selected]="invoice.taxRate==rate.value">
+                  {{rate.value}}
+          </option>
+        </select>
+        <span class="form-control"
+              *ngIf="!editingEnabled">
+              {{invoice.tax | currency: 'USD' : '' }}
+        </span>
+      </td>
+    </tr>
+    <tr *ngIf="editingEnabled">
+      <td colspan="6">
+        <span class="field-title">Note:</span>
+        <textarea class="form-control"
+                  [(ngModel)]="invoice.note"
+                  rows="2"
+                  placeholder="Additional Note (Optional)">
+        </textarea>
+      </td>
+    </tr>
+    <tr *ngIf="!editingEnabled">
+      <td colspan="6">
+        <span class="field-title">Note:</span>
+        <span class="form-control angular-with-newlines">{{invoice.note}}</span>
+      </td>
+    </tr>
+    <tr *ngIf="!editingEnabled">
+      <td colspan="6" class="text-center">
+        <button class="invoice-btn invoice-green-btn"
+          (click)="cancelEdit()"
+        >
+          Close
+        </button>
+      </td>
+    </tr>
+  </table>
+
+  <div class="col-md-12 mt-3">
+    <ngb-alert *ngIf="!hideWarning" (close)="hideWarning = true">
+      <ng-container *ngFor="let warning of inputWarning; let i = index">
+        <p>
+          <strong>{{warning}}</strong>
+        </p>
+      </ng-container>
+    </ngb-alert>
+  </div>
+
+  <div class="form-group submit-buttons"
+       *ngIf="editingEnabled"
+       style="text-align: center;">
+    <button class="invoice-btn invoice-green-btn"
+           (click)="saveClicked();">Save</button>
+    <button class="invoice-btn invoice-red-btn"
+           (click)="cancelEdit()">Cancel</button>
+  </div>
+</div>
+
+<ng-template #prePDF let-c="close">
+  <div class="modal-header">
+    <h4 class="modal-title">
+      Invoice Setting
+    </h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label>Payment Information:
+        <button type="button"
+                class="btn btn-outline-secondary help-tooltip"
+                placement="top"
+                ngbTooltip="Payment Information which will go at the bottom of the quote">
+            ?
+        </button>
+      </label>
+      <textarea class="form-control tandc"
+                #pay
+                [value]="paymentInfo"
+                (change)="checkPay(pay.value)"
+                rows="5">
+    </textarea>
+    </div>
+  </div>
+  <div class="modal-footer warning">
+    <button class="btn btn-success" (click)="getPDF(); c('');">Generate PDF</button>
+    <button class="btn btn-default" (click)="c('')">Cancel</button>
+  </div>
+</ng-template>
+
+
+<ng-template #changeVersionNumberOption let-c="close" class="versionnumber">
+  <div class="modal-header">
+    <h6 class="modal-title">
+      Do you want to change the version number of invoice {{invoice.invoiceNumber }}?
+    </h6>
+  </div>
+
+  <div class="modal-body">
+      <span class="field-title">Version Number (only positive integer number)</span>
+      <input class="form-control"
+             type="number"
+             [(ngModel)]="invoice.revision"
+             id="version"
+             step="1">
+  </div>
+
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-primary"
+            id="updateversion"
+            [disabled]="invoice?.revision <= versionNumber"
+            (click)="save(); c('')">
+          Update
+    </button>
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="revertVersionAndSave(); c('');">
+          Cancel
+    </button>
+  </div>
+</ng-template>
+
+
+
+<div *ngIf="isLoading" class="loading-screen">
+  <img class="loading-img" src="../../../assets/images/loading.gif">
+</div>

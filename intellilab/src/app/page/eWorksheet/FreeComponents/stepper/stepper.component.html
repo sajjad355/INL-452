@@ -1,0 +1,61 @@
+
+
+
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> -->
+<div class="wrapper">
+  <section class="header-stepper">
+
+    <div class="logo-and-nav-wrap">
+
+        <!-- <div class="logo-wrap">
+          <a href="#/global">LOGO</a>
+        </div> -->
+
+        <div class="stepper-nav-wrap">
+           <nav class="steps">
+
+
+              <div class="breadcrumb-wrap" (click) = "updateStepperIndex(0)" [class.select-effect]="stepperIndex === 0">
+                <span class="sep"><i class="fa fa-caret-right"></i></span> <span class="breadcrumb"><a class = "step-label">Universe</a></span>
+              </div>
+              <div class="breadcrumb-wrap" (click) = "updateStepperIndex(1)" [class.select-effect]="stepperIndex === 1">
+                <span class="sep"><i class="fa fa-caret-right"></i></span> <span class="breadcrumb"><a class = "step-label">Milky Way</a></span>
+              </div>
+              <div class="breadcrumb-wrap" (click) = "updateStepperIndex(2)" [class.select-effect]="stepperIndex === 2">
+                <span class="sep"><i class="fa fa-caret-right"></i></span> <span class="breadcrumb"><a class = "step-label">Solar System</a></span>
+              </div>
+              <div class="breadcrumb-wrap" (click) = "updateStepperIndex(3)" [class.select-effect]="stepperIndex === 3">
+                <span class="sep"><i class="fa fa-caret-right"></i></span> <span class="breadcrumb"><a class = "step-label">Earth</a></span>
+              </div>
+             <div class="breadcrumb-wrap" (click) = "updateStepperIndex(4)" [class.select-effect]="stepperIndex === 4">
+                <span class="sep"><i class="fa fa-caret-right"></i></span> <span class="breadcrumb"><a class = "step-label">Internet</a></span>
+              </div>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <section class="ws-tab-container">
+      <!-- <div class='lock-screen-panel'></div> -->
+      <div class="ws-tab-content" [class.hide]="stepperIndex != 0">
+        <p>Content 0</p>
+
+      </div>
+
+      <div class="content" [class.hide]="stepperIndex != 1">
+        <p>Content 1</p>
+      </div>
+
+      <div class="content" [class.hide]="stepperIndex != 2">
+        <p>Content 2</p>
+      </div>
+
+      <div class="content" [class.hide]="stepperIndex != 3">
+        <p>Content 3</p>
+      </div>
+
+      <div class="content" [class.hide]="stepperIndex != 4">
+        <p>Content 4</p>
+      </div>
+      </section>
+    </div>

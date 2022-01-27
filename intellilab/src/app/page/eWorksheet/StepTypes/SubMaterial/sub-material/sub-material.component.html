@@ -1,0 +1,265 @@
+
+<br>
+
+<form [formGroup]="form">
+
+  <!-- Operation 1 -->
+  <strong>{{materialLabelName}}&nbsp;{{displayIndex}}</strong>
+    <div class="padding-left-35p">
+
+    <app-auto-complete *ngIf="mode === 'design'" [saveWarnStatus]="true" [controllerName]="'material'" [listContent]="inventoryList" [inputWidth] = "'400px'" [initSelection]="editData && editData.material? editData.material : ''" [matLabel]="itemNameLabel" (userSelection)="autoUpdate($event, 'item')" (warnData) = "initWarn($event)"></app-auto-complete>
+    <div *ngIf="mode === 'experiment' || mode === 'review'"  class="warn-container">
+
+      <app-text-field *ngIf="mode === 'experiment'" [text]="this.editData.material" [tag]="itemNameLabel"></app-text-field>
+      <app-text-field *ngIf="mode === 'review'" [text]="this.reviewData.material" [tag]="itemNameLabel"></app-text-field>
+
+      <span *ngIf="itemExpired && mode === 'experiment'" class="material-icons color-warn md-36 relative-top-right" [matTooltip]="'item is expired'" [matTooltipPosition]="'above'">
+        notification_important
+      </span>
+    </div>
+
+    <div class="warn-container">
+
+      <mat-form-field *ngIf="mode === 'design'" appearance="outline" class="display-block-200">
+        <mat-label>{{itemSupplierLabel}}</mat-label>
+        <input *ngIf="mode === 'design'" matInput type="text" formControlName="supplier" (change) = "updateInfo(); checkInputExist('supplier')">
+
+      </mat-form-field>
+      <app-text-field *ngIf="mode === 'experiment'" [text]="this.editData.supplier" [tag]="itemSupplierLabel"></app-text-field>
+      <app-text-field *ngIf="mode === 'review'" [text]="this.reviewData.supplier" [tag]="itemSupplierLabel"></app-text-field>
+
+
+      <span *ngIf="!supplier_exist" class="material-icons color-warn md-36 relative-top-right" [matTooltip]="toolTipMessage" [matTooltipPosition]="'above'">
+        error
+      </span>
+    </div>
+
+
+    <div class="warn-container">
+      <mat-form-field *ngIf="mode === 'design'" appearance="outline">
+        <mat-label>Stock Concentration</mat-label>
+        <input *ngIf="mode === 'design'" matInput type="number" formControlName = "stockConcentration" (change) = "updateInfo(); checkInputExist('stockConcentration')">
+
+      </mat-form-field>
+      <app-text-field *ngIf="mode === 'experiment'"
+      [text]="this.editData.stockConcentration + ' ' + (editData && editData.stockConcentrationUnit)"
+      [tag]="'Stock Concentration'">
+      </app-text-field>
+      <app-text-field *ngIf="mode === 'review'"
+      [text]="this.reviewData.stockConcentration + ' ' + (reviewData && reviewData.stockConcentrationUnit)"
+      [tag]="'Stock Concentration'">
+      </app-text-field>
+
+      <span *ngIf="!stockConcentration_exist" class="material-icons color-warn md-36 relative-top-right" [matTooltip]="toolTipMessage" [matTooltipPosition]="'above'">
+        error
+      </span>
+
+      <div *ngIf="mode === 'design'" class="unit-container" [ngClass]="stockConcentration_exist ? 'margin-left-50' : 'margin-left-13'">
+        <app-drop-down-list #stockConcentrationUnit *ngIf="mode === 'design'"
+        [listContent]="concentrationUnits"
+        [defaultOption] = "stockConcentrationUnit_copy"
+        [placeHolderValue]="'Concentration Unit'"
+        [mode]="'simple'"
+        [width]="'150px'"
+        [targetUnit]="'stockConcentrationUnit'"
+        (unit) = "onChangeUnit($event)">
+        </app-drop-down-list>
+        <span *ngIf="!stockConcentrationUnit_exist" class="material-icons color-warn md-36 relative-top-right" [matTooltip]="toolTipMessage" [matTooltipPosition]="'above'">
+          error
+        </span>
+
+      </div>
+    </div>
+
+
+    <app-auto-complete *ngIf="materialLotNumList && mode === 'experiment'" [controllerName]="'materialLot_user'" [listContent]="materialLotNumList" [inputWidth] = "'200px'" [initSelection]="editData && editData.materialLot_user? editData.materialLot_user : ''" [listContentType]="'string'" [matLabel]="'Lot Number'" (userSelection)="autoUpdate($event, 'lotNum')"></app-auto-complete>
+
+    <app-text-field *ngIf="mode === 'review' && dataType === 'instance'" [text]="this.reviewData.materialLot_user" [tag]="'Lot Number'"></app-text-field>
+
+    </div>
+
+  <!-- End of Operation 1 -->
+
+
+  <!-- Operation 2 -->
+
+  <alert [id]="'fold-check-material-' + dynamic_alertId"></alert>
+  <hr>
+  <strong>Solution 1 Concentration</strong>
+  <div class="padding-left-35p">
+
+    <mat-form-field *ngIf="mode === 'design'" appearance="outline">
+      <mat-label>Solution 1 Concentration</mat-label>
+      <input *ngIf="mode === 'design'" matInput  type="number" formControlName = "finalConcentration"
+      (change) = "updateInfo(); displaySubStepCheck()">
+    </mat-form-field>
+
+    <app-text-field *ngIf="mode === 'experiment'"
+    [text]="this.editData.finalConcentration + ' ' + (editData && editData.finalConcentrationUnit)"
+    [tag]="'Solution 1 Concentration'"
+    >
+    </app-text-field>
+
+    <app-text-field *ngIf="mode === 'review'"
+    [text]="this.reviewData.finalConcentration + ' ' + (reviewData && reviewData.finalConcentrationUnit)"
+    [tag]="'Solution 1 Concentration'"
+    >
+    </app-text-field>
+
+
+      <div *ngIf="mode === 'design'" class="unit-container margin-left-50">
+        <app-drop-down-list *ngIf="mode === 'design'"
+        [listContent]="concentrationUnits"
+        [defaultOption] = "finalConcentrationUnit_copy"
+        [placeHolderValue]="'Concentration Unit'"
+        [mode]="'simple'"
+        [width]="'150px'"
+        [targetUnit]="'finalConcentrationUnit'"
+        (unit) = "onChangeUnit($event)">
+        </app-drop-down-list>
+      </div>
+  </div>
+  <!-- End of Operation 2 -->
+
+
+  <!-- Operation 3 -->
+  <alert [id]="'pipette-check-material-' + dynamic_alertId"></alert>
+
+  <hr *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance')">
+  <strong *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance')">
+    Required Volume of Solution 1
+  </strong>
+  <div *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance')" class="padding-left-35p">
+
+    <mat-form-field *ngIf="mode === 'experiment'" appearance="outline">
+      <mat-label>Volume Needed</mat-label>
+      <input *ngIf="mode === 'experiment'" matInput  type="number" formControlName="volume_user" (change) = "checkCalculationParams()">
+    </mat-form-field>
+    <app-text-field *ngIf="mode === 'review' && dataType === 'instance'"
+    [text]="this.reviewData.volume_user + ' ' + (reviewData && reviewData.volume_userUnit)"
+    [tag]="'Volume Needed'">
+    </app-text-field>
+
+      <div *ngIf="mode === 'experiment'" class="unit-container margin-left-50">
+        <app-drop-down-list *ngIf="mode === 'experiment'"
+        [listContent]="literUnits"
+        [defaultOption] = "volume_userUnit_copy"
+        [placeHolderValue]="'Unit'"
+        [mode]="'simple'"
+        [width]="'150px'"
+        [targetUnit]="'volume_userUnit'"
+        (unit) = "onChangeUnit($event)">
+        </app-drop-down-list>
+      </div>
+  </div>
+  <!-- End of Operation 3 -->
+
+
+  <!-- Operation 4 -->
+
+  <hr *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance')">
+  <strong *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance')">Calculation Results</strong>
+  <div *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance')" class="padding-left-35p">
+
+    <div class="warn-container">
+      <mat-form-field *ngIf="mode === 'experiment'" appearance="outline">
+        <mat-label>Source Volume(µL)</mat-label>
+        <input *ngIf="mode === 'experiment'" matInput  type="number" formControlName="materialVolume_sys" readonly>
+      </mat-form-field>
+      <app-text-field *ngIf="mode === 'review' && dataType === 'instance'"
+      [text]="this.reviewData.materialVolume_sys + ' µL'"
+      [tag]="materialLabelName.trim().split(' ')[0] + ' Volume'"
+      [toolTipType]="'infoTip'"
+      [infoTip]="'For ( ' + reviewData.material + ' )'">
+      </app-text-field>
+
+      <span *ngIf="roundRecord.material.isRound" class="material-icons md-36 relative-top-right-flag orange600" [matTooltip]="roundRecord.material.message" [matTooltipPosition]="'above'">
+        flag
+      </span>
+
+      <span *ngIf="mode === 'experiment'" class="margin-left-10">{{editData.material}}</span>
+
+    </div>
+
+
+
+    <div class="warn-container">
+      <mat-form-field *ngIf="mode === 'experiment'" appearance="outline">
+        <mat-label>Buffer Volume(µL)</mat-label>
+        <input *ngIf="mode === 'experiment'" matInput  type="number" formControlName="bufferVolume_sys" readonly>
+      </mat-form-field>
+      <app-text-field *ngIf="mode === 'review' && dataType === 'instance'"
+      [text]="this.reviewData.bufferVolume_sys + ' µL'"
+      [tag]="'Buffer Volume'"
+      [toolTipType]="'infoTip'"
+      [infoTip]="'For ( ' + reviewData.buffer + ' )'">
+      </app-text-field>
+
+      <span *ngIf="roundRecord.buffer.isRound" class="material-icons md-36 relative-top-right-flag orange600" [matTooltip]="roundRecord.buffer.message" [matTooltipPosition]="'above'">
+        flag
+      </span>
+      <span *ngIf="mode === 'experiment'" class="margin-left-10">{{editData.buffer}}</span>
+    </div>
+
+  </div>
+  <!-- End of Operation 4 -->
+
+
+  </form>
+
+  <!-- Operation 5 (sub dilution) -->
+  <alert id="dilution-alert"></alert>
+  <div *ngIf="showSubStep && mode === 'design'" class="btn-container">
+    <a *ngIf="subStepArray.length > 0" (click)="removeSubDilution()" id="text-btn">{{removeDilutionBtnName}}</a>
+    <a *ngIf="subStepArray.length <= 0" id="text-btn">{{removeDilutionBtnName}}</a>
+    <button *ngIf="!lockSubDilution" mat-raised-button color="primary" (click)="addSubDilution()" class="width-300 heigth-40 primary-btn-animation">{{addDilutionBtnName}}</button>
+    <button *ngIf="lockSubDilution" mat-raised-button color="primary" (click)="addDilutionNotification()" class="width-300 heigth-40 primary-btn-animation">{{addDilutionBtnName}}</button>
+  </div>
+
+  <div *ngIf="showSubStep && mode !== 'review'">
+
+      <mat-tab-group>
+        <mat-tab *ngFor="let subStep of subStepArray; let index = index">
+          <ng-template mat-tab-label>
+            <div class="tab-animation">
+              <span>{{'Solution '+ (index+2)}}&nbsp;&nbsp;</span>
+              <span *ngIf="!subStep.stepValid" class="material-icons edit">
+                edit
+              </span>
+
+              <span *ngIf="subStep.stepValid" class="material-icons complete">
+                check_circle
+              </span>
+            </div>
+          </ng-template>
+
+          <app-sub-dilution
+          [mode]="mode"
+          [dataType]="dataType"
+          [stepIndex]="subStep.stepIndex"
+          [editData]="subStep.stepData"
+          [displayIndex]="index+1"
+          [materialLabelName]="materialLabelName"
+          [dynamic_alertId]="dynamic_alertId + '-' + subStep.stepIndex"
+          (subStepLock)="lockModifier($event)"
+          (userData)="updateSubDilution($event)">
+          </app-sub-dilution>
+        </mat-tab>
+      </mat-tab-group>
+  </div>
+
+  <div *ngIf="mode === 'review' && reviewData.subStepArray.length > 0">
+    <mat-tab-group>
+      <mat-tab *ngFor="let subStep of reviewData.subStepArray; let index = index" [label]="'Solution '+ (index+2)">
+        <app-sub-dilution
+        [mode]="mode"
+        [stepIndex]="subStep.stepIndex"
+        [reviewData]="subStep.stepData"
+        [dataType]="dataType"
+        [displayIndex]="index+1"
+        [materialLabelName]="materialLabelName">
+        </app-sub-dilution>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+<!-- End of operation 5 (sub dilution) -->

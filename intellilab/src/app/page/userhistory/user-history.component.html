@@ -1,0 +1,87 @@
+<div class="user-history-searchbar-container">
+  <div class="search-icon-container" (click)="btnSearch()">
+    <i class="fa fa-search" aria-hidden="true"></i>
+  </div>
+
+  <input type="text" [(ngModel)]="searchKey" (keyup.enter)="btnSearch()" placeholder="Search by user name">
+  <div class="days-menu">
+    <button mat-button [matMenuTriggerFor]="menu">
+      within &nbsp;{{days}}&nbsp;days
+      <span class="material-icons">
+      arrow_drop_down
+      </span></button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="changeDays(7)">7 days</button>
+      <button mat-menu-item (click)="changeDays(30)">30 days</button>
+      <button mat-menu-item (click)="changeDays(180)">180 days</button>
+    </mat-menu>
+  </div>
+
+</div>
+
+<div *ngIf="dataSource.length === 0" class="user-history-no-result">
+  <strong>No Results</strong>
+</div>
+
+<table *ngIf="dataSource.length > 0" mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="user-history-table">
+
+
+  <!-- User Column -->
+  <ng-container matColumnDef="user">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> User </th>
+    <td mat-cell *matCellDef="let element"> {{element.user}} </td>
+  </ng-container>
+
+  <!--Page Column -->
+  <ng-container matColumnDef="page">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Page </th>
+    <td mat-cell *matCellDef="let element"> {{element.page}} </td>
+  </ng-container>
+
+
+
+  <!-- Action Column -->
+  <ng-container matColumnDef="action">
+    <!-- <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th> -->
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
+    <td mat-cell *matCellDef="let element"> {{element.action}} </td>
+  </ng-container>
+
+  <!-- Time Column -->
+  <ng-container matColumnDef="time">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Time </th>
+    <td mat-cell *matCellDef="let element"> {{element.time}} </td>
+  </ng-container>
+
+  <!-- Description Column -->
+  <ng-container matColumnDef="desc">
+    <th mat-header-cell *matHeaderCellDef> Description </th>
+    <td mat-cell *matCellDef="let element"
+   ><span class="desc-span" [matTooltip]="element.desc"
+   [matTooltipPosition]="'left'" [matTooltipShowDelay]="300" [matTooltipHideDelay]="300">Details</span>
+  </td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="item-animation"></tr>
+</table>
+
+
+<div class="history-search-btn-container">
+  <div class="roller-btn" (click)="previousPage()">
+    <span class="material-icons md-18 arrow-left">
+      keyboard_arrow_left
+    </span>
+    <span>Previous Page</span>
+  </div>
+
+  <div class="roller-btn margin-left-30p" (click)="nextPage()">
+    <span>Next Page</span>
+    <span class="material-icons md-18 arrow-right">
+      keyboard_arrow_right
+    </span>
+  </div>
+</div>
+
+

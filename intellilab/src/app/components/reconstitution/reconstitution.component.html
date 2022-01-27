@@ -1,0 +1,248 @@
+<table class="table table-bordered fix-table" >
+    <tr>
+      <td colspan="3">
+        <span class="field-title" >Reconstitute</span><br>
+        <button class="btn btn-outline-primary icon-btn" 
+                (click)="reconstituteItem()" 
+                title="Reconstitute"><i class="fas fa-flask"></i>
+      </button>
+      <td colspan="3">
+        <span class="field-title">Item Name</span><br> {{displayInventory?.name}}
+      </td>
+      <td colspan="3">
+        <span class="field-title">Catalog</span><br> {{displayInventory?.catalogNumber}}
+      </td>
+      <td colspan="3">
+        <span class="field-title">Lot Number</span><br> {{displayInventoryDetail?.lotNumber}}
+      </td>
+    </tr>
+    <tr class="item-detail"  >
+      <td colspan="4">
+        <span class="field-title" >Item Amt/Qty</span>
+        <br>
+        <div>
+            {{displayInventoryDetail?.amount}}
+        </div >
+      </td>
+      <td colspan="4">
+        <span class="field-title">Unit Size</span>
+        <br>
+        <div> 
+          {{displayInventoryDetail?.containerSize}} {{displayInventoryDetail?.unit}}
+        </div>
+      </td>
+      <td colspan="4">
+        <span class="field-title">Reconstitution amount</span>
+        <br>
+        <input  #requestedUnopenedCheckout 
+                [(ngModel)]="requestedUnopenedCheckoutAmount" 
+                class="form-control checkout-amount"
+                type="number"  
+                (input)="setCheckoutAmount(requestedUnopenedCheckout.value)">
+
+      </td>
+    </tr>
+
+    <tr *ngIf="reconstitutionDetailList.length > 0;">
+      <td colspan="12">
+        <h6>Reconstitution List of Items</h6>
+      </td>
+    </tr>
+
+    <tr *ngFor="let item of reconstitutionDetailList; let i = index">
+      <td colspan="12">
+          
+          <table class="table table-bordered fix-table">
+              <tr>
+                 <td colspan="12">
+                    Item: {{(i + 1)}}
+                    <button  class="btn btn-outline-warning recon-btn btn-sm" 
+                            (click)="removeReconstitutionItem(i)">
+                      <i class="fas fa-times"></i>
+                    </button>
+                 </td>
+              </tr>
+              <tr>
+                <td colspan="12"> 
+                  <div colspan="12" style="background-color:#77cedb; height:10px;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <span class="field-title">Lot Number</span>
+                  <input class="form-control" 
+                        #reconLotNumber 
+                        [value]="item.lotNumber" 
+                        (change)="item.lotNumber = reconLotNumber.value">
+                </td>
+                <td colspan="3">
+                  <span class="field-title">Expiry Date</span>
+                  <div class="inputGroup">
+                    <input
+                      readonly
+                      class="form-control font-12"
+                      angular-mydatepicker
+                      [(ngModel)]="expiryDateList[i]"
+                      [options]="dateoption"
+                      #dp="angular-mydatepicker"
+                      (dateChanged)="changeExpiryDate($event, i)"
+                      (click)="dp.toggleCalendar()"/>
+                    <div class="input-group-append">
+                      <button type="button" class="btn btn-secondary" (click)="dp.clearDate()">
+                        ×
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- <my-date-picker name="mydate" 
+                                [options]="dateoption" 
+                                [(ngModel)]="expiryDateList[i]"
+                                (dateChanged)="changeExpiryDate($event, i)"  >
+                  </my-date-picker>-->
+                </td>
+                <td colspan="3">
+                  <span class="field-title">Unit Size</span>
+                  <input class="form-control" 
+                        #reconUnitSize 
+                        type="number"
+                        [value]="item.containerSize" 
+                        (change)="item.containerSize = reconUnitSize.value; ">
+                </td>
+                <td colspan="3">
+                  <span class="field-title">Unit</span>
+                  <select class="form-control" 
+                          #reconUnit 
+                          (change)="item.unit = reconUnit.value; " 
+                          [value]="item.unit">
+                    <option *ngFor="let u of unit" 
+                            [value]="u" 
+                            [selected]="item.unit == u">{{u}}</option>
+                  </select>
+                </td>
+              </tr>
+              
+              <tr>
+                 <td colspan="6">
+                    <span class="field-title">Concentration</span>
+                    <input class="form-control" 
+                           type="number"
+                           #reconConcentration 
+                           [value]="item.concentration" 
+                           (change)="item.concentration = reconConcentration.value;">
+                  </td>
+                  <td colspan="6">
+                    <span class="field-title">Concentration Unit</span>
+                    <select class="form-control" 
+                            #reconConcentrationUnit 
+                            (change)="item.concentrationUnit = reconConcentrationUnit.value; " 
+                            [value]="item.concentrationUnit">
+                      <option disabled>Concentration Unit</option>
+                      <option *ngFor="let u of conunit" 
+                              [value]="u" 
+                              [selected]="item.concentrationUnit == u">
+                              {{u}}
+                      </option>
+                    </select>
+                  </td>
+              </tr> 
+
+
+                      
+              <tr>
+                <td colspan="3">
+                  <span class="field-title">Amount/Quantity</span>
+                  <input *ngIf="statusOptionList[i]=='Unopened'"
+                         class="form-control" 
+                         #reconAmount 
+                         type="number"
+                         [value]="item.amount" 
+                         (change)="item.amount = reconAmount.value;">
+                  <input *ngIf="statusOptionList[i]=='In-Use'"
+                         class="form-control" 
+                         #reconInUse 
+                         type="number"
+                         [value]="item.numberInUse" 
+                         (change)="item.numberInUse = reconInUse.value;">      
+                </td>
+                <td colspan="3">
+                  <span class="field-title">Status</span>
+                  <select class="form-control" 
+                          #reconStatus 
+                          (change)="setItemCheckoutStatus(i, reconStatus.value);">
+                    <option disabled>Select Status</option>
+                    <option *ngFor="let s of statusOptions" 
+                             [value]="s" 
+                             [selected]="statusOptionList[i] == s">
+                             {{s}}
+                    </option>
+                  </select>
+                </td>
+                <td colspan="3">
+                    <span class="field-title">Location</span>
+                    <select class="form-control" 
+                            id="location"  
+                            #location 
+                            (change)="selectLocation(i, location.value)">
+                      <option disabled>Location</option>
+                      <option *ngFor="let l of locations" 
+                              [value]="l.locationName" 
+                              [selected]="item?.location?.locationName == l.locationName">
+                              {{l.locationName}}
+                      </option>
+                    </select>
+                  </td>
+                  <td colspan="3">
+                    <span class="field-title">Sub Location</span>
+                    <select class="form-control" 
+                            id="sublocation" 
+                            #sublocation 
+                            (change)="selectSubLocation(i, sublocation.value)">
+                      <option disabled>Sub Location</option>
+                      <option *ngFor="let s of subLocations" 
+                              [value]="s" 
+                              [selected]="item?.subLocation?.locationName == s.locationName">
+                          {{s.locationName}}
+                      </option>
+                    </select>
+                  </td>
+                </tr>
+          </table>
+      </td>
+
+    </tr>
+
+    <tr *ngIf="reconstitutionDetailList.length > 0;" style="text-align: center">
+      <td colspan="12">
+        <button class="btn btn-primary btn-sm" 
+                (click)="reconstituteItem()" 
+                style="font-size:10px;">
+          <i class="fas fa-plus"></i>New Reconstitution Item</button>
+      </td>
+    </tr>
+  
+  
+ </table>
+
+
+
+ <ngb-alert *ngIf="inputWarning.length > 0" (close)="inputWarning=[]">
+  <ng-container *ngFor="let warning of inputWarning; let i = index">
+    <p>
+      <strong>{{warning}}</strong>
+    </p>
+  </ng-container>
+</ngb-alert>
+
+
+
+
+ 
+
+ <div style="text-align: right;">
+  <button type="button" class="btn btn-primary" (click)="saveReconstitute();" [disabled]="reconstitutionDetailList.length == 0">Submit</button>
+  <button type="button" class="btn btn-outline-dark" (click)="cancelChange()">Cancel</button>
+ </div>
+ 
+ 
+ 
+ 

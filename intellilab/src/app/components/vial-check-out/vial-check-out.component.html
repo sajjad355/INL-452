@@ -1,0 +1,137 @@
+<table class="table table-bordered fix-table" >
+  <tr class="itemhead" *ngIf="!displayInventoryDetail?.reserve else reservedBlock;">
+    <td colspan="3">
+      <span class="field-title">Vial Volume</span><br> {{displayInventoryDetailVial?.volume}} {{displayInventoryDetailVial?.unit}}
+    </td>
+    <td colspan="3">
+      <span class="field-title">Item Name</span><br> {{displayInventory?.name}}
+    </td>
+    <td colspan="3">
+      <span class="field-title">Catalog</span><br> {{displayInventory?.catalogNumber}}
+    </td>
+    <td colspan="3">
+      <span class="field-title">Lot Number</span><br> {{displayInventoryDetail?.lotNumber}}
+    </td>
+  </tr>
+  <tr class="itemhead" *ngIf="displayInventoryDetailVial.checkoutPurpose">
+    <td colspan="12">
+      <span class="field-title">Checkout Purpose</span><br> 
+      <textarea class="form-control" 
+                [value]="displayInventoryDetailVial.checkoutPurpose" 
+                [readonly]="true" 
+                rows="4">
+      </textarea>         
+    </td>
+  </tr>
+  <tr class="item-detail">
+    <td colspan="2" class="btn-cell"  >
+        <label class="inventory">
+          <input type="radio" 
+                [checked]="checkoutType==CHECKOUT_TYPE.UNOPENED"  
+                [disabled] ="displayInventoryDetailVial?.volume <= 0 || displayInventoryDetailVial?.status != VIAL_DETAIL_STATUS.UNOPENED" 
+                (change)="checkoutType=CHECKOUT_TYPE.UNOPENED">
+          Unopened Inventory
+        </label>
+        <br>
+        <label class="inventory">
+          <input type="radio" 
+                [checked]="checkoutType==CHECKOUT_TYPE.INUSE"  
+                [disabled] ="displayInventoryDetailVial?.volume <= 0 || displayInventoryDetailVial?.status != VIAL_DETAIL_STATUS.INUSE" 
+                (change)="checkoutType=CHECKOUT_TYPE.INUSE"> 
+          In-Use Inventory
+        </label>
+    </td>
+    <td *ngIf="!checkoutType" 
+        colspan="10" 
+        style="text-align: left;vertical-align:middle;" >
+      <span style="font-size:11px;color:red;font-weight:bold;">&#60;=== &nbsp;&nbsp; To check out, please select an option</span>
+    </td>
+    
+    <td colspan="2" *ngIf="checkoutType">
+      <span class="field-title">Vial Number</span><br> {{displayInventoryDetailVial?.vialNumber}} 
+    </td>
+    <td colspan="3" *ngIf="checkoutType">
+      <span class="field-title">Check out amount</span>
+      <br>
+      <input  #checkoutAmt 
+              [(ngModel)]="requestedCheckoutAmount" 
+              class="form-control checkout-amount"
+              type="number"  
+              (input)="setCheckoutAmount(checkoutAmt.value)">
+    </td>
+    <td colspan="1" *ngIf="checkoutType">
+      <span class="field-title">Unit</span>
+      <br>
+      {{ displayInventoryDetailVial?.unit }}
+    </td>
+    <td colspan="3" *ngIf="checkoutType == CHECKOUT_TYPE.UNOPENED">
+      <span class="field-title">Location</span>
+      <br>
+      <select class="form-control" 
+              id="location"  
+              #vialLocation 
+              (change)="selectLocation(vialLocation.value)">
+        <option disabled>Location</option>
+        <option *ngFor="let l of locations" 
+                [value]="l.locationName" 
+                [selected]="checkoutLocation?.locationName == l.locationName">
+                {{l.locationName}}
+        </option>
+      </select>
+    </td>
+    <td colspan="3" *ngIf="checkoutType == CHECKOUT_TYPE.UNOPENED">
+      <span class="field-title">Sub-location</span>
+      <br>
+      <select class="form-control" 
+              id="sublocation" 
+              #vialSubLocation 
+              (change)="selectSubLocation(vialSubLocation.value)">
+        <option disabled>Sub Location</option>
+        <option *ngFor="let s of subLocations" 
+                [value]="s.locationName" 
+                [selected]="checkoutSublocation?.locationName == s.locationName">
+            {{s.locationName}}
+        </option>
+      </select>
+    </td> 
+  </tr>
+
+  <tr class="item-detail" *ngIf="checkoutType">
+    <td colspan="12">
+       <span class="field-title">Current Checkout Purpose Reason</span>
+       <br>
+       <textarea #checkoutPurposeField 
+                  class="form-control" 
+                  maxlength="5000" 
+                  [(ngModel)]="currentCheckoutPurpose" >
+       </textarea>      
+     </td>
+ </tr>
+
+  <ng-template #reservedBlock>
+    <tr class="itemhead">
+      <td>
+         Item is reserved and cannot be checked out.
+      </td>
+    </tr>
+  </ng-template>
+
+
+</table>  
+
+
+<ngb-alert *ngIf="inputWarning.length > 0" (close)="inputWarning=[]">
+  <ng-container *ngFor="let warning of inputWarning; let i = index">
+    <p>
+      <strong>{{warning}}</strong>
+    </p>
+  </ng-container>
+</ngb-alert>
+
+<div style="text-align: right;">
+  <button type="button"
+          *ngIf="!displayInventoryDetail?.reserve"  
+          class="btn btn-primary"  
+          (click)="saveCheckout();">Submit</button>
+  <button type="button" class="btn btn-outline-dark" (click)="cancelCheckout()">Cancel</button>
+</div>

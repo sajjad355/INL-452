@@ -1,0 +1,39 @@
+
+ <div class="toolbar-container" >
+
+  <div class="logo-container">
+    <div class='padding-left-16'>
+      <span class="header-font-style">
+        <img src="../../../../assets/eWorksheet/eLabEx-Icon.png" alt="letter-e-logo" width="25" height="25" class="margin-right-3 logo-position">
+        {{logoText}}
+      </span>
+
+      <span class='header-desc-style'>
+        ({{tooBarTitle}})
+      </span>
+    </div>
+
+
+    <div class="img-container ">
+      <img src="../../../../assets/eWorksheet/Somru-Logo-high.jpg" alt="Somru Logo" width="120" height="44" >
+    </div>
+  </div>
+
+
+  <span class="spacer"></span>
+  <span class="material-icons">
+    keyboard_arrow_left
+  </span>
+
+  <a mat-button (click)="goBack()" *ngIf="!backButtonSetting && !hideBackButton" class="btn-animation margin-right-10">Back</a>
+  <a mat-button *ngIf="backButtonSetting && !hideBackButton" [routerLink]="backButtonSetting.routerLink" [routerLinkActive]=backButtonSetting.routerLinkActive class="btn-animation margin-right-10">{{backButtonSetting.name}}</a>
+  <ul *ngFor="let button of buttonList">
+
+    <li *ngIf="!hideButtons">
+        <a mat-button [routerLink]=button.routerLink [routerLinkActive]=button.routerLinkActive  class="btn-animation margin-right-10">{{button.name}}</a>
+    </li>
+
+  </ul>
+
+</div>
+

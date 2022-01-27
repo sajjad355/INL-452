@@ -1,0 +1,2603 @@
+<div *ngIf="selectedItem" style="min-width: 800px;">
+  <form>
+
+
+    <!-- ANTI-SERA form follows -->
+    <table class="table table-form" *ngIf="displayedItem.type==INVENTORY_ITEM_TYPES.ANTI_SERA">
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="nameInput">
+            Item Name<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The name of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="nameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.name" name="name" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.name}}</p>
+        </td>
+
+        <!-- <td colspan="2" style="padding:5px;">
+          <label>
+            Number of Attachments
+          </label>
+          <p class="read-only-input">{{numOfAtt}}</p>
+        </td> -->
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Manufacturer Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierCatalogNumberInput">
+            Supplier Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierCatalogNumberInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierCatalogNumber" name="supplierCatalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierCatalogNumber}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="manufacturerInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturer" name="manufacturer" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Manufacturer"
+            [selected]="displayedItem.manufacturer"
+            (sourceSelected)="selectManufacturer($event)" >
+          </app-item-source-search>
+          
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierInput">
+            Supplier
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="supplierInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplier" name="supplier" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Supplier"
+            [selected]="displayedItem.supplier"
+            (sourceSelected)="selectSupplier($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplier}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerLinkInput">
+            Manufacturer Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturerLink" name="manufacturerLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturerLink}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierLinkInput">
+            Supplier Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierLink" name="supplierLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierLink}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="containerSizeInput">
+            Container
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The container size of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="containerSizeInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.containerSize" name="containerSize" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.containerSize}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitInputOption">
+            Unit<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit(s) of the item">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="unitInputOption" #itemUnit [value]="displayedItem.unit"
+            (change)="displayedItem.unit=itemUnit.value;">
+            <option *ngFor="let u of unit" [value]="u" [selected]="displayedItem.unit == u">
+              {{u}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unit}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="compoundNameInput">
+            Immunogen (Compound Name)<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Compound Name of the Immunogen">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="compoundNameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.compoundName" name="compoundName" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.compoundName}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="tradeNameInput">
+            Immunogen (Trade Name)<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The Trade Name of the Immunogen">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="tradeNameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.tradeName" name="tradeName" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.tradeName}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+    </table>
+
+    <!-- Form for Solutions, Matrix, Cell Culture, Molecular and Kit -->
+    <table class="table table-form"
+      *ngIf="displayedItem.type==INVENTORY_ITEM_TYPES.SOLUTION || displayedItem.type==INVENTORY_ITEM_TYPES.MATRIX || displayedItem.type==INVENTORY_ITEM_TYPES.CELL_CULTURE || displayedItem.type==INVENTORY_ITEM_TYPES.MOLECULAR || displayedItem.type==INVENTORY_ITEM_TYPES.KIT">
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="nameInput">
+            Item Name<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The name of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="nameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.name"  name="name" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.name}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Manufacturer Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierCatalogNumberInput">
+            Supplier Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierCatalogNumberInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierCatalogNumber" name="supplierCatalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierCatalogNumber}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="manufacturerInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturer" name="manufacturer" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Manufacturer"
+            [selected]="displayedItem.manufacturer"
+            (sourceSelected)="selectManufacturer($event)" >
+          </app-item-source-search>
+          
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierInput">
+            Supplier
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="supplierInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplier" name="supplier" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Supplier"
+            [selected]="displayedItem.supplier"
+            (sourceSelected)="selectSupplier($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplier}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerLinkInput">
+            Manufacturer Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturerLink" name="manufacturerLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturerLink}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierLinkInput">
+            Supplier Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierLink" name="supplierLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierLink}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="containerSizeInput">
+            Container
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The container size of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="containerSizeInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.containerSize" name="containerSize" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.containerSize}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitInputOption">
+            Unit<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit(s) of the item">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="unitInputOption" #itemUnit [value]="displayedItem.unit"
+            (change)="displayedItem.unit=itemUnit.value;">
+            <option *ngFor="let u of unit" [value]="u" [selected]="displayedItem.unit == u">
+              {{u}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unit}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+
+    </table>
+
+    <!-- Display form for Chemicals -->
+    <table class="table table-form" *ngIf="displayedItem.type == INVENTORY_ITEM_TYPES.CHEMICAL">
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="nameInput">
+            Item Name<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The name of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="nameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.name" name="name" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.name}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Manufacturer Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierCatalogNumberInput">
+            Supplier Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierCatalogNumberInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierCatalogNumber" name="supplierCatalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierCatalogNumber}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="manufacturerInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturer" name="manufacturer" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Manufacturer"
+            [selected]="displayedItem.manufacturer"
+            (sourceSelected)="selectManufacturer($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierInput">
+            Supplier
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="supplierInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplier" name="supplier" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Supplier"
+            [selected]="displayedItem.supplier"
+            (sourceSelected)="selectSupplier($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplier}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerLinkInput">
+            Manufacturer Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturerLink" name="manufacturerLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturerLink}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierLinkInput">
+            Supplier Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierLink" name="supplierLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierLink}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="containerSizeInput">
+            Container
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The container size of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="containerSizeInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.containerSize" name="containerSize" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.containerSize}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitInputOption">
+            Unit<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit(s) of the item">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="unitInputOption" #itemUnit [value]="displayedItem.unit"
+            (change)="displayedItem.unit=itemUnit.value;">
+            <option *ngFor="let u of unit" [value]="u" [selected]="displayedItem.unit == u">
+              {{u}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unit}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="chemicalAbstractsServiceNumberInput">
+            CAS #<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Chemical Abstract Service # is a common chemical identifer from the CAS Registry - https://www.cas.org/">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="chemicalAbstractsServiceNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.chemicalAbstractsServiceNumber"
+            name="chemicalAbstractsServiceNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.chemicalAbstractsServiceNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="molecularWeightInput">
+            Molecular Weight<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The molecular weight of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="molecularWeightInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.molecularWeight" name="molecularWeight" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.molecularWeight}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+
+    </table>
+
+    <!-- Form for Display of Drugs -->
+    <table class="table table-form" *ngIf="displayedItem.type == INVENTORY_ITEM_TYPES.DRUG">
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="compoundNameInput">
+            Compound Name<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Compound Name of the Drug">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="compoundNameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.compoundName" name="compoundName" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.compoundName}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="tradeNameInput">
+            Trade Name<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The Trade Name of the drug">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="tradeNameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.tradeName" name="tradeName" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.tradeName}}</p>
+        </td>
+      </tr>
+
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Drug Identification Number<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The DIN # (or equivalent) of the DRUG">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="drugTypeInput">
+            Drug Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The drug type of the item">?</button>
+          </label>
+          <select *ngIf="enableEdit" class="form-control" id="drugTypeInput" #drugType [value]="displayedItem.drugType"
+            (change)="displayedItem.drugType=drugType.value;">
+            <option *ngFor="let dt of drugTypes" [value]="dt" [selected]="displayedItem.drugType == dt">
+              {{dt}}
+            </option>
+          </select>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.drugType}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="manufacturerInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturer" name="manufacturer" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Manufacturer"
+            [selected]="displayedItem.manufacturer"
+            (sourceSelected)="selectManufacturer($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierInput">
+            Supplier
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="supplierInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplier" name="supplier" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Supplier"
+            [selected]="displayedItem.supplier"
+            (sourceSelected)="selectSupplier($event)" >
+          </app-item-source-search>
+          
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplier}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerLinkInput">
+            Manufacturer Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturerLink" name="manufacturerLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturerLink}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierLinkInput">
+            Drug Bank Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The drug bank link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierLink" name="supplierLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierLink}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="containerSizeInput">
+            Container
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The container size of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="containerSizeInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.containerSize" name="containerSize" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.containerSize}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitInputOption">
+            Unit<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit(s) of the item">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="unitInputOption" #itemUnit [value]="displayedItem.unit"
+            (change)="displayedItem.unit=itemUnit.value;">
+            <option *ngFor="let u of unit" [value]="u" [selected]="displayedItem.unit == u">
+              {{u}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unit}}</p>
+        </td>
+      </tr>
+
+
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+
+    </table>
+
+
+    <!-- FORM for display of consumables -->
+    <table class="table table-form" *ngIf="displayedItem.type == INVENTORY_ITEM_TYPES.CONSUMABLE">
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="nameInput">
+            Item Name<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The name of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="nameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.name" name="name" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.name}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Manufacturer Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierCatalogNumberInput">
+            Supplier Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierCatalogNumberInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierCatalogNumber" name="supplierCatalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierCatalogNumber}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="manufacturerInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturer" name="manufacturer" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Manufacturer"
+            [selected]="displayedItem.manufacturer"
+            (sourceSelected)="selectManufacturer($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierInput">
+            Supplier
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="supplierInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplier" name="supplier" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Supplier"
+            [selected]="displayedItem.supplier"
+            (sourceSelected)="selectSupplier($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplier}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerLinkInput">
+            Manufacturer Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturerLink" name="manufacturerLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturerLink}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierLinkInput">
+            Supplier Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierLink" name="supplierLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierLink}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="containerSizeInput">
+            Order Count<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The count of the items in the order">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="containerSizeInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.containerSize" name="containerSize" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.containerSize}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitInputOption">
+            Order Size<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The size of the ordered item (cases, packs etc)">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="unitInputOption" #itemUnit [value]="displayedItem.unit"
+            (change)="displayedItem.unit=itemUnit.value;">
+            <option *ngFor="let u of unit" [value]="u" [selected]="displayedItem.unit == u">
+              {{u}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unit}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="packDenominationInput">
+            Pack Denomination<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Refers to the sub units within the order (if applicable) - ie. case of gloves containing 10 packs of 100 gloves each">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="packDenominationInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.packDenomination" name="packDenomination" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.packDenomination}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="denominationUnitInput">
+            Denomination Unit<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Refers to the sub units within the order (if applicable) - ie. case of gloves containing 10 packs of 100 gloves each">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="denominationUnitInput" #denominationUnit
+            [value]="displayedItem.denominationUnit" (change)="displayedItem.denominationUnit=denominationUnit.value;">
+            <option *ngFor="let u of unit" [value]="u" [selected]="displayedItem.denominationUnit == u">
+              {{u}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.denominationUnit}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="checkoutDenominationInput">
+            Checkout Denomination<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="# of items checked out in a single checkout - i.e. if 10 gloves in a box, when gloves are checked out 10 is subtracted from order count">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="checkoutDenominationInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.checkoutDenomination" name="checkoutDenomination" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.checkoutDenomination}}</p>
+        </td>
+
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+
+    </table>
+
+    <!-- Item Display for Commercial Proteins of subtype Antibody Conjugated or Unconjugated-->
+    <table class="table table-form"
+      *ngIf="displayedItem.type == INVENTORY_ITEM_TYPES.COMMERCIAL_PROTEIN && ( displayedItem.subtype == COMMERCIAL_TYPES.UNCONJUGATED_ANTIBODY  || displayedItem.subtype == COMMERCIAL_TYPES.CONJUGATED_ANTIBODY)">
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="hostInput">
+            Host<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item host">?</button>
+          </label>
+          <input *ngIf="enableEdit" id="hostInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.host" name="host" />
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.host}}</p>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="nameInput">
+            Item Name<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item antigen">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="nameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.name" name="name" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.name}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Manufacturer Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierCatalogNumberInput">
+            Supplier Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierCatalogNumberInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierCatalogNumber" name="supplierCatalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierCatalogNumber}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="manufacturerInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturer" name="manufacturer" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Manufacturer"
+            [selected]="displayedItem.manufacturer"
+            (sourceSelected)="selectManufacturer($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierInput">
+            Supplier
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="supplierInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplier" name="supplier" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Supplier"
+            [selected]="displayedItem.supplier"
+            (sourceSelected)="selectSupplier($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplier}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerLinkInput">
+            Manufacturer Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturerLink" name="manufacturerLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturerLink}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierLinkInput">
+            Supplier Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierLink" name="supplierLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierLink}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="clonalityInput">
+            Clonality<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The clonality of the item">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="clonalityInput" #clonality
+            [value]="displayedItem.clonality" (change)="displayedItem.clonality=clonality.value;">
+            <option *ngFor="let c of clonalities" [value]="c" [selected]="displayedItem.clonality == c">
+              {{c}}
+            </option>
+          </select>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.clonality}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="itemSubTypeOption">
+            Item Sub Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item sub type">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="itemSubTypeOption" #itemSubType
+            [value]="displayedItem.subtype" (change)="displayedItem.subtype=itemSubType.value;">
+            <option *ngFor="let c of commercialSubTypes" [value]="c" [selected]="displayedItem.subtype == c">
+              {{c}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.subtype}}</p>
+        </td>
+      </tr>
+
+      <tr *ngIf="displayedItem.subtype == COMMERCIAL_TYPES.CONJUGATED_ANTIBODY">
+        <td colspan="4" style="padding:5px;">
+          <label for="itemConjugationTypeOption">
+            Conjugation Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item conjugation type">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="itemConjugationTypeOption" #itemConjugationType
+            [value]="displayedItem.conjugationType" (change)="displayedItem.conjugationType=itemConjugationType.value;">
+            <option *ngFor="let ct of conjugationTypes" [value]="ct" [selected]="displayedItem.conjugationType == ct">
+              {{ct}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.conjugationType}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+
+    </table>
+
+    <!-- Display form for Item Type Commercial Protein and sub type Protein Conjugate-->
+    <table class="table table-form"
+      *ngIf="displayedItem.type==INVENTORY_ITEM_TYPES.COMMERCIAL_PROTEIN && displayedItem.subtype==COMMERCIAL_TYPES.CONJUGATED_PROTEIN">
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="nameInput">
+            Item Name<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The name of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="nameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.name" name="name" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.name}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Manufacturer Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierCatalogNumberInput">
+            Supplier Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierCatalogNumberInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierCatalogNumber" name="supplierCatalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierCatalogNumber}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="manufacturerInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturer" name="manufacturer" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Manufacturer"
+            [selected]="displayedItem.manufacturer"
+            (sourceSelected)="selectManufacturer($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierInput">
+            Supplier
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="supplierInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplier" name="supplier" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Supplier"
+            [selected]="displayedItem.supplier"
+            (sourceSelected)="selectSupplier($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplier}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerLinkInput">
+            Manufacturer Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturerLink" name="manufacturerLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturerLink}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierLinkInput">
+            Supplier Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierLink" name="supplierLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierLink}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="containerSizeInput">
+            Vial Size
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The vial size of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="containerSizeInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.containerSize" name="containerSize" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.containerSize}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitInputOption">
+            Unit<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit(s) of the item">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="unitInputOption" #itemUnit [value]="displayedItem.unit"
+            (change)="displayedItem.unit=itemUnit.value;">
+            <option *ngFor="let u of unit" [value]="u" [selected]="displayedItem.unit == u">
+              {{u}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unit}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="itemConjugationTypeOption">
+            Conjugation Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item conjugation type">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="itemConjugationTypeOption" #itemConjugationType
+            [value]="displayedItem.conjugationType" (change)="displayedItem.conjugationType=itemConjugationType.value;">
+            <option *ngFor="let ct of conjugationTypes" [value]="ct" [selected]="displayedItem.conjugationType == ct">
+              {{ct}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.conjugationType}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="itemSubTypeOption">
+            Item Sub Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item sub type">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="itemSubTypeOption" #itemSubType
+            [value]="displayedItem.subtype" (change)="displayedItem.subtype=itemSubType.value;">
+            <option *ngFor="let c of commercialSubTypes" [value]="c" [selected]="displayedItem.subtype == c">
+              {{c}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.subtype}}</p>
+        </td>
+      </tr>
+
+
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+
+    </table>
+
+    <!-- Display form for Commercial Proteins and subtype of UNCONJUGATED_PROTEIN or ENZYME-->
+    <table class="table table-form"
+      *ngIf="displayedItem.type==INVENTORY_ITEM_TYPES.COMMERCIAL_PROTEIN && ( displayedItem.subtype==COMMERCIAL_TYPES.UNCONJUGATED_PROTEIN || displayedItem.subtype==COMMERCIAL_TYPES.ENZYME)">
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="nameInput">
+            Item Name<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The name of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="nameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.name" name="name" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.name}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Manufacturer Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierCatalogNumberInput">
+            Supplier Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierCatalogNumberInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierCatalogNumber" name="supplierCatalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierCatalogNumber}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="manufacturerInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturer" name="manufacturer" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Manufacturer"
+            [selected]="displayedItem.manufacturer"
+            (sourceSelected)="selectManufacturer($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierInput">
+            Supplier
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="supplierInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplier" name="supplier" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Supplier"
+            [selected]="displayedItem.supplier"
+            (sourceSelected)="selectSupplier($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplier}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerLinkInput">
+            Manufacturer Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturerLink" name="manufacturerLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturerLink}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierLinkInput">
+            Supplier Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierLink" name="supplierLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierLink}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="containerSizeInput">
+            Vial Size
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The vial size of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="containerSizeInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.containerSize" name="containerSize" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.containerSize}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitInputOption">
+            Unit<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit(s) of the item">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="unitInputOption" #itemUnit [value]="displayedItem.unit"
+            (change)="displayedItem.unit=itemUnit.value;">
+            <option *ngFor="let u of unit" [value]="u" [selected]="displayedItem.unit == u">
+              {{u}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unit}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="itemSubTypeOption">
+            Item Sub Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item sub type">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="itemSubTypeOption" #itemSubType
+            [value]="displayedItem.subtype" (change)="displayedItem.subtype=itemSubType.value;">
+            <option *ngFor="let c of commercialSubTypes" [value]="c" [selected]="displayedItem.subtype == c">
+              {{c}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.subtype}}</p>
+        </td>
+      </tr>
+
+
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+
+    </table>
+
+    <!-- Display form for In House Protein and subtype Antibody Conjugated -->
+    <table class="table table-form"
+      *ngIf="displayedItem.type == INVENTORY_ITEM_TYPES.IN_HOUSE_PROTEIN && displayedItem.subtype == IN_HOUSE_TYPES.CONJUGATED_ANTIBODY">
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="hostInput">
+            Host<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item host">?</button>
+          </label>
+          <input *ngIf="enableEdit" id="hostInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.host" name="host" />
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.host}}</p>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="nameInput">
+            Antigen<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item antigen">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="nameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.name" name="name" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.name}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Manufacturer Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="antigenTradeNameInput">
+            Antigen Trade Name
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The antigen trade name of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="antigenTradeNameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.tradeName" name="tradeName" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.tradeName}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="clonalityInput">
+            Clonality<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The clonality of the item">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="clonalityInput" #clonality
+            [value]="displayedItem.clonality" (change)="displayedItem.clonality=clonality.value;">
+            <option *ngFor="let c of clonalities" [value]="c" [selected]="displayedItem.clonality == c">
+              {{c}}
+            </option>
+          </select>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.clonality}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="itemConjugationTypeOption">
+            Conjugation Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item conjugation type">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="itemConjugationTypeOption" #itemConjugationType
+            [value]="displayedItem.conjugationType" (change)="displayedItem.conjugationType=itemConjugationType.value;">
+            <option *ngFor="let ct of conjugationTypes" [value]="ct" [selected]="displayedItem.conjugationType == ct">
+              {{ct}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.conjugationType}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="itemSubTypeOption">
+            Item Sub Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item sub type">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="itemSubTypeOption" #itemSubType
+            [value]="displayedItem.subtype" (change)="displayedItem.subtype=itemSubType.value;">
+            <option *ngFor="let c of commercialSubTypes" [value]="c" [selected]="displayedItem.subtype == c">
+              {{c}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.subtype}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="mcrInput">
+            MCR<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Molar Challenge Ratio is the moles of label per mole of protein in the initial reaction mixture">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="mcrInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.molarChallengeRatio" name="molarChallengeRatio" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.molarChallengeRatio}}</p>
+        </td>
+
+      </tr>
+
+
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+
+    </table>
+
+    <!-- Display form for In House Protein and subtype Antibody Unconjugated -->
+    <table class="table table-form"
+      *ngIf="displayedItem.type == INVENTORY_ITEM_TYPES.IN_HOUSE_PROTEIN && displayedItem.subtype == IN_HOUSE_TYPES.UNCONJUGATED_ANTIBODY">
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="hostInput">
+            Host<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item host">?</button>
+          </label>
+          <input *ngIf="enableEdit" id="hostInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.host" name="host" />
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.host}}</p>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="nameInput">
+            Antigen<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item antigen">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="nameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.name" name="name" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.name}}</p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Manufacturer Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="antigenTradeNameInput">
+            Antigen Trade Name
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The antigen trade name of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="antigenTradeNameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.tradeName" name="tradeName" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.tradeName}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="clonalityInput">
+            Clonality<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The clonality of the item">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="clonalityInput" #clonality
+            [value]="displayedItem.clonality" (change)="displayedItem.clonality=clonality.value;">
+            <option *ngFor="let c of clonalities" [value]="c" [selected]="displayedItem.clonality == c">
+              {{c}}
+            </option>
+          </select>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.clonality}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="itemSubTypeOption">
+            Item Sub Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item sub type">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="itemSubTypeOption" #itemSubType
+            [value]="displayedItem.subtype" (change)="displayedItem.subtype=itemSubType.value;">
+            <option *ngFor="let c of commercialSubTypes" [value]="c" [selected]="displayedItem.subtype == c">
+              {{c}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.subtype}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+
+    </table>
+
+    <!-- Display form for In House Protein and subtype Protein Conjugated -->
+    <table class="table table-form"
+      *ngIf="displayedItem.type == INVENTORY_ITEM_TYPES.IN_HOUSE_PROTEIN && displayedItem.subtype == IN_HOUSE_TYPES.CONJUGATED_PROTEIN">
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="nameInput">
+            Item Name<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The name of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="nameInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.name" name="name" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.name}}</p>
+        </td>
+      </tr>
+      <tr>
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="activeCheckBox">
+            Active
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Whether item is active or not">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="enableEdit">
+            <input type="checkbox" [(ngModel)]="displayedItem.active" [ngModelOptions]="{standalone: true}"
+              id="activeCheckBox">
+          </p>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.active}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label>Item Category
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The category of the item">?</button>
+          </label>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.category}}</p>
+          <select *ngIf="enableEdit" class="form-control" id="itemcategoryoption" #itemcategory
+            [value]="displayedItem.category" (change)="displayedItem.category=itemcategory.value;">
+            <option *ngFor="let c of itemCategory" [value]="c" [selected]="displayedItem.category == c">
+              {{c}}
+            </option>
+          </select>
+        </td>
+
+        <td colspan="2" style="padding:5px;">
+          <label for="typeInput">
+            Type
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The type of the item - note that type is fixed after item is created">?</button>
+          </label>
+          <p class="read-only-input">{{displayedItem.type}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerCatalogNumberInput">
+            Manufacturer Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerCatalogNumberInput" class="form-control" type="text"
+            autocomplete="off" [(ngModel)]="displayedItem.catalogNumber" name="catalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.catalogNumber}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierCatalogNumberInput">
+            Supplier Catalog Number
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier catalog # of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierCatalogNumberInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierCatalogNumber" name="supplierCatalogNumber" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierCatalogNumber}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerInput">
+            Manufacturer
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="manufacturerInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturer" name="manufacturer" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Manufacturer"
+            [selected]="displayedItem.manufacturer"
+            (sourceSelected)="selectManufacturer($event)" >
+          </app-item-source-search>
+          
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturer}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierInput">
+            Supplier
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier of the item">?</button>
+          </label>
+
+          <!-- <input *ngIf="enableEdit" id="supplierInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplier" name="supplier" /> -->
+          <app-item-source-search
+            *ngIf="enableEdit"
+            type="Supplier"
+            [selected]="displayedItem.supplier"
+            (sourceSelected)="selectSupplier($event)" >
+          </app-item-source-search>
+
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplier}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="manufacturerLinkInput">
+            Manufacturer Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The manufacturer website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="manufacturerLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.manufacturerLink" name="manufacturerLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.manufacturerLink}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="supplierLinkInput">
+            Supplier Link
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The supplier website link to the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="supplierLinkInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.supplierLink" name="supplierLink" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.supplierLink}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="quantityThresholdInput">
+            Quantity Threshold
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Quantity Threshold is the minimum stock allowed to be one hand before stock needs to be re-ordered">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="quantityThresholdInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.quantityThreshold" name="quantityThreshold" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.quantityThreshold}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitPriceInput">
+            Unit Price (USD)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit price of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="unitPriceInput" class="form-control" type="number" autocomplete="off"
+            [(ngModel)]="displayedItem.unitPrice" name="unitPrice" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unitPrice | currency : 'USD' : ''}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="containerSizeInput">
+            Vial Size
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The vial size of the item">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="containerSizeInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.containerSize" name="containerSize" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.containerSize}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="unitInputOption">
+            Unit<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The unit(s) of the item">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="unitInputOption" #itemUnit [value]="displayedItem.unit"
+            (change)="displayedItem.unit=itemUnit.value;">
+            <option *ngFor="let u of unit" [value]="u" [selected]="displayedItem.unit == u">
+              {{u}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.unit}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2" style="padding:5px;">
+          <label for="itemConjugationTypeOption">
+            Conjugation Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item conjugation type">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="itemConjugationTypeOption" #itemConjugationType
+            [value]="displayedItem.conjugationType" (change)="displayedItem.conjugationType=itemConjugationType.value;">
+            <option *ngFor="let ct of conjugationTypes" [value]="ct" [selected]="displayedItem.conjugationType == ct">
+              {{ct}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.conjugationType}}</p>
+        </td>
+        <td colspan="2" style="padding:5px;">
+          <label for="itemSubTypeOption">
+            Item Sub Type<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="The item sub type">?</button>
+          </label>
+
+          <select *ngIf="enableEdit" class="form-control" id="itemSubTypeOption" #itemSubType
+            [value]="displayedItem.subtype" (change)="displayedItem.subtype=itemSubType.value;">
+            <option *ngFor="let c of commercialSubTypes" [value]="c" [selected]="displayedItem.subtype == c">
+              {{c}}
+            </option>
+          </select>
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.subtype}}</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="mcrInput">
+            MCR<span class="star">*</span>
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Molar Challenge Ratio is the moles of label per mole of protein in the initial reaction mixture">?</button>
+          </label>
+
+          <input *ngIf="enableEdit" id="mcrInput" class="form-control" type="text" autocomplete="off"
+            [(ngModel)]="displayedItem.molarChallengeRatio" name="molarChallengeRatio" />
+          <p class="read-only-input" *ngIf="!enableEdit">{{displayedItem.molarChallengeRatio}}</p>
+        </td>
+
+      </tr>
+
+      <tr>
+        <td colspan="4" style="padding:5px;">
+          <label for="commentInput">
+            Comment(s)
+            <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+              ngbTooltip="Comments related to the item">?</button>
+          </label>
+          <textarea *ngIf="enableEdit" id="commentInput" class="form-control" [(ngModel)]="displayedItem.comment"
+            name="comments"></textarea>
+          <div *ngIf="!enableEdit" class="read-only-textarea">{{displayedItem.comment}}</div>
+
+        </td>
+      </tr>
+
+    </table>
+
+
+  </form>
+
+  <ngb-alert *ngIf="inputWarning.length > 0" (close)="inputWarning=[]">
+    <ng-container *ngFor="let warning of inputWarning; let i = index">
+      <p>
+        <strong>{{warning}}</strong>
+      </p>
+    </ng-container>
+  </ngb-alert>
+
+  <app-attachment [padding]="'5px'"></app-attachment>
+
+  <div class="submit-buttons">
+    <button *ngIf="enableEdit" (click)="checkInput();" id="saveitem">Save</button>
+    <button type="button" (click)="cancelItem()" id="cancelitem">Cancel</button>
+  </div>
+</div>

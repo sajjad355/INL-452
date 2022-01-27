@@ -1,0 +1,16 @@
+
+
+<div class="rename-dialog-container">
+  <div class="rename-dialog-header-container">
+    <span>Rename</span>
+  </div>
+
+  <div class="rename-dialog-input-container">
+    <input type="text" placeholder="New Name" [(ngModel)]="folderName" (keyup.enter)="fms_rename_btn_ok.click()">
+  </div>
+
+  <div class="rename-dialog-btn-container">
+    <button mat-dialog-close class="rename-dialog-btn-cancel">CANCEL</button>
+    <button #fms_rename_btn_ok [mat-dialog-close]="folderName" class="rename-dialog-btn-ok">OK</button>
+  </div>
+</div>

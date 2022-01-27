@@ -1,0 +1,194 @@
+<div class="invent">
+  <h4>Inventory</h4>
+  <!-- <br> -->
+  <div  *ngIf="!isLoading" class="invent-body col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+    <!-------------------------------------->
+    <!--------Sub-view: Expire Soon--------->
+    <!-------------------------------------->
+    <!-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 invent-container">
+      <h6>{{expiredMaterialTitle}}
+        <span ngbDropdown #expiredMDropdown="ngbDropdown" autoClose="outside" style="display: inline-block;">
+          <button ngbDropdownToggle>Edit View</button>
+          <span ngbDropdownMenu>
+            <button (click)="showMaterialsExpiring(0);expiredMDropdown.close();" class="dropdown-item">Expired Now</button>
+            <button (click)="showMaterialsExpiring(14);expiredMDropdown.close();" class="dropdown-item">2 Weeks</button>
+            <button (click)="showMaterialsExpiring(60);expiredMDropdown.close();" class="dropdown-item">2 Months</button>
+            <span class="divider dropdown-divider"></span>
+            <span style="white-space: nowrap; cursor: default" class="dropdown-item">
+              <label for="inventoryDaysInput">
+                Custom:
+              </label>
+              <input id="inventoryDaysInput"
+                      type="text"
+                      (keydown.enter)="expiredMDropdown.close(); input_showMaterialsExpiring($event)"
+                      onfocus="this.value=''"
+                      style="width: 50px"> days
+            </span>
+          </span>
+          <small *ngIf="!expiredMaterialCollapsed" class="collapseBtn">
+            <a (click)="expiredMaterialCollapsed = true;">collapse &raquo;</a>
+          </small>
+        </span>
+      </h6>
+      <div class="invent-content">
+        <table *ngIf="expiredMaterialCollapsed" class="collapsedSummary table table-hover">
+          <tr (click)="expiredMaterialCollapsed = false;">
+            <ng-container *ngIf="_array.isArray(expiredMaterialModelCurr) && expiredMaterialModelCurr.length > 0; then expiryThen else expiryEmpty"></ng-container>
+            <ng-template #expiryThen><ng-container *ngIf="expiredMaterialModelCurr[expiredMaterialModelCurr.length-1].expiredate<=timeNow; then expiryExpired else expiryExpiring"></ng-container></ng-template>
+            <ng-template #expiryEmpty><th>Empty</th></ng-template>
+            <ng-template #expiryExpired><th class="danger">{{expiredMaterialModelCurr.length}} Items Expired</th></ng-template>
+            <ng-template #expiryExpiring><th class="danger">{{expiredMaterialModelCurr.length}} Items Expiring</th></ng-template>
+          </tr>
+        </table>
+        <table *ngIf="!expiredMaterialCollapsed" class="table table-hover">
+          <tr>
+            <th>Supplier</th>
+            <th>Name</th>
+            <th>Quantity (In Use)</th>
+            <th>Expiry Date</th>
+          </tr>
+          <tr *ngIf="expiredMaterialModelCurr == undefined || expiredMaterialModelCurr.length < 1">
+            <td class="empty" colspan="4">Empty</td>
+          </tr>
+          <ng-container *ngFor="let item of expiredMaterialModelCurr; let i=index">
+            <tr [@routeAnimation]="(i==animateRow && animateTable==TABLE.inv_expired)" (@routeAnimation.done)="onAnimationDone($event)" (mousedown)="onClickTableData(TABLE.inv_expired,i)" (mouseleave)="cancelRoute()">
+              <td>{{item.supplier}}</td>
+              <td>{{item.itemname}}</td>
+              <td>{{item.amount}}{{item.inuse>0?'('+item.inuse+')':''}}</td>
+              <td>{{item.expiredate | date: dateFormatDisplay}}</td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+    </div> -->
+
+    <!--------------------------------------->
+    <!--------Sub-view: Stock Status--------->
+    <!--------------------------------------->
+
+    <!-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  invent-container">
+      <h6>{{stockStatusTitle}}
+        <span ngbDropdown #StockSDropdown="ngbDropdown" autoClose="outside" style="display: inline-block;">
+          <button ngbDropdownToggle>Edit View</button>
+          <span ngbDropdownMenu>
+            <button (click)="showStockStatus(true,100);StockSDropdown.close();" class="dropdown-item">Low In Stock</button>
+            <button (click)="showStockStatus(true,0);StockSDropdown.close();" class="dropdown-item">Out Of Stock</button>
+            <button (click)="showStockStatus(false);StockSDropdown.close();" class="dropdown-item">Missing Threshold</button>
+            <span class="divider dropdown-divider"></span>
+            <span style="white-space:nowrap; cursor: default" class="dropdown-item">
+              <label for="thresholdInput">
+                Custom:
+              </label>
+              <input type="text"
+                      id="thresholdInput"
+                      (keydown.enter)="StockSDropdown.close(); input_showStockStatus($event);"
+                      onfocus="this.value=''"
+                      style="width: 50px"/>% threshold
+            </span>
+          </span>
+        </span>
+        <small *ngIf="!stockStatusCollapsed" class="collapseBtn">
+          <a (click)="stockStatusCollapsed = true;">collapse &raquo;</a>
+        </small>
+      </h6>
+      <div class="invent-content">
+        <table *ngIf="stockStatusCollapsed" class="collapsedSummary table table-hover">
+          <tr (click)="stockStatusCollapsed = false;">
+            <ng-container *ngIf="_array.isArray(stockStatusModelCurr) && stockStatusModelCurr.length > 0; then stockStatusThen else stockStatusEmpty"></ng-container>
+            <ng-template #stockStatusThen><ng-container *ngIf="stockStatusModelCurr===stockNoThresholdModel; then stockStatusMissingThreshold else stockStatusUnderStock"></ng-container></ng-template>
+            <ng-template #stockStatusEmpty><th>Empty</th></ng-template>
+            <ng-template #stockStatusUnderStock><th class="danger">{{stockStatusModelCurr.length}} Items Under Stocked</th></ng-template>
+            <ng-template #stockStatusMissingThreshold><th class="danger">{{stockStatusModelCurr.length}} Items Missing Threshold</th></ng-template>
+          </tr>
+        </table>
+        <table *ngIf="!stockStatusCollapsed" class="table table-hover">
+          <tr>
+            <th>Catalog#</th>
+            <th>Supplier</th>
+            <th>Name</th>
+            <th>Quantity (In Use)</th>
+            <th *ngIf="stockStatusModelCurr!==stockNoThresholdModel">Threshold</th>
+          </tr>
+          <tr *ngIf="stockStatusModelCurr == undefined || stockStatusModelCurr.length < 1">
+            <td class="empty" colspan="5">Empty</td>
+          </tr>
+          <ng-container *ngFor="let SKU of stockStatusModelCurr; let i=index">
+            <tr [@routeAnimation]="(i==animateRow && animateTable==TABLE.inv_stock)" (@routeAnimation.done)="onAnimationDone($event)" (mousedown)="onClickTableData(TABLE.inv_stock,i)" (mouseleave)="cancelRoute()">
+              <td>{{SKU.cat}}</td>
+              <td>{{SKU.supplier}}</td>
+              <td>{{SKU.name}}</td>
+              <td>{{SKU.amount}}{{SKU.inuse>0?'('+SKU.inuse+')':''}}</td>
+              <td *ngIf="stockStatusModelCurr!==stockNoThresholdModel">{{SKU.quantitythreshold}}</td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+    </div> -->
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 invent-container">
+      <div class="inner-card-title">
+        <span>Low in Stock</span>
+      </div>
+      <div #invenPanel class="invent-content">
+
+        <!--------Table View--------->
+        <div class="table-list-container">
+          <div class="table-list-shadow-container">
+            <table class="table table-hover rd-table table-view">
+              <tr>
+                <th>Catalog #</th>
+                <th>Supplier</th>
+                <th>Name</th>
+                <th>Quantity (In Use)</th>
+              </tr>
+              <tr *ngIf="lowInStock.length < 1">
+                <td style="pointer-events: none;" class="empty" colspan="4">Empty</td>
+              </tr>
+              <ng-container *ngFor="let sku of lowInStock; let i=index">
+                <tr [routerLink]="['inventories', sku.inventoryId]" class="dashboard-list-hover-effect">
+                  <td>{{sku.catalogNumber}}</td>
+                  <td>{{sku.supplier}}</td>
+                  <td>{{sku.name}}</td>
+                  <td>{{sku.numberInUse}}</td>
+                </tr>
+              </ng-container>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center collapse-container"
+      [ngClass]="_array.isArray(lowInStock) && lowInStock.length === 0 ? 'btn-disable' : 'btn-enable'"
+      (click)="_array.isArray(lowInStock) && lowInStock.length === 0 ? '' : togglePanel(invenPanel)">
+        <span *ngIf="!stockStatusCollapsed">
+          <span class="fa fa-chevron-up"></span>
+          <span>Hide low stock items</span>
+        </span>
+
+        <span *ngIf="_array.isArray(lowInStock) && lowInStock.length > 0 && stockStatusCollapsed">
+          <span class="fa fa-chevron-down"></span>
+          <span>View {{ lowInStock.length }} low stock item{{ lowInStock.length > 1 ? 's' : '' }}</span>
+        </span>
+
+        <span *ngIf="_array.isArray(lowInStock) && lowInStock.length === 0 && stockStatusCollapsed">
+          Empty
+        </span>
+      </div>
+
+    </div>
+  </div>
+  <div *ngIf="isLoading" class="dashboard-loader">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+</div>
+
+

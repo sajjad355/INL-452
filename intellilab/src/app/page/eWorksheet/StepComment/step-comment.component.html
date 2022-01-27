@@ -1,0 +1,63 @@
+
+<br *ngIf="(!isSaved || isEmpty) && hasTopBreak">
+<br *ngIf="(!isSaved || isEmpty) && hasTopBreak">
+<hr *ngIf="(!isSaved || isEmpty) && hasTopBreak">
+<strong *ngIf="!isSaved || isEmpty">{{commentTile}}</strong>
+<button *ngIf="!isSaved || isEmpty" mat-raised-button color="primary" (click) = "onSave()" class="width-150 primary-btn-animation save-btn">Save</button>
+
+<div *ngIf="!isSaved || isEmpty" class="padding-left-35p">
+    <mat-form-field appearance="outline" class="display-block width-380">
+      <mat-label>{{commentTile}}</mat-label>
+      <textarea matInput placeholder="Leave a comment here..." [rows]="rowSize" [cols]="columnSize" [(ngModel)] = "commentData"></textarea>
+    </mat-form-field>
+</div>
+<!-- <div *ngIf="!isSaved || isEmpty" class="comment-container height-200">
+
+  <div class="height-100p comment-btn-container width-10p">
+    <div>
+      <button *ngIf="!isSaved || isEmpty" mat-raised-button color="warn" (click) = "cancelComment()" class="width-150 warn-btn-animation">Cancel</button>
+    </div>
+
+    <div>
+      <button *ngIf="!isSaved || isEmpty" mat-raised-button color="primary" (click) = "onSave()" class="width-150 primary-btn-animation">Save</button>
+    </div>
+  </div>
+  <button *ngIf="!isSaved || isEmpty" mat-raised-button color="primary" (click) = "onSave()" class="width-150 primary-btn-animation">Save</button>
+
+  <div *ngIf="!isSaved || isEmpty" class="padding-left-35p">
+    <mat-form-field appearance="outline" class="display-block width-500">
+      <mat-label>{{commentTile}}</mat-label>
+      <textarea matInput placeholder="Leave a comment here..." [rows]="rowSize" [cols]="columnSize" [(ngModel)] = "commentData"></textarea>
+    </mat-form-field>
+  </div>
+
+</div> -->
+
+
+<br *ngIf="(isSaved && !isEmpty) && hasTopBreak">
+<br *ngIf="(isSaved && !isEmpty) && hasTopBreak">
+<hr *ngIf="(isSaved && !isEmpty) && hasTopBreak">
+
+
+  <strong *ngIf="isSaved && !isEmpty">{{commentTile}}</strong>
+  <button *ngIf="isSaved && !isEmpty" mat-raised-button color="primary"
+  (click) = "isSaved = !isSaved" class="width-150 primary-btn-animation update-btn">Update</button>
+
+
+<div *ngIf="isSaved && !isEmpty" class="margin-left-35p">
+
+  <!-- <mat-form-field appearance="outline" class="display-block width-500 margin-left-35p">
+    <mat-label>{{commentTile}}</mat-label>
+    <textarea matInput [rows]="rowSize" [cols]="columnSize" [value]="commentData" readonly></textarea>
+  </mat-form-field> -->
+
+  <app-text-field [mode]="'textarea'" [text]="commentData" [tag]="'Comment'"></app-text-field>
+
+
+</div>
+
+
+
+
+
+

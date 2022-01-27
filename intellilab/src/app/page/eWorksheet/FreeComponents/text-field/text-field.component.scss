@@ -1,0 +1,140 @@
+//** variables
+$background: #f5f6fa;
+$text: #9c9c9c;
+$input-bg-color: #fff;
+$input-text-color: #a3a3a3;
+$button-bg-color: #7f8ff4;
+$button-text-color: #fff;
+
+//** root
+:root {
+	background: $background;
+	color: $text;
+	font: 1rem "PT Sans", sans-serif;
+}
+
+
+//** helper
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+// .uppercase {
+// 	text-transform: uppercase;
+// }
+
+
+.msg {
+	display: inline-block;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	border: 0;
+	outline: 0;
+	padding: 0;
+	transition: all 200ms ease-in;
+  cursor: default;
+  // border: 2px purple solid;
+  height: 50px;
+	// cursor: help;
+
+	&--primary {
+    min-width: 120px;
+    text-align: center;
+		background: $button-bg-color;
+		color: $button-text-color;
+		box-shadow: 0 0 10px 2px rgba(0, 0, 0, .1);
+		border-radius: 2px;
+    padding: 13px 36px;
+    position: relative;
+    top: 10px;
+    left: -96px;
+
+		&:hover {
+			background: darken($button-bg-color, 4%);
+		}
+
+	}
+
+}
+
+//** form
+.text {
+  margin-bottom: 20px;
+  height: 70px;
+  display: flex;
+  // border: 2px red solid;
+
+	&__field {
+    height: 100%;
+    width: fit-content;
+		min-width: 260px;
+		background: #fff;
+		color: $input-text-color;
+		font: inherit;
+		box-shadow: 0 6px 10px 0 rgba(0, 0, 0 , .1);
+		border: 0;
+    outline: 0;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    // border: green 2px solid;
+	}
+}
+
+.text__field:hover { cursor: default;}
+
+.part1 {
+  // border: orange 2px solid;
+  white-space:nowrap;
+  padding-left: 15px;
+  padding-right: 111px;
+
+}
+
+.area-box{
+  border-radius: 2px;
+  background: #fff;
+	color: $input-text-color;
+  outline: none;
+  border: none;
+  padding: 15px;
+  padding-right: 111px;
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0 , .1);
+
+}
+
+.area-tag {
+  display: inline-block;
+background: transparent;
+color: inherit;
+font: inherit;
+border: 0;
+outline: 0;
+padding: 0;
+transition: all 200ms ease-in;
+cursor: default;
+// border: 2px purple solid;
+height: 50px;
+// cursor: help;
+
+&-primary {
+  min-width: 120px;
+  text-align: center;
+  background: $button-bg-color;
+  color: $button-text-color;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, .1);
+  border-radius: 2px;
+  padding: 13px 36px;
+  position: relative;
+  top: -80px;
+  left: -96px;
+  &:hover {
+    background: darken($button-bg-color, 4%);
+  }
+
+}
+}

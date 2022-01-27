@@ -1,0 +1,23 @@
+<div class="header-container" style="text-align:right;">
+  <div class="header-title">
+    <h1 *ngIf="isNew">
+      New {{ type }}
+    </h1>
+    <h1 *ngIf="!isNew">
+      {{ name }}
+    </h1>
+  </div>
+
+  <!-- edit button -->
+  <button *ngIf="!isNew" (click)="enableEdit()"><i class="fas fa-pen"></i></button>
+
+  <!-- close button -->
+  <button (click)="close()"><i class="fas fa-times"></i></button>
+</div>
+
+<small
+  *ngIf="!_.isEmpty(subHeader)"
+  class="sub-head"
+>
+  {{ subheader }}
+</small>

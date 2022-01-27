@@ -1,0 +1,345 @@
+<div class="tab-container">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="row">
+
+      <div class="col-md-6">
+
+        <!--------Inventory Table--------->
+        <ng-container *ngIf="showInventory === true">
+          <div class="col-lg-12 dash-card">
+            <dashboard-inventory [timeNow]="timeNow"></dashboard-inventory>
+          </div>
+        </ng-container>
+
+        <!-------------------------------->
+        <!---------Quotes Expiry---------->
+        <!-------------------------------->
+        <ng-container *ngIf="showQuotes === true">
+          <div class="col-lg-12 dash-card mb-3">
+            <div class="invent">
+              <h4 class="d-block">Quotes</h4>
+              <!-- <br/> -->
+              <div  *ngIf="!isQuoteLoading" class="invent-body col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+                <div class="quote-date-select-container">
+                  <div class="date-select-content-container">
+                    <div  class="ratio-btn-container">
+                      <mat-radio-group>
+                        <mat-radio-button #radioBtn1 value="1"
+                        (click)="
+                        expSinceAndIn=14;
+                        quoteSearch(expSinceAndIn);
+                        getQuotePanelRef(expiringQuotePanel, expiredQuotePanel)" [checked]="expSinceAndIn === 14">
+                        2 weeks
+                      </mat-radio-button>
+
+                        <mat-radio-button #radioBtn2 class="margin-left-15" value="2"
+                        (click)="
+                        expSinceAndIn=28;
+                        quoteSearch(expSinceAndIn);
+                        getQuotePanelRef(expiringQuotePanel, expiredQuotePanel)"  [checked]="expSinceAndIn === 28">
+                        4 weeks
+                      </mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+
+                    <input type="number" placeholder="Search By Day(s)" [(ngModel)]="expSinceAndIn" (click)="radioBtn1.checked = false; radioBtn2.checked = false"  (keyup.enter)="quoteSearch(expSinceAndIn); getQuotePanelRef(expiringQuotePanel, expiredQuotePanel)">
+                    <span class="material-icons quote-search-btn" (click)="quoteSearch(expSinceAndIn); getQuotePanelRef(expiringQuotePanel, expiredQuotePanel)">
+                      search
+                    </span>
+                  </div>
+                </div>
+                <!-------------------------------------->
+                <!--------Sub-view: Expire Soon--------->
+                <!-------------------------------------->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 invent-container">
+
+                  <div class="inner-card-title">
+                    <span>Expiring in &nbsp;{{ expSinceAndIn }} day{{ expSinceAndIn > 1 ? 's' : '' }}</span>
+                  </div>
+
+                  <div #expiringQuotePanel class="invent-content">
+                    <div class="table-list-container">
+                      <div class="table-list-shadow-container">
+                        <!--------Table View--------->
+                        <table class="table table-hover rd-table table-view">
+                          <tr>
+                            <th>Quote Number</th>
+                            <th>Client ID</th>
+                            <th>Sales Rep ID</th>
+                            <th>Expiry Date</th>
+                          </tr>
+                          <tr *ngIf="expiringQuotes.length < 1">
+                            <td style="pointer-events: none;" class="empty" colspan="4">Empty</td>
+                          </tr>
+                          <ng-container *ngFor="let quote of expiringQuotes; let i=index">
+                            <tr [routerLink]="['sales', quote.quoteId]" class="dashboard-list-hover-effect">
+                              <td>{{ quote.quoteNumber && quote.quoteNumber }}</td>
+                              <td>{{ quote.clientCompany.clientCompanyId && quote.clientCompany.clientCompanyId }}</td>
+                              <!-- <td>{{ quote.clientContact.clientContactId ? quote.clientContact.clientContactId : '' }}</td> -->
+                              <td>-</td>
+                              <td>{{ quote.expirationDate | date: 'dd MMM yyyy' }}</td>
+                            </tr>
+                          </ng-container>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-center collapse-container"
+                  [ngClass]="_array.isArray(expiringQuotes) && expiringQuotes.length === 0 ? 'btn-disable' : 'btn-enable'"
+                  (click)="_array.isArray(expiringQuotes) && expiringQuotes.length === 0 ? '' : togglePanel(expiringQuotePanel, 'expiring')">
+                    <span *ngIf="!quotesRCollapsed">
+                      <span class="fa fa-chevron-up"></span>
+                      <span>Hide quotes expiring soon</span>
+                    </span>
+                    <span class="danger" *ngIf="_array.isArray(expiringQuotes) && expiringQuotes.length > 0 && quotesRCollapsed">
+                      <span class="fa fa-chevron-down"></span>
+                      <span>View {{expiringQuotes.length}} quote{{expiringQuotes.length > 1 ? 's' : ''}} expiring soon</span>
+                    </span>
+                    <span *ngIf="_array.isArray(expiringQuotes) && expiringQuotes.length === 0 && quotesRCollapsed">
+                      Empty
+                    </span>
+                  </div>
+
+                </div>
+
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 invent-container">
+
+                  <div class="inner-card-title bg-danger">
+                    <span>Expired in last {{ expSinceAndIn }} day{{ expSinceAndIn > 1 ? 's' : '' }}</span>
+                  </div>
+
+                  <div #expiredQuotePanel class="invent-content">
+                    <div class="table-list-container">
+                      <div class="table-list-shadow-container">
+                        <!--------Table View--------->
+                        <table class="table table-hover rd-table table-view">
+                          <tr>
+                            <th>Quote Number</th>
+                            <th>Client ID</th>
+                            <th>Sales Rep ID</th>
+                            <th>Expiry Date</th>
+                          </tr>
+                          <tr *ngIf="expiredQuotes.length < 1">
+                            <td style="pointer-events: none;" class="empty" colspan="4">Empty</td>
+                          </tr>
+                          <ng-container *ngFor="let quote of expiredQuotes; let i=index">
+                            <tr [routerLink]="['sales', quote.quoteId]" class="dashboard-list-hover-effect">
+                              <td>{{ quote.quoteNumber && quote.quoteNumber }}</td>
+                              <td>{{ quote.clientCompany.clientCompanyId && quote.clientCompany.clientCompanyId }}</td>
+                              <!-- <td>{{ quote.clientContact.clientContactId ? quote.clientContact.clientContactId : '' }}</td> -->
+                              <td>-</td>
+                              <td>{{ quote.expirationDate | date: 'dd MMM yyyy' }}</td>
+                            </tr>
+                          </ng-container>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-center collapse-container"
+                  [ngClass]="_array.isArray(expiredQuotes) && expiredQuotes.length === 0 ? 'btn-disable' : 'btn-enable'"
+                  (click)="_array.isArray(expiredQuotes) && expiredQuotes.length === 0 ? '' : togglePanel(expiredQuotePanel, 'expired')">
+
+                    <span *ngIf="!quotesECollapsed">
+                      <span class="fa fa-chevron-up"></span>
+                      <span>Hide expired quotes</span>
+                    </span>
+                    <span *ngIf="_array.isArray(expiredQuotes) && expiredQuotes.length > 0 && quotesECollapsed"  class="danger">
+                      <span class="fa fa-chevron-down"></span>
+                      <span>View {{expiredQuotes.length}} expired quote{{expiredQuotes.length > 1 ? 's' : ''}}</span>
+                    </span>
+                    <span *ngIf="_array.isArray(expiredQuotes) && expiredQuotes.length === 0 && quotesECollapsed">
+                      Empty
+                    </span>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div *ngIf="isQuoteLoading" class="dashboard-loader">
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+              </div>
+
+            </div>
+          </div>
+        </ng-container>
+
+
+      </div>
+
+
+      <div class="col-md-6">
+        <!-------------------------------->
+        <!---------SOP / Recipe ---------->
+        <!-------------------------------->
+        <ng-container *ngIf="showSOP.show === true">
+          <div class="col-lg-12 dash-card">
+            <div class="invent">
+              <h4>SOP</h4>
+              <!-- <br> -->
+              <div *ngIf="!isSopLoading" class="invent-body col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 invent-container">
+
+                  <div class="inner-card-title">
+                    <span>SOPS to Approve</span>
+                  </div>
+
+                  <div #sopPanel class="invent-content">
+                    <div class="table-list-container">
+                      <div class="table-list-shadow-container">
+                        <!--------Table View--------->
+                        <table class="table table-hover rd-table table-view">
+                          <tr>
+                            <th width="150">SOP ID</th>
+                            <th>Name</th>
+                          </tr>
+                          <tr *ngIf="sopsToApprove.length < 1">
+                            <td style="pointer-events: none;" class="empty" colspan="4">Empty</td>
+                          </tr>
+                          <ng-container *ngFor="let sop of sopsToApprove; let i=index">
+                            <tr [routerLink]="['sop', sop.sopId]" class="dashboard-list-hover-effect">
+                              <td>{{sop.sopIdentifier}}</td>
+                              <td>{{sop.name}}</td>
+                            </tr>
+                          </ng-container>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="text-center collapse-container"
+                  [ngClass]="_array.isArray(sopsToApprove) && sopsToApprove.length === 0 ? 'btn-disable' : 'btn-enable'"
+                  (click)="_array.isArray(sopsToApprove) && sopsToApprove.length === 0 ? '' : togglePanel(sopPanel, 'sop')">
+                    <span *ngIf="!sopsACollapsed">
+                      <span class="fa fa-chevron-up"></span>
+                      <span>Hide SOPs to be approved</span>
+                    </span>
+
+                    <span *ngIf="_array.isArray(sopsToApprove) && sopsToApprove.length > 0 && sopsACollapsed">
+                      <span class="fa fa-chevron-down"></span>
+                      <span>View {{ sopsToApprove.length }} SOP{{sopsToApprove.length > 1 ? 's' : ''}} to be approved</span>
+                    </span>
+
+                    <span *ngIf="_array.isArray(sopsToApprove) && sopsToApprove.length === 0 && sopsACollapsed">
+                      Empty
+                    </span>
+                  </div>
+
+                </div>
+              </div>
+
+              <div *ngIf="isSopLoading" class="dashboard-loader">
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+              </div>
+
+            </div>
+          </div>
+        </ng-container>
+
+        <!-------------------------------->
+        <!---------Kit Assembly ---------->
+        <!-------------------------------->
+        <ng-container *ngIf="showKIT.show === true">
+          <div class="col-lg-12 dash-card mb-3">
+            <div class="invent">
+              <h4>Kit Assembly</h4>
+              <!-- <br> -->
+              <div *ngIf="!isKitLoading" class="invent-body col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 invent-container">
+
+                  <div class="inner-card-title">
+                    <span>Kits to Review</span>
+                  </div>
+
+                  <div #kitPanel class="invent-content">
+                    <div class="table-list-container">
+                      <div class="table-list-shadow-container">
+                        <!--------Table View--------->
+                        <table class="table table-hover rd-table table-view">
+                          <tr>
+                            <th width="120">Client</th>
+                            <th>Kit Name</th>
+                            <th width="120">Pack Size (Wells)</th>
+                            <th width="120">Kit Price (USD)</th>
+                          </tr>
+                          <tr *ngIf="kitsToReview.length < 1">
+                            <td style="pointer-events: none;" class="empty" colspan="4">Empty</td>
+                          </tr>
+                          <ng-container *ngFor="let kit of kitsToReview; let i=index">
+                            <tr [routerLink]="['kits', kit.salesItemId]" class="dashboard-list-hover-effect">
+                              <td>{{ kit.client }}</td>
+                              <td>{{ kit.name }}</td>
+                              <td>{{ kit.kitSize }}</td>
+                              <td>{{ kit.unitPrice }}</td>
+                            </tr>
+                          </ng-container>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="text-center collapse-container"
+                  [ngClass]="_array.isArray(kitsToReview) && kitsToReview.length === 0 ? 'btn-disable' : 'btn-enable'"
+                  (click)="_array.isArray(kitsToReview) && kitsToReview.length === 0 ? '' : togglePanel(kitPanel, 'kit')">
+                    <span *ngIf="!kitsACollapsed">
+                      <span class="fa fa-chevron-up"></span>
+                      <span>Hide kits to be reviewed</span>
+                    </span>
+
+                    <span *ngIf="_array.isArray(kitsToReview) && kitsToReview.length > 0 && kitsACollapsed">
+                      <span class="fa fa-chevron-down"></span>
+                      <span>View {{ kitsToReview.length }} kit{{kitsToReview.length > 1 ? 's' : ''}} to be reviewed</span>
+                    </span>
+
+                    <span *ngIf="_array.isArray(kitsToReview) && kitsToReview.length === 0 && kitsACollapsed">
+                      Empty
+                    </span>
+                  </div>
+
+                </div>
+              </div>
+
+              <div *ngIf="isKitLoading" class="dashboard-loader">
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+              </div>
+
+            </div>
+          </div>
+        </ng-container>
+
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+

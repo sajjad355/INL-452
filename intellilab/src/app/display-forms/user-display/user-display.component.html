@@ -1,0 +1,177 @@
+<div *ngIf="user" style="min-width:800px;">
+  <form>
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label>Name
+          <span class="star">*</span>
+        </label>
+        <input autocomplete="off" *ngIf="enableEdit" class="form-control" type="text" [(ngModel)]="user.name"
+               [ngModelOptions]="{standalone: true}" />
+        <p class="read-only-input" *ngIf="!enableEdit">{{user.name}}</p>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group  col-md-3">
+        <label>Email
+          <span class="star">*</span>
+          <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+            ngbTooltip="User Email">?</button>
+        </label>
+        <input autocomplete="off" *ngIf="enableEdit" class="form-control" type="text"
+               [(ngModel)]="user.email" [ngModelOptions]="{standalone: true}" />
+        <p class="read-only-input" *ngIf="!enableEdit">{{user.email}}</p>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label>Role(s)
+          <span class="star">*</span>
+          <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+            ngbTooltip="The user's corporate role(s)">?</button>
+        </label>
+        <div *ngIf="enableEdit">
+          <div class="col" *ngFor="let r of roles; let i = index">
+            <input type="checkbox" 
+                   id="role_{{i}}" 
+                   name="role_{{i}}"
+                   [checked]="doesUserHaveRole(r)"
+                   (change)="doesUserHaveRole(r)?removeRole(r):addRole(r)">
+            <label for="role_{{i}}">&nbsp;{{r?.roleName}}</label>
+          </div>
+        </div>
+        <div class="read-only-input" *ngIf="!enableEdit">
+          <div *ngFor="let role of user.userRoles">{{role.roleName}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group  col-md-3">
+        <label>Invalid Login Attempts
+          <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+            ngbTooltip="# of Invalid Logins by the user">?</button>
+        </label>
+        <input autocomplete="off" *ngIf="enableEdit" class="form-control" type="number"
+               [(ngModel)]="user.invalidlogincount" [ngModelOptions]="{standalone: true}" readonly />
+        <button *ngIf="user.invalidlogincount > 0 && enableEdit" (click)="user.invalidlogincount = 0">Reset</button>
+        <p class="read-only-input" *ngIf="!enableEdit">{{user.invalidlogincount}}</p>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label>Active
+          <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top"
+            ngbTooltip="Whether user is active or inactive">?</button>
+        </label>
+        <input class="form-control" *ngIf="enableEdit" type="checkbox" class="checkbox" [checked]="user.active" (change)="user.active = !user.active">
+
+        <p class="read-only-input" *ngIf="!enableEdit">{{user.active}}</p>
+      </div>
+    </div>
+
+    <ngb-alert *ngIf="inputWarning.length > 0" (close)="inputWarning = []">
+      <ng-container *ngFor="let warning of inputWarning; let i = index">
+        <p>
+          <strong>{{warning}}</strong>
+        </p>
+      </ng-container>
+    </ngb-alert>
+
+    <div class="form-group submit-buttons">
+      <button *ngIf="enableEdit" 
+               class="btn btn-primary"
+               (click)="validateInput();">
+               {{isNew?'Save':'Update'}}
+      </button>
+      &nbsp;
+      <button *ngIf="enableEdit && !isNew" 
+               class="btn btn-primary"
+               (click)="requestResetPassword();">
+               Reset Password
+      </button>  
+      &nbsp;
+      <button type="button" 
+              class="btn btn-primary" 
+              (click)="cancelUserUpdate()">
+              Close
+      </button>
+    </div>
+
+    
+  </form>
+</div>
+
+
+<ng-template #resetPassword let-c="close">
+  
+  <div class="modal-header">
+    <h5 class="modal-title">Reset Password</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="reset(); c('');">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p class="mb-2">Temporary password must be at least 6 characters long <span class="star">*</span></p>
+    <input autocomplete="off" 
+      class="form-control" 
+      ngbAutoFocus
+      type="password" 
+      [(ngModel)]="passwordResetValue"
+      [ngModelOptions]="{standalone: true}" />
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="enableEdit && !isNew" 
+      [disabled]="!passwordResetValue || passwordResetValue.length < 6"
+      class="btn btn-primary"
+      (click)="performResetPassword(); c('');">
+      Reset Password
+    </button>  
+    &nbsp;
+    <button type="button" 
+      class="btn btn-primary" 
+      (click)="reset(); c('');">
+      Close
+    </button>
+  </div>
+
+  
+  <!-- <div class="modal-header">
+    <h4 class="modal-title">
+      Reset Password
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="reset(); c('');">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label>Password - temporary password must be at least 6 characters
+          <span class="star">*</span>
+        </label>
+        <input autocomplete="off" 
+          class="form-control" 
+          type="password" 
+          [(ngModel)]="passwordResetValue"
+          [ngModelOptions]="{standalone: true}" />
+      </div>
+    </div>
+    <div class="form-group submit-buttons">
+      <button *ngIf="enableEdit && !isNew" 
+        [disabled]="!passwordResetValue || passwordResetValue.length < 6"
+        class="btn btn-primary"
+        (click)="performResetPassword(); c('');">
+        Reset Password
+      </button>  
+      &nbsp;
+      <button type="button" 
+        class="btn btn-primary" 
+        (click)="reset(); c('');">
+        Close
+      </button>
+    </div>
+  </div> -->
+</ng-template>

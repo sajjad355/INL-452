@@ -1,0 +1,54 @@
+<label *ngIf="enableFileUpload" class="toggle-control" matTooltip="Switch between file upload window and display window"
+  [matTooltipPosition]="'right'">
+    <input type="checkbox" checked="checked">
+    <span class="control" (click)="viewSwitch($event)"></span>
+  </label>
+
+  <mat-sidenav-container *ngIf="enableFileUpload && upload_view">
+    <mat-sidenav #sidenav class="width-50p" [mode]="'over'">
+
+      <div *ngIf="fileConfig.url && fileConfig.type !== 'application/pdf'" class="preview-window">
+        <img [src]="fileConfig.url" alt="File cannot be displayed" class="file-preview">
+      </div>
+
+      <pdf-viewer  *ngIf="fileConfig.url && fileConfig.type === 'application/pdf'" [src]="fileConfig.url" [render-text]="true" style="display: inline;"></pdf-viewer>
+
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="uploadfilecontainer" (click)="fileInput.click()" appDragDrop (onFileDropped)="uploadFile($event)" matTooltip="Drag and drop file to here, or click the square area to browse file" [matTooltipPosition]="'above'">
+        <input hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
+      </div>
+
+
+      <div class="width-100p" [ngClass]="{'file-list-border': files.length > 0}">
+        <div *ngFor="let file of files;let i=index" class="list-item-container">
+            <div (click)="sidenav.toggle(); fileReview(i)" class="list-item" matTooltip="Click to review this file" [matTooltipPosition]="'above'">
+              <strong class="file-name">{{ file.name }}</strong>
+              <span></span><span></span><span></span><span></span>
+            </div>
+
+            <span class="material-icons md-48 warn btn-hover-effect margin-left-5p" (click)="deleteAttachment(i)">
+              delete_forever
+            </span>
+        </div>
+      </div>
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+  <div *ngIf="image_view || !enableFileUpload" class="image-display-container">
+    <div *ngFor="let file of files" class="card">
+      <img *ngIf="file.type !== 'application/pdf'" [src]="file.data">
+      <div  *ngIf="file.type === 'application/pdf'" class="pdf-container" [style.border-radius]="'10px'">
+        <pdf-viewer  [src]="file.data" [render-text]="true" style="display: inline">
+        </pdf-viewer>
+      </div>
+      <div class="card__head"
+      (click)="downloadFile(file.data, file.name, file.type)"
+      matTooltip="Click to download this file to local storage"
+      [matTooltipPosition]="'below'">
+        {{file.name}}
+      </div>
+    </div>
+  </div>

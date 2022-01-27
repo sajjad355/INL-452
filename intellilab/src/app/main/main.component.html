@@ -1,0 +1,160 @@
+ <mat-sidenav-container *ngIf="!isLoading">
+  <mat-sidenav #sidenav mode="over" class="catalog-search-sidenav" [disableClose]="true">
+    <span class="material-icons catalog-close-btn" (click)="sidenav.close()">
+      close
+    </span>
+    <div class="tabs">
+      <input type="radio" id="tab1" name="tab-control" checked>
+      <input type="radio" id="tab2" name="tab-control">
+      <!-- <input type="radio" id="tab3" name="tab-control">
+      <input type="radio" id="tab4" name="tab-control"> -->
+      <ul>
+        <li title="Features"><label for="tab1" role="button"><br><span>Search Catalog</span></label></li>
+        <li title="Delivery Contents"><label for="tab2" role="button"><br><span>Catalog Generator</span></label></li>
+        <li title="Shipping"><label for="tab3" role="button"><br><span></span></label></li>
+        <li title="Returns"><label for="tab4" role="button"><br><span></span></label></li>
+      </ul>
+
+
+      <div class="slider"><div class="indicator"></div></div>
+
+      <div class="content">
+        <section>
+          <app-catalog-search (onClose)="sidenav.close()"></app-catalog-search>
+        </section>
+        <section>
+          <app-catalog></app-catalog>
+        </section>
+        <button class="catalog-cancel-btn"  (click)="sidenav.close()">Cancel</button>
+      </div>
+    </div>
+  </mat-sidenav>
+
+
+  <mat-sidenav-content>
+    <div class="main-container">
+      <!-- list items for horzontal top menu bar -->
+      <ul class="menu-bar z-index-12">
+        <li *ngIf="canViewWorksheets" routerLink="/eworksheet" (click)="checkInput.checked = false">
+          E-Worksheet
+        </li>
+
+        <li *ngIf="canViewKits" routerLink="kits" (click)="checkInput.checked = false">
+          Kit Assembly
+        </li>
+
+        <li *ngIf="canViewProducts" routerLink="products" (click)="checkInput.checked = false">
+          Products
+        </li>
+
+        <li *ngIf="canViewInventory" routerLink="inventories" (click)="checkInput.checked = false">
+          Inventory
+        </li>
+
+        <li *ngIf="canViewSales" routerLink="sales" (click)="checkInput.checked = false">
+          Sales
+        </li>
+
+        <li *ngIf="canViewOrders" routerLink="order-items" (click)="checkInput.checked = false">
+          Order Item
+        </li>
+
+        <li *ngIf="canViewCatalogs" (click)="sidenav.open()" (click)="checkInput.checked = false">
+          Master Catalog
+        </li>
+
+        <li (click)="checkInput.checked = true">
+          MORE
+        </li>
+
+        <span  class="material-icons">
+          arrow_drop_down
+        </span>
+      </ul>
+
+      <!-- Section for each list item's content display -->
+      <section class="msg">
+        <!-- display for each module -->
+        <div class="page-container">
+          <error></error>
+          <div class="page">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </section>
+
+      <!-- tags for the menu icon's animation -->
+      <input #checkInput id="hamburger" class="hamburger" type="checkbox"/>
+
+      <!-- list items for the vertical menu list -->
+      <section class="drawer-list  z-index-12">
+        <ul class="list-container">
+            <li (click)="checkInput.checked = false" routerLink="">
+              <a>Dashboard</a>
+            </li>
+
+            <li *ngIf="canAccessFMS" (click)="checkInput.checked = false" routerLink="file-management">
+              <a>File Management</a>
+            </li>
+
+            <li *ngIf="canViewImmunizingSchedules" (click)="checkInput.checked = false" routerLink="egg-inventory">
+              <a>Egg Inventory</a>
+            </li>
+
+            <li *ngIf="canViewUsers" (click)="checkInput.checked = false" routerLink="manage-users">
+              <a>Manage Users</a>
+            </li>
+
+            <li *ngIf="canViewUserHistory" (click)="checkInput.checked = false" routerLink="user-histories">
+              <a>User History</a>
+            </li>
+
+            <li *ngIf="canViewEquipment" (click)="checkInput.checked = false" routerLink="equipments">
+              <a>Equipment</a>
+            </li>
+
+            <li *ngIf="canViewFolder" (click)="checkInput.checked = false" routerLink="/folders">
+              <a>
+                Folders
+              </a>
+            </li>
+
+            <li *ngIf="canViewClients" (click)="checkInput.checked = false" routerLink="clients">
+              <a>
+                Clients
+              </a>
+            </li>
+
+            <li *ngIf="canViewConfig" (click)="checkInput.checked = false" routerLink="config/settings">
+              <a>Config</a>
+            </li>
+
+            <li *ngIf="canViewSops" (click)="checkInput.checked = false" routerLink="sop">
+              <a>SOP</a>
+            </li>
+
+            <li (click)="signout(); checkInput.checked = false">
+              <a>
+                <span class="material-icons" [style.margin-right]="'10px'">
+                  exit_to_app
+                </span>
+                Log Out
+              </a>
+            </li>
+
+            <li (click)="checkInput.checked = false">
+              <a>
+                <span class="material-icons" [style.margin-right]="'17px'">
+                  close
+                </span>
+                CLOSE
+              </a>
+            </li>
+        </ul>
+      </section>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+

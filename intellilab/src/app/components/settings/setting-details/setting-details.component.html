@@ -1,0 +1,73 @@
+<div class="setting-details-container">
+  <div class="setting-form" [formGroup]="settingForm">
+    <!-- header -->
+    <app-details-view-header type="Setting" [name]="isNew ? 'New Setting' : settingForm.get('name').value"
+      [close]="close" (updateEditEnabled)="setEditEnabled($event)"></app-details-view-header>
+
+    <!-- content -->
+    <div class="detail-content">
+      <!-- Name -->
+      <toggle-edit-input required label="Name" [forceDisabled]="!isNew" formControlName="name" ngDefaultControl>
+      </toggle-edit-input>
+      <!-- description -->
+      <toggle-edit-input label="Description" formControlName="description" ngDefaultControl></toggle-edit-input>
+
+      <!-- Setting values and attributes -->
+      <table class="table table-scroll">
+        <thead>
+          <tr>
+            <th class="col-5">Setting Value</th>
+            <th class="col-5">Setting Attribute</th>
+            <th class="col-2"></th>
+          </tr>
+        </thead>
+        <tbody formArrayName="settingValues">
+          <!-- empty message -->
+          <tr *ngIf="settingValues.length < 1">
+            <td>No current values for this setting</td>
+          </tr>
+          <!-- setting values -->
+          <tr *ngFor="let settingValue of settingValues.controls; let i=index">
+            <td [formGroupName]="i">
+              <toggle-edit-input required label="Setting Value" formControlName="value"></toggle-edit-input>
+            </td>
+            <td [formGroupName]="i">
+              <toggle-edit-input label="Attribute" formControlName="attribute"></toggle-edit-input>
+            </td>
+            <td>
+              <button *ngIf="editEnabled && settingValues.length > 1" class="btn btn-danger"
+                (click)="removeSettingValues(i);">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <!-- add setting button -->
+      <button *ngIf="editEnabled" class="btn btn-add-new" mat-mini-fab color="primary" (click)="addSettingValue()">
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+
+    <!-- save button -->
+
+    <button *ngIf="isSaved; else submitBtn" mat-raised-button class="btn btn-save saved">
+      Saved&nbsp;
+      <i class="fa fa-check"></i>
+    </button>
+    <ng-template #submitBtn>
+      <button #submitBtn *ngIf="editEnabled" class="btn btn-save" mat-raised-button color="primary"
+        (click)="saveSetting()" [disabled]="settingForm.invalid || saveLoading">
+        <ng-template [ngIf]="saveLoading">
+          <mat-spinner [diameter]="30"></mat-spinner>
+        </ng-template>
+        <ng-template [ngIf]="!saveLoading">
+          Save&nbsp;
+          <i class="fa fa-save"></i>
+        </ng-template>
+      </button>
+    </ng-template>
+  </div>
+</div>

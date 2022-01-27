@@ -1,0 +1,26 @@
+<!-- <span class="left-pointer-arrow"></span> -->
+<div class="pointer">
+  <div *ngIf="!message.exVersion" class="pointer-content">
+    <span class="orange-fdd431 exclamation-mark shadow-orange">!</span>
+    <!-- <span class="material-icons orange-fdd431">
+      info
+    </span> -->
+    <span class="pointer-content-text orange-fdd431 border-orange shadow-orange">Please save the current worksheet to generate a run number</span>
+  </div>
+
+  <div class="pointer-content margin-bottom-1rem">
+    <span class="pointer-content-label">Study Number</span>
+    <span class="material-icons">
+      play_arrow
+    </span>
+    <span class="pointer-content-text">{{message.studyNum ? message.studyNum : 'N/A'}}</span>
+  </div>
+
+  <div class="pointer-content">
+    <span class="pointer-content-label">Run Number</span>
+    <span class="material-icons">
+      play_arrow
+    </span>
+    <span class="pointer-content-text">{{message.exVersion ? message.exVersion : 'N/A'}}</span>
+  </div>
+</div>

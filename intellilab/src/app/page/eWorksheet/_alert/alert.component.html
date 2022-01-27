@@ -1,0 +1,16 @@
+﻿<div *ngFor="let alert of alerts" class="{{cssClass(alert)}}">
+    <a class="close" (click)="removeAlert(alert)">&times;</a>
+    <span *ngIf="alert.type && alert.type === 3" class="material-icons md-36">
+      warning
+    </span>
+
+    <span *ngIf="alert.id && alert.id === 'success'" class="material-icons md-36">
+      check_circle
+    </span>
+
+    <span *ngIf="alert.type && alert.type === 2" class="material-icons md-36">
+      info
+    </span>
+
+    <span [innerHTML]="alert.message"></span>
+</div>

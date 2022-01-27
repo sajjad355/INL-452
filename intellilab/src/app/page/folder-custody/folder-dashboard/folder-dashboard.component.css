@@ -1,0 +1,64 @@
+.bg-kinda-green {
+  background-color: #63d0b4 !important;
+}
+.bg-kinda-pink {
+  background-color: #feb5a9 !important; 
+}
+.bg-kinda-lightblue {
+  background-color: #7eb2dd !important;
+}
+.bg-kinda-blue {
+  background-color: #254c71 !important;
+}
+.bg-kinda-orange {
+  background-color: #ff9900 !important;
+}
+.bg-kinda-green-2 {
+  background-color: var(--button-green);
+}
+.bg-kinda-lightgray {
+  background-color: rgb(238, 235, 235);
+}
+.card {
+  background-color: #fff;
+	border-radius: 15px;
+  border: none;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+.card {
+  color: #707070;
+}
+.card.bg-primary *, .card.bg-success *, .card.bg-info *, .card.bg-danger *, .card.bg-secondary *, .card.bg-dark *, .card.bg-kinda-green, .card.bg-kinda-pink, .card.bg-kinda-blue, .card.bg-kinda-orange {
+	color: #fff;
+}
+.card-header, .card-body, .card-footer {
+	border: none;
+	background-color: transparent;
+}
+.card-header {
+	padding: 22px 28px 0 28px;
+	font-size: 15px;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+.card-header .card-header-subtitle {
+  font-size: 12.5px;
+  margin-top: 10px;
+  font-weight: 400;
+  /* text-transform: none !important; */
+}
+
+.dashMiniCard .card-body {
+	padding-bottom: 20px !important;
+}
+.dashMiniCardData {
+	line-height: 1;
+	font-size: 48px;
+	text-align: right;
+	padding-bottom: 0 !important;
+	margin-top: -10px !important;
+}
+.dashMiniCardData span {
+	font-size: 20px;
+}

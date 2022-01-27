@@ -1,0 +1,65 @@
+<div class = "main-container">
+  <div *ngIf="!commit"  [ngClass]="showThought ? 'opacity-1' : 'opacity-0'" class="thought">
+    <div class="parent-bubble">
+      <div  class="name-bubble">
+        <span *ngFor="let option of filteredOptions" class="thought-user" (click)="onSelect(option)">{{option.name}}</span>
+        <!-- <span *ngIf="filteredOptions.length === 0" class="thought-user">.&nbsp;&nbsp;.&nbsp;&nbsp;.</span> -->
+      </div>
+    </div>
+
+  </div>
+
+  <div *ngIf="!commit" class="search-container">
+    <div class="assignment-container">
+        <input class="c-checkbox" type="checkbox" id="checkbox">
+        <div class="c-formContainer">
+          <form [formGroup]="form" class="c-form">
+            <input class="c-form__input" (change)="onChange()" formControlName="myControl" placeholder="Search User Name" type="text">
+            <label class="c-form__buttonLabel" for="checkbox">
+              <!-- <button class="c-form__button" type="button">Add</button> -->
+            </label>
+            <label class="c-form__toggle" for="checkbox" data-title="Create Assignment"></label>
+          </form>
+        </div>
+    </div>
+  </div>
+
+  <!-- <div class="list-container">
+    <ul class="list-border">
+      <li *ngFor="let user of userlist" >{{user.name}}</li>
+    </ul>
+  </div> -->
+  <!-- <div class="list-container">
+    <div id="checklist">
+
+      <input id="02" type="checkbox" name="r" value="2">
+      <label for="02">Cheese</label>
+      <input id="03" type="checkbox" name="r" value="3">
+      <label for="03">Coffee</label>
+       <input id="04" type="checkbox" name="r" value="1" >
+      <label for="04">Bread</label>
+      <input id="05" type="checkbox" name="r" value="2">
+      <label for="05">Cheese</label>
+      <input id="06" type="checkbox" name="r" value="3">
+      <label for="06">Coffee</label>
+    </div>
+  </div> -->
+
+  <div  *ngIf="receiverList.length > 0" class="list-container">
+    <div class="assign-window" [className]="commit ? 'commit-window' : 'assign-window'">
+      <div *ngIf="!commit" class='list-window'>
+        <div  *ngFor="let receiver of receiverList" class="user">
+          <span class="material-icons delete" (click)="onDelete(receiver.id)" matTooltip="Remove user from list" [matTooltipPosition]="'above'">remove_circle</span>
+          <span>{{receiver.name}}</span>
+        </div>
+      </div>
+      <button *ngIf="!commit && receiverList.length > 0" mat-raised-button class="assign-btn" (click)="onSubmit()" [disabled]="receiverList.length > 0 ? false: true">Post Assignment</button>
+      <p *ngIf="commit" class="notification">Do you want to proceed to post this assignment?</p>
+      <button *ngIf="commit" mat-raised-button (click)="onProceed()" class="proceed-btn">Proceed</button>
+      <button *ngIf="commit" mat-raised-button (click)="onCancel()" class="cancel-btn">Cancel</button>
+
+    </div>
+  </div>
+
+</div>
+

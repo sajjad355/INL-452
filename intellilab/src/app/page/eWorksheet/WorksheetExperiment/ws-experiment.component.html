@@ -1,0 +1,1058 @@
+
+<nav class="nav__cont">
+  <ul class="nav">
+    <li class="nav__items ">
+      <div class="item-container">
+        <span class="material-icons md-30 icon-color nav-icon-border" matTooltip="Go back to Intelli Lab home page" [matTooltipPosition]="'below'">
+          home
+        </span>
+        <!-- <a [routerLink]="'/main'" >Intelli Lab</a> -->
+        <a (click)="toHome()" >Intelli Lab</a>
+      </div>
+
+    </li>
+
+    <li *ngIf="privilege.design" class="nav__items ">
+      <div class="item-container">
+        <span class="material-icons md-30 icon-color nav-icon-border" matTooltip="Create or review worksheet designs" [matTooltipPosition]="'below'">
+          design_services
+        </span>
+        <a [routerLink]="'/ws_review_copy'">Design</a>
+      </div>
+    </li>
+
+    <li *ngIf="privilege.experiment" class="nav__items ">
+      <div class="item-container">
+        <span class="material-icons md-30 icon-color nav-icon-border" matTooltip="Execute worksheet designs" [matTooltipPosition]="'below'">
+          science
+        </span>
+        <a [routerLink]="['/ws_experiment/analyst', loginUser.id]">Experiment</a>
+      </div>
+    </li>
+
+    <li *ngIf="privilege.review" class="nav__items ">
+      <div class="item-container">
+        <span class="material-icons md-30 icon-color nav-icon-border" matTooltip="Review and comment submitted worksheets" [matTooltipPosition]="'below'">
+          grading
+        </span>
+        <a [routerLink]="['/ws_experiment/scientist', loginUser.id]">Review</a>
+      </div>
+    </li>
+
+    <!-- <li class="nav__items ">
+      <div class="item-container">
+        <span class="material-icons md-30 icon-color nav-icon-border" matTooltip="e-signature development" [matTooltipPosition]="'below'">
+          build_circle
+        </span>
+        <a (click)="openSignature()">Signature</a>
+      </div>
+    </li> -->
+
+  </ul>
+</nav>
+
+<div *ngIf="isLoading" class="loader"></div>
+
+<div *ngIf="!isLoading" class="content-container">
+<app-ws-header [tooBarTitle]="toolBarTitle"></app-ws-header>
+  <alert></alert>
+  <app-search-bar *ngIf="mode === 'preview'" [client]="client" (search)="onSearchTable($event)" (cancel)="onCancelSearch($event)"></app-search-bar>
+  <mat-tab-group *ngIf="mode === 'preview'" [selectedIndex] = "tabIndex" (selectedTabChange)="tabChange($event)">
+
+  <mat-tab *ngIf="operator === 'scientist'">
+    <ng-template mat-tab-label>
+      <div class="tab-animation">
+        <span>Review&nbsp;({{tableList_complete.length > 100 ? 'many' : tableList_complete.length}})</span>
+      </div>
+    </ng-template>
+
+
+
+
+    <!-- Display for Complete Worksheet List Table -->
+    <ng-template matTabContent>
+      <div *ngIf="tableList_complete.length <= 0" class="empty-list-container">
+        <h1>Empty List</h1>
+      </div>
+    <div *ngIf="tableList_complete.length > 0" class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource_complete" matSort (matSortChange)="sortData($event, 'complete')">
+
+        <!-- Assay Number Column -->
+        <!-- <ng-container matColumnDef="assayNum">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Assay Number </th>
+          <td mat-cell *matCellDef="let element"> {{element.assayNum}} </td>
+        </ng-container> -->
+
+        <!-- Study Number Column -->
+        <ng-container matColumnDef="studyNum">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Study Number </th>
+          <td mat-cell *matCellDef="let element"> {{element.studyNum}} </td>
+        </ng-container>
+
+        <!-- Worksheet Number Column -->
+        <ng-container matColumnDef="wsNum">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Worksheet Number </th>
+          <td mat-cell *matCellDef="let element"> {{element.wsNum}} </td>
+        </ng-container>
+
+        <!-- Run Number Column -->
+        <ng-container matColumnDef="exVersion">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Run Number </th>
+          <td mat-cell *matCellDef="let element"> {{element.exVersion}} </td>
+        </ng-container>
+
+        <!-- Drug Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Drug Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+        <!-- Type Column -->
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+        </ng-container>
+
+        <!-- Objective Column -->
+        <ng-container matColumnDef="objective">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Objective </th>
+          <td mat-cell *matCellDef="let element"> {{element.objective}} </td>
+        </ng-container>
+
+        <!-- Analyst Column -->
+        <ng-container matColumnDef="analyst">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Analyst </th>
+          <td mat-cell *matCellDef="let element"> {{element.analyst}} </td>
+        </ng-container>
+
+        <!-- Completion Date Column -->
+        <ng-container matColumnDef="completionDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Completion Date </th>
+          <td mat-cell *matCellDef="let element">{{element.dateStr}}</td>
+          <!-- <td mat-cell *matCellDef="let element">{{element.completionDate}}</td> -->
+        </ng-container>
+
+        <!-- ID Column (used for worksheet actions) -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef >Actions</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-raised-button color="primary" (click) = "changeRoute(element.id, 'scientist', 'false')" class="margin-5 btn-size-150 btn-margin-right-20 primary-btn-animation">
+              <span>Review</span>
+              <span class="material-icons  btn-icon">
+                find_in_page
+              </span>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns_complete"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns_complete;" class="item-animation"></tr>
+      </table>
+      <mat-paginator
+        [length]="tableList_complete.length"
+        [pageSize]="pageSize_complete"
+        [pageSizeOptions]="sizeOption"
+        (page)="onPageChange($event, 'complete')"
+        showFirstLastButtons>
+      </mat-paginator>
+      </div>
+      <div class='refresh-container'>
+        <span class="refresh" (click)="refreshPage('complete-review')">Refresh List</span>
+      </div>
+    </ng-template>
+    <!-- End of Complete Worksheet List Table -->
+  </mat-tab>
+
+  <mat-tab *ngIf="operator === 'analyst'">
+    <ng-template mat-tab-label>
+      <div class="tab-animation">
+        <span>
+          {{tableList_design.length > 1 ? 'Assignments' : 'Assignment'}}
+          ({{tableList_design.length > 100 ? 'many' : tableList_design.length}})
+        </span>
+      </div>
+    </ng-template>
+
+
+
+
+        <!-- Display for Assignment List Table -->
+        <ng-template matTabContent>
+          <div *ngIf="tableList_design.length <= 0" class="empty-list-container">
+            <h1>Empty List</h1>
+          </div>
+        <div *ngIf="tableList_design.length > 0" class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataSource_design" matSort (matSortChange)="sortData($event, 'design')">
+
+            <!-- Position Column -->
+            <!-- <ng-container matColumnDef="position">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> No. </th>
+              <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+            </ng-container> -->
+
+            <!-- Drug Name Column -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Drug Name </th>
+              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <!-- Study Number Column -->
+            <ng-container matColumnDef="studyNum">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Study Number </th>
+              <td mat-cell *matCellDef="let element"> {{element.studyNum}} </td>
+            </ng-container>
+
+            <!-- Worksheet Number Column -->
+            <ng-container matColumnDef="wsNum">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Worksheet Number </th>
+              <td mat-cell *matCellDef="let element"> {{element.wsNum}} </td>
+            </ng-container>
+
+            <!-- Execution Times Column -->
+            <!-- <ng-container matColumnDef="exeNum">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="Accumulative Execution Times" [matTooltipPosition]="'above'"> EXT </th>
+              <td mat-cell *matCellDef="let element"> {{element.exeNum}} </td>
+            </ng-container> -->
+
+            <!-- Type Column -->
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+              <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+            </ng-container>
+
+            <!-- Objective Column -->
+            <ng-container matColumnDef="objective">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Objective </th>
+              <td mat-cell *matCellDef="let element"> {{element.objective}} </td>
+            </ng-container>
+
+            <!-- Author Column -->
+            <ng-container matColumnDef="author">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Author </th>
+              <td mat-cell *matCellDef="let element"> {{element.author}} </td>
+            </ng-container>
+
+            <!-- Assign Date Column -->
+            <ng-container matColumnDef="assignDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Assign Date </th>
+              <td mat-cell *matCellDef="let element"> {{element.assignDate}} </td>
+            </ng-container>
+
+            <!-- ID Column (used for template actions) -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef >Actions</th>
+              <td mat-cell *matCellDef="let element">
+                <button class="margin-5 btn-size-150 btn-margin-right-20 primary-btn-animation" mat-raised-button color="primary" [routerLink]="['/ws_experiment/execution', element.id]">
+                  <span>Execute</span>
+                  <span class="material-icons  btn-icon">
+                    biotech
+                  </span>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns_design"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns_design;" class="item-animation"></tr>
+          </table>
+          <mat-paginator
+            [length]="tableList_design.length"
+            [pageSize]="pageSize_design"
+            [pageSizeOptions]="sizeOption"
+            (page)="onPageChange($event, 'design')"
+            showFirstLastButtons>
+          </mat-paginator>
+          </div>
+          <div class='refresh-container'>
+            <span class="refresh" (click)="refreshPage('assignment')">Refresh List</span>
+          </div>
+        </ng-template>
+        <!-- End of Assignment List Table -->
+
+  </mat-tab>
+
+
+<mat-tab *ngIf="operator === 'analyst'">
+  <ng-template mat-tab-label>
+    <div class="tab-animation">
+      <span>
+        {{tableList_incomplete.length > 1 ? 'Incomplete Worksheets' : 'Incomplete Worksheet'}}
+        ({{tableList_incomplete.length > 100 ? 'many' : tableList_incomplete.length}})
+      </span>
+    </div>
+  </ng-template>
+
+
+
+
+  <!-- Display for Incomplete List Table -->
+  <ng-template matTabContent>
+    <div *ngIf="tableList_incomplete.length <= 0" class="empty-list-container">
+      <h1>Empty List</h1>
+    </div>
+  <div *ngIf="tableList_incomplete.length > 0" class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource_incomplete" matSort (matSortChange)="sortData($event, 'incomplete')">
+
+      <!-- Assay Number Column -->
+      <!-- <ng-container matColumnDef="assayNum">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Assay Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.assayNum}} </td>
+      </ng-container> -->
+
+      <!-- Drug Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Drug Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <!-- Study Number Column -->
+      <ng-container matColumnDef="studyNum">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Study Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.studyNum}} </td>
+      </ng-container>
+
+      <!-- Worksheet Number Column -->
+      <ng-container matColumnDef="wsNum">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Worksheet Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.wsNum}} </td>
+      </ng-container>
+
+      <!-- Run Number Column -->
+      <ng-container matColumnDef="exVersion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Run Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.exVersion}} </td>
+      </ng-container>
+
+      <!-- Type Column -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+      </ng-container>
+
+      <!-- Objective Column -->
+      <ng-container matColumnDef="objective">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Objective </th>
+        <td mat-cell *matCellDef="let element"> {{element.objective}} </td>
+      </ng-container>
+
+      <!-- Analyst Column -->
+      <ng-container matColumnDef="analyst">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Analyst </th>
+        <td mat-cell *matCellDef="let element"> {{element.analyst}} </td>
+      </ng-container>
+
+      <!-- Save Date Column -->
+      <ng-container matColumnDef="saveDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Save Date </th>
+        <td mat-cell *matCellDef="let element">{{element.dateStr}}</td>
+        <!-- <td mat-cell *matCellDef="let element">{{element.saveDate}}</td> -->
+      </ng-container>
+
+      <!-- ID Column (used for worksheet actions) -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef >Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button class="margin-5 btn-size-150 btn-margin-right-20 primary-btn-animation" mat-raised-button color="primary" (click) = "changeRoute(element.id, 'analyst', 'false')">
+            <span>Edit</span>
+            <span class="material-icons btn-icon">
+              create
+            </span>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns_incomplete"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns_incomplete;" class="item-animation"></tr>
+    </table>
+    <mat-paginator
+      [length]="tableList_incomplete.length"
+      [pageSize]="pageSize_incomplete"
+      [pageSizeOptions]="sizeOption"
+      (page)="onPageChange($event, 'incomplete')"
+      showFirstLastButtons>
+    </mat-paginator>
+    </div>
+
+    <div class='refresh-container'>
+      <span class="refresh" (click)="refreshPage('incomplete')">Refresh List</span>
+    </div>
+
+  </ng-template>
+  <!-- End of Incomplete List Table -->
+
+</mat-tab>
+
+<!-- <mat-tab [label]="operator === 'analyst' ? 'Your Approved Worksheet(s)':'Approved'"> -->
+  <mat-tab>
+  <ng-template mat-tab-label>
+    <div class="tab-animation">
+      <span>{{operator === 'analyst' ? (tableList_approved.length > 1 ? 'Your Approved Worksheets' : 'Your Approved Worksheet'):'Approved'}}
+        ({{tableList_approved.length > 100 ? 'many' : tableList_approved.length}})
+      </span>
+    </div>
+  </ng-template>
+
+
+
+
+  <!-- Display for Approved Worksheet List Table -->
+  <ng-template matTabContent>
+    <div *ngIf="tableList_approved.length <= 0" class="empty-list-container">
+      <h1>Empty List</h1>
+    </div>
+  <div *ngIf="tableList_approved.length > 0" class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource_approved" matSort (matSortChange)="sortData($event, 'approved')">
+
+      <!-- Assay Number Column -->
+      <!-- <ng-container matColumnDef="assayNum">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Assay Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.assayNum}} </td>
+      </ng-container> -->
+
+      <!-- Drug Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Drug Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <!-- Study Number Column -->
+      <ng-container matColumnDef="studyNum">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Study Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.studyNum}} </td>
+      </ng-container>
+
+      <!-- Worksheet Number Column -->
+      <ng-container matColumnDef="wsNum">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Worksheet Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.wsNum}} </td>
+      </ng-container>
+
+      <!-- Run Number Column -->
+      <ng-container matColumnDef="exVersion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Run Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.exVersion}} </td>
+      </ng-container>
+
+      <!-- Type Column -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+      </ng-container>
+
+      <!-- Objective Column -->
+      <ng-container matColumnDef="objective">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Objective </th>
+        <td mat-cell *matCellDef="let element"> {{element.objective}} </td>
+      </ng-container>
+
+      <!-- Reviewer Column -->
+      <ng-container matColumnDef="reviewer">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Reviewer </th>
+        <td mat-cell *matCellDef="let element"> {{element.reviewer}} </td>
+      </ng-container>
+
+      <!-- Review Date Column -->
+      <ng-container matColumnDef="reviewDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Review Date </th>
+        <td mat-cell *matCellDef="let element">{{element.dateStr}}</td>
+        <!-- <td mat-cell *matCellDef="let element">{{element.reviewDate}}</td> -->
+      </ng-container>
+
+      <!-- ID Column (used for worksheet actions) -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef >Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-raised-button color="green" (click) = "operator === 'analyst' ? changeRoute(element.id, 'analyst', 'true') : changeRoute(element.id, 'scientist', 'true')" class="margin-5 btn-size-150 btn-margin-right-20">
+            <span>Read</span>
+            <span class="material-icons btn-icon">
+              chrome_reader_mode
+            </span>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns_approved"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns_approved;" class="item-animation"></tr>
+    </table>
+    <mat-paginator
+      [length]="tableList_approved.length"
+      [pageSize]="pageSize_approved"
+      [pageSizeOptions]="sizeOption"
+      (page)="onPageChange($event, 'approved')"
+      showFirstLastButtons>
+    </mat-paginator>
+    </div>
+
+    <div class='refresh-container'>
+      <span class="refresh" (click)="refreshPage((operator === 'analyst')? 'approved-ex':'approved-review')">Refresh List</span>
+    </div>
+
+  </ng-template>
+  <!-- End of Approved Worksheet List Table -->
+</mat-tab>
+
+<!-- <mat-tab [label]="operator === 'analyst' ? 'Your Rejected Worksheet(s)':'Rejected'"> -->
+  <mat-tab>
+  <ng-template mat-tab-label>
+    <div class="tab-animation">
+      <span>{{operator === 'analyst' ? (tableList_rejected.length > 1 ? 'Your Rejected Worksheets' : 'Your Rejected Worksheet'):'Rejected'}}
+        ({{tableList_rejected.length > 100 ? 'many' : tableList_rejected.length}})
+      </span>
+    </div>
+  </ng-template>
+
+
+
+
+  <!-- Display for Rejected Worksheet List Table -->
+  <ng-template matTabContent>
+    <div *ngIf="tableList_rejected.length <= 0" class="empty-list-container">
+      <h1>Empty List</h1>
+    </div>
+  <div *ngIf="tableList_rejected.length > 0" class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource_rejected" matSort (matSortChange)="sortData($event, 'rejected')">
+
+      <!-- Assay Number Column -->
+      <!-- <ng-container matColumnDef="assayNum">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Assay Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.assayNum}} </td>
+      </ng-container> -->
+
+      <!-- Drug Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Durg Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <!-- Study Number Column -->
+      <ng-container matColumnDef="studyNum">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Study Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.studyNum}} </td>
+      </ng-container>
+
+      <!-- Worksheet Number Column -->
+      <ng-container matColumnDef="wsNum">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Worksheet Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.wsNum}} </td>
+      </ng-container>
+
+      <!-- Run Number Column -->
+      <ng-container matColumnDef="exVersion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Run Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.exVersion}} </td>
+      </ng-container>
+
+      <!-- Type Column -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+      </ng-container>
+
+      <!-- Objective Column -->
+      <ng-container matColumnDef="objective">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Objective </th>
+        <td mat-cell *matCellDef="let element"> {{element.objective}} </td>
+      </ng-container>
+
+      <!-- Reviewer Column -->
+      <ng-container matColumnDef="reviewer">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Reviewer </th>
+        <td mat-cell *matCellDef="let element"> {{element.reviewer}} </td>
+      </ng-container>
+
+      <!-- Review Date Column -->
+      <ng-container matColumnDef="reviewDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Review Date </th>
+        <td mat-cell *matCellDef="let element">{{element.dateStr}}</td>
+        <!-- <td mat-cell *matCellDef="let element">{{element.reviewDate}}</td> -->
+      </ng-container>
+
+      <!-- ID Column (used for worksheet actions) -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef >Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-raised-button color="green" (click) = "operator === 'analyst' ? changeRoute(element.id, 'analyst', 'true'):changeRoute(element.id, 'scientist', 'true')" class="margin-5 btn-size-150 btn-margin-right-20">
+            <span>Read</span>
+            <span class="material-icons btn-icon">
+              chrome_reader_mode
+            </span>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns_rejected"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns_rejected;" class="item-animation"></tr>
+    </table>
+    <mat-paginator
+      [length]="tableList_rejected.length"
+      [pageSize]="pageSize_rejected"
+      [pageSizeOptions]="sizeOption"
+      (page)="onPageChange($event, 'rejected')"
+      showFirstLastButtons>
+    </mat-paginator>
+    </div>
+    <div class='refresh-container'>
+      <span class="refresh" (click)="refreshPage((operator === 'analyst')? 'rejected-ex':'rejected-review')">Refresh List</span>
+    </div>
+  </ng-template>
+  <!-- End of Rejected Worksheet List Table -->
+</mat-tab>
+
+</mat-tab-group>
+
+<alert id='refresh-info'></alert>
+
+
+
+
+<!-- Render steps for analyst users -->
+<div *ngIf="operator === 'analyst' && mode === 'experiment'">
+
+  <!-- File upload for platemaps -->
+  <mat-expansion-panel *ngIf="initData_files.length > 0" class="mat-elevation-z8">
+    <mat-expansion-panel-header [collapsedHeight]="'50px'">
+      <mat-panel-title>
+        <div class="panel-title-container">
+          <span class="platemap-counter" matTooltip="The number of attached platemap(s)" [matTooltipPosition]="'above'">{{worksheetConfig.files.length}}</span>
+          <!-- <strong class="margin-left-10 italic color-blue">{{initData_files.length > 1 ? 'Plate Maps' : 'Plate Map'}}</strong> -->
+          <strong class="margin-left-10 italic color-blue">Plate Maps and Files</strong>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-file-upload #platemap_view_experiment  [enableFileUpload]="false" (uploadChange)="onFileChange($event)"></app-file-upload>
+  </mat-expansion-panel>
+
+
+  <!-- Design comment for experiment-->
+  <mat-card *ngIf="worksheetConfig.designComment" class="mat-elevation-z8">
+
+    <strong>Design Comment</strong>
+    <div class="padding-left-35p">
+      <app-text-field [mode]="'textarea'" [text]="worksheetConfig.designComment" [tag]="'Comment'"></app-text-field>
+    </div>
+  </mat-card>
+
+  <mat-card class="mat-elevation-z8">
+    <div class="wrapper margin-bottom-50">
+      <section class="header-stepper">
+
+        <div class="logo-and-nav-wrap">
+
+            <div class="logo-wrap locker">
+              <span class="material-icons md-36 opacity-05" (click)="disableScreen()" matTooltip="Click to lock the screen for all steps" matTooltipPosition="right">
+                lock
+              </span>
+            </div>
+
+            <div class="stepper-nav-wrap padding-left-30">
+               <nav  class="steps margin-left-20">
+
+                <div *ngFor="let step of steps; let index = index" class="breadcrumb-wrap" (click) = "updateStepperIndex(index)" [class.select-effect]="stepperIndex === index">
+
+                  <span class="sep"><i class="fa fa-caret-right"></i></span>
+                  <span class="breadcrumb">
+
+                    <a *ngIf = "step.stepType === 'Washing' || step.stepType === 'Stop'" class = "step-label"
+                    [matTooltip]="step.stepType === 'Washing' ?
+                      'Washing' : step.stepType === 'Stop' ?
+                      'Stop Solution Addition' : step.stepType
+                    "
+                    [matTooltipPosition] = "'below'"
+                    [matTooltipShowDelay]="1000">
+
+                      <!-- {{step.stepData.isExcluded === 1 ? '(E) ' : ''}} -->
+                      {{step.stepValid ? '' : (step.stepType ? '! ' : '')}}
+                      {{step.stepType === 'Test' ? 'Sample Preparation' : (step.stepType ? step.stepType : '?')}}
+                    </a>
+
+                    <a *ngIf = "step.stepType !== 'Washing' && step.stepType !== 'Stop'"
+
+                        [matTooltip]="step.stepType === 'Blocking' ?
+                        'Blocking Addition' : step.stepType === 'Capture' ?
+                        'Capture Preparation and Addition' : step.stepType === 'Coating' ?
+                        'Coating Preparation and Addition' : step.stepType === 'Detection' ?
+                        'Detection Preparation and Addition' : step.stepType === 'Test' ?
+                        'Sample Preparation' : step.stepType === 'Washing' ?
+                        'Washing' : step.stepType === 'Substrate' ?
+                        'Substrate Addition' : step.stepType === 'Stop' ?
+                        'Stop Solution Addition' : step.stepType
+                          "
+                          [matTooltipPosition] = "'below'"
+                          [matTooltipShowDelay]="1000">
+
+                          <!-- {{step.stepData.isExcluded === 1 ? '(E) ' : ''}} -->
+                          {{(step.stepValid && step.stepData.timer !== 0)|| step.stepData.isExcluded === 1 ? '' : (step.stepType ? '! ' : '')}}
+                          {{step.stepType === 'Test' ? 'Sample Preparation' : (step.stepType ? step.stepType : '?')}}
+
+                    </a>
+                  </span>
+
+                </div>
+              </nav>
+            </div>
+          </div>
+        </section>
+
+        <section  class="ws-tab-container">
+          <div *ngIf="screenLock" class='lock-screen-panel z-index-20'>
+            <button class = "unlock-btn" matTooltip="Click to unlock the screen" matTooltipPosition="above">
+            <span class="material-icons md-54" (click)="enableScreen()">
+              lock_open
+            </span>
+            </button>
+          </div>
+
+          <div *ngFor="let step of steps; let index = index" class="ws-tab-content z-index-10" [class.hide]="stepperIndex != index">
+            <span class="stamp stamp-relative" *ngIf="step.stepData.isExcluded === 1">Excluded</span>
+            <app-washing-step
+            *ngIf = "step.stepType === 'Washing'"
+            [mode] = "mode"
+            [stepType]="step.stepType"
+            [dataType]="dataType"
+            [editData]="step.stepData"
+            [stepIndex]="step.stepIndex"
+            [commentData]="step.commentData"
+            (userData)="dataReceiver($event)"
+            (comment)="updateStepComment($event)"
+            (excludeStep)="excludeStep($event)">
+          </app-washing-step>
+
+          <app-general-step
+          *ngIf = " step.stepType === 'Blocking' ||
+                    step.stepType === 'Capture'  ||
+                    step.stepType === 'Coating'  ||
+                    step.stepType === 'Detection'||
+                    step.stepType === 'Test'"
+          [mode] = "mode"
+          [stepType]="step.stepType"
+          [dataType]="dataType"
+          [editData]="step.stepData"
+          [stepIndex]="step.stepIndex"
+          [commentData]="step.commentData"
+          (userData)="dataReceiver($event)"
+          (comment)="updateStepComment($event)"
+          (excludeStep)="excludeStep($event)">
+          </app-general-step>
+
+          <app-substrate-step
+          *ngIf = "step.stepType === 'Substrate'"
+          [mode] = "mode"
+          [stepType]="step.stepType"
+          [dataType]="dataType"
+          [editData]="step.stepData"
+          [stepIndex]="step.stepIndex"
+          [commentData]="step.commentData"
+          (userData)="dataReceiver($event)"
+          (comment)="updateStepComment($event)"
+          (excludeStep)="excludeStep($event)">
+          </app-substrate-step>
+
+          <app-stop-step
+          *ngIf = "step.stepType === 'Stop'"
+          [mode] = "mode"
+          [stepType]="step.stepType"
+          [dataType]="dataType"
+          [editData]="step.stepData"
+          [stepIndex]="step.stepIndex"
+          [commentData]="step.commentData"
+          (userData)="dataReceiver($event)"
+          (comment)="updateStepComment($event)"
+          (excludeStep)="excludeStep($event)">
+          </app-stop-step>
+
+          <app-calibrator
+            *ngIf="step.stepType === 'Calibrator Preparation' ||
+            step.stepType === 'QC Preparation'  ||
+            step.stepType === 'Sample Dilution' ||
+            step.stepType === 'MRD'"
+            [mode] = "mode"
+            [stepType]="step.stepType"
+            [dataType]="dataType"
+            [editData]="step.stepData"
+            [stepIndex]="step.stepIndex"
+            [commentData]="step.commentData"
+            (userData)="dataReceiver($event)"
+            (comment)="updateStepComment($event)"
+            (excludeStep)="excludeStep($event)">
+          </app-calibrator>
+
+
+          </div>
+        </section>
+    </div>
+
+
+    <!-- Bottom stepper for instance experiment -->
+    <app-roller-button *ngIf="steps && steps.length > 1" (rollerMove)="rollerListener($event)"></app-roller-button>
+    <!-- End of bottom stepper for instance experiment-->
+
+  </mat-card>
+
+
+<!-- File upload for experiment results -->
+  <mat-expansion-panel class="mat-elevation-z8">
+    <mat-expansion-panel-header [collapsedHeight]="'50px'">
+      <mat-panel-title>
+        <div class="panel-title-container">
+          <span class="platemap-counter" matTooltip="The number of attached result(s)" [matTooltipPosition]="'above'">{{worksheetConfig.results.length}}</span>
+          <strong class="margin-left-10 italic color-blue">Results Upload</strong>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-file-upload #result_view_experiment [initData]="initData_results" (uploadChange)="onResultChange($event)"></app-file-upload>
+  </mat-expansion-panel>
+
+
+  <div class="btn-container">
+    <button mat-raised-button color="primary" (click)="checkSave(false)" class="btn-size-150 heigth-40 primary-btn-animation mat-elevation-z10"
+     matTooltip="Save steps during execution"
+     matTooltipPosition = 'left'>
+      <span>Save</span>
+      <span class="material-icons btn-icon">
+            save
+      </span>
+    </button>
+
+    <button mat-raised-button color="warn" (click)="checkSave()" class="btn-size-150 heigth-40 warn-btn-animation mat-elevation-z10"
+    matTooltip="Leave the page and save the entire worksheet"
+    matTooltipPosition = 'right'>
+      <span>Exit</span>
+      <span class="material-icons btn-icon">
+        exit_to_app
+      </span>
+    </button>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Render steps for scientist users -->
+<div *ngIf="(operator === 'scientist' && mode === 'review') || readMode">
+
+   <!-- Platemaps for review mode -->
+   <mat-expansion-panel  *ngIf="worksheetConfig.files.length > 0" class="mat-elevation-z8">
+    <mat-expansion-panel-header [collapsedHeight]="'50px'">
+      <mat-panel-title>
+        <div class="panel-title-container">
+          <!-- <strong class="margin-left-10 italic color-blue">{{worksheetConfig.files.length > 1 ? 'Plate Maps' : 'Plate Map'}}</strong> -->
+          <strong class="margin-left-10 italic color-blue">Plate Maps and Files</strong>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-file-upload [initData]="worksheetConfig.files" [enableFileUpload]="false"></app-file-upload>
+  </mat-expansion-panel>
+
+  <!-- Design comment for instance review-->
+  <mat-card *ngIf="worksheetConfig.designComment" class="mat-elevation-z8">
+    <strong>Design Comment</strong>
+    <div class="padding-left-35p">
+      <app-text-field [mode]="'textarea'" [text]="worksheetConfig.designComment" [tag]="'Comment'"></app-text-field>
+    </div>
+  </mat-card>
+
+  <mat-card class="mat-elevation-z8">
+    <div class="wrapper margin-bottom-50">
+
+      <section class="header-stepper">
+        <div class="logo-and-nav-wrap">
+
+            <div class="stepper-nav-wrap">
+               <nav  class="steps">
+
+                <div *ngFor="let step of steps; let index = index" class="breadcrumb-wrap" (click) = "updateStepperIndex(index)" [class.select-effect]="stepperIndex === index">
+
+                  <span class="sep"><i class="fa fa-caret-right"></i></span>
+                  <span class="breadcrumb">
+                    <a class = "step-label"
+                    [matTooltip]="step.stepType === 'Blocking' ?
+                      'Blocking Addition' : step.stepType === 'Capture' ?
+                      'Capture Preparation and Addition' : step.stepType === 'Coating' ?
+                      'Coating Preparation and Addition' : step.stepType === 'Detection' ?
+                      'Detection Preparation and Addition' : step.stepType === 'Test' ?
+                      'Sample Preparation' : step.stepType === 'Washing' ?
+                      'Washing' : step.stepType === 'Substrate' ?
+                      'Substrate Addition' : step.stepType === 'Stop' ?
+                      'Stop Solution Addition' : step.stepType
+                    "
+                    [matTooltipPosition] = "'below'"
+                    [matTooltipShowDelay]="1000">
+                      {{step.stepData.isExcluded === 1 ? '(E) ' : ''}}
+                      {{step.stepType === 'Test' ? 'Sample Preparation' : step.stepType}}
+                    </a>
+                  </span>
+
+                </div>
+              </nav>
+            </div>
+
+          </div>
+        </section>
+
+        <section  class="ws-tab-container">
+          <div *ngFor="let step of steps; let index = index" class="ws-tab-content z-index-10" [class.hide]="stepperIndex != index">
+              <span class="stamp stamp-relative" *ngIf="step.stepData.isExcluded === 1">Excluded</span>
+              <app-washing-step
+                *ngIf = "step.stepType === 'Washing'"
+                [mode] = "mode"
+                [stepType]="step.stepType"
+                [reviewData]="step.stepData"
+                [dataType]="dataType"
+                [stepIndex]="step.stepIndex"
+                [enableComment]="enableComment"
+                [commentData]="step.commentData"
+                [deviationData]="step.deviation"
+                (comment)="updateStepComment($event)">
+              </app-washing-step>
+
+              <app-general-step
+                *ngIf = " step.stepType === 'Blocking' ||
+                          step.stepType === 'Capture'  ||
+                          step.stepType === 'Coating'  ||
+                          step.stepType === 'Detection'||
+                          step.stepType === 'Test'"
+                [mode] = "mode"
+                [stepType]="step.stepType"
+                [reviewData]="step.stepData"
+                [dataType]="dataType"
+                [stepIndex]="step.stepIndex"
+                [enableComment]="enableComment"
+                [commentData]="step.commentData"
+                [deviationData]="step.deviation"
+                (comment)="updateStepComment($event)">
+            </app-general-step>
+
+            <app-substrate-step
+              *ngIf = "step.stepType === 'Substrate'"
+              [mode] = "mode"
+              [stepType]="step.stepType"
+              [reviewData]="step.stepData"
+              [dataType]="dataType"
+              [stepIndex]="step.stepIndex"
+              [enableComment]="enableComment"
+              [commentData]="step.commentData"
+              [deviationData]="step.deviation"
+              (comment)="updateStepComment($event)">
+            </app-substrate-step>
+
+            <app-stop-step
+              *ngIf = "step.stepType === 'Stop'"
+              [mode] = "mode"
+              [stepType]="step.stepType"
+              [reviewData]="step.stepData"
+              [dataType]="dataType"
+              [stepIndex]="step.stepIndex"
+              [enableComment]="enableComment"
+              [commentData]="step.commentData"
+              [deviationData]="step.deviation"
+              (comment)="updateStepComment($event)">
+            </app-stop-step>
+
+            <app-calibrator
+                *ngIf="step.stepType === 'Calibrator Preparation' ||
+                step.stepType === 'QC Preparation'  ||
+                step.stepType === 'Sample Dilution' ||
+                step.stepType === 'MRD'"
+                [mode] = "mode"
+                [stepType]="step.stepType"
+                [reviewData]="step.stepData"
+                [dataType]="dataType"
+                [stepIndex]="step.stepIndex"
+                [enableComment]="enableComment"
+                [commentData]="step.commentData"
+                [deviationData]="step.deviation"
+                (comment)="updateStepComment($event)">
+            </app-calibrator>
+
+          </div>
+        </section>
+    </div>
+
+
+    <!-- Bottom stepper for instance review -->
+    <app-roller-button *ngIf="steps && steps.length > 1" (rollerMove)="rollerListener($event)"></app-roller-button>
+    <!-- End of bottom stepper for instance review-->
+  </mat-card>
+
+
+
+  <!-- Results Data for review mode -->
+  <mat-expansion-panel *ngIf="worksheetConfig.results.length > 0" class="mat-elevation-z8">
+    <mat-expansion-panel-header [collapsedHeight]="'50px'">
+      <mat-panel-title>
+        <div class="panel-title-container">
+          <!-- <span class="platemap-counter" matTooltip="The number of attached result(s)" [matTooltipPosition]="'above'">{{worksheetConfig.results.length}}</span> -->
+          <strong class="margin-left-10 italic color-blue">{{worksheetConfig.results.length > 1 ? 'Results' : 'Result'}}</strong>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-file-upload [initData]="worksheetConfig.results" [enableFileUpload]="false"></app-file-upload>
+  </mat-expansion-panel>
+
+</div>
+
+
+<mat-card *ngIf="(mode === 'review' && enableComment) || (!enableComment && worksheetConfig && worksheetConfig.overallComment)" class="mat-elevation-z8">
+
+      <strong *ngIf="mode === 'review' && worksheetConfig.overallComment && !enableComment">Overall Review Comment</strong>
+      <div *ngIf="mode === 'review' && worksheetConfig.overallComment && !enableComment" class="padding-left-35p">
+
+        <app-text-field [mode]="'textarea'" [text]="worksheetConfig.overallComment" [tag]="'Comment'"></app-text-field>
+      </div>
+
+
+      <!-- Comment Section -->
+      <div *ngIf="enableComment">
+
+          <app-step-comment
+          [hasTopBreak]="false"
+          [commentType]="'overallComment'"
+          [commentTile]="'Overall Review Comment'"
+          [initCommentData]="worksheetConfig.overallComment"
+          (commentPayload)="updateOverallComment($event)"
+          (cancel)="cancelOverallComment()">
+          </app-step-comment>
+
+      </div>
+      <!-- End of Comment Section -->
+  </mat-card>
+
+
+
+
+
+
+
+
+  <div *ngIf="worksheetConfig.status === 'complete' && mode === 'review'" class="btn-container">
+    <button mat-raised-button color="primary" (click)="openDialog('approved')" class="btn-size-150 heigth-40 primary-btn-animation mat-elevation-z10">
+      Approve
+      <span class="material-icons btn-icon">
+      fact_check
+      </span>
+    </button>
+
+    <button mat-raised-button color="warn" (click)="openDialog('rejected')" class="btn-size-150 heigth-40 warn-btn-animation mat-elevation-z10">
+      Reject
+      <span class="material-icons btn-icon">
+        block
+      </span>
+    </button>
+  </div>
+
+</div>
+<!-- End of content container -->
+
+
+
+<!-- <button (click)="openAlertWindow()">Open Alert Window</button> -->
+<app-float-window *ngIf="mode === 'experiment'" [message]="{studyNum: worksheetConfig.studyNum, exVersion: worksheetConfig.exVersion}"></app-float-window>

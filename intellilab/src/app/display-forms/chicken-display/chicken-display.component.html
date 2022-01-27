@@ -1,0 +1,298 @@
+<div *ngIf="chicken" style="min-width:1000px;">
+
+  <div class="form-group">
+    <table class="table table-bordered">
+      <tr>
+        <td style="width:33%;">
+          <div class="form-group">
+            <label>Chicken Id
+              <span class="star">*</span>
+            </label>
+            <input autocomplete="off" *ngIf="enableEdit && isNew" class="form-control" type="text" [(ngModel)]="displayChicken.chickenid"  (keyup)="setchickenid(displayChicken.chickenid)"
+              name="chickenid" />
+            <p class="read-only-input" *ngIf="!isNew">{{displayChicken.chickenid}}</p>
+          </div>
+        </td>
+        <td style="width:33%;">
+          <div class="form-group">
+            <label>Date of Birth
+            </label>
+            <div class="inputGroup" *ngIf="enableEdit">
+              <input
+                readonly
+                class="form-control font-12"
+                angular-mydatepicker
+                name="dateofbirth"
+                [(ngModel)]="dateofbirth"
+                [options]="dateofbirthoptions"
+                (dateChanged)="changedatebirth($event)"
+                #dp="angular-mydatepicker"
+                (click)="dp.toggleCalendar()"/>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-secondary" (click)="dp.clearDate()">
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <!-- <my-date-picker *ngIf="enableEdit" name="dateofbirth" [options]="dateofbirthoptions" [(ngModel)]="dateofbirth" (dateChanged)="changedatebirth($event)"></my-date-picker> -->
+
+            <p class="read-only-input" *ngIf="!enableEdit">{{displayChicken.dateofbirth|date: dateFormatDisplay}}</p>
+          </div>
+        </td>
+
+        <td style="width:33%;">
+          <div class="form-group">
+            <label>Project Name
+              <span class="star">*</span>
+            </label>
+            <select *ngIf="enableEdit" class="form-control" style="font-size:12px;" [(ngModel)]="displayChicken.projectname">
+              <option *ngFor="let project of projectNames" [value]="project" [selected]="displayChicken.projectname == project">{{project}}</option>
+            </select>
+            <p class="read-only-input" *ngIf="!enableEdit">{{displayChicken.projectname}}</p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="form-group">
+            <label>Immunogen
+              <span class="star">*</span>
+            </label>
+            <input autocomplete="off" *ngIf="enableEdit" class="form-control" type="text" [(ngModel)]="displayChicken.immunogen" name="immunogen"
+            />
+            <p class="read-only-input" *ngIf="!enableEdit">{{displayChicken.immunogen}}</p>
+          </div>
+        </td>
+        <td>
+          <div class="form-group">
+            <label>Chicken Status
+              <span class="star">*</span>
+            </label>
+            <label *ngIf="enableEdit" class="search-key"><input type="radio" [checked]="displayChicken.chickenstatus=='Active'"
+                (change)="displayChicken.chickenstatus='Active'"> Active</label>
+            <label *ngIf="enableEdit" class="search-key"><input type="radio" [checked]="displayChicken.chickenstatus=='Sacrificed'"
+                (change)="displayChicken.chickenstatus='Sacrificed'"> Sacrificed</label>
+            <p class="read-only-input" *ngIf="!enableEdit">{{displayChicken.chickenstatus}}</p>
+          </div>
+        </td>
+        <td>
+            <div class="form-group" style="width:150px;">
+                <label class="labelstyle">Latest Titer</label>
+                    <p class="read-only-input" > {{displayChicken.latesttiter}}</p>
+              </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+
+  <div class="form-group" *ngIf="!enableEdit">
+    <label>Immunization Schedule
+      <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top" ngbTooltip="List of Injections">?</button>
+    </label>
+    <table class="table table-bordered">
+      <tr>
+        <th style="width:15%;">Date</th>
+        <th style="width:15%;">Days</th>
+        <th style="width:25%;">Adjuvant</th>
+        <th style="width:5%;">Amount</th>
+        <th style="width:5%;">Unit</th>
+        <th >Serum Titer</th>
+        <th style="width:10%;">Status</th>
+      </tr>
+      <tr *ngFor="let injection of updatedInjections; let i = index">
+        <ng-container>
+          <td>
+            <div class="form-group">
+              <p class="read-only-input">{{injection.injectdate|date: dateFormatDisplay}}</p>
+            </div>
+          </td>
+          <td>
+            <div class="form-group">
+              <p class="read-only-input">{{injection.daysafterimmune}} days</p>
+            </div>
+          </td>
+          <td>
+            <div class="form-group">
+              <p class="read-only-input">{{injection.adjuvant}}</p>
+            </div>
+          </td>
+          <td>
+            <div class="form-group">
+              <p class="read-only-input">{{injection.drugamount}}</p>
+            </div>
+
+          </td>
+          <td>
+            <div class="form-group">
+              <p class="read-only-input">{{injection.unit}}</p>
+            </div>
+          </td>
+          <td>
+            <div class="form-group" *ngIf="!injection.bloodtiter || injection.bloodtiter.trim()==''">
+              <button  [style.font-size.px]="9" class="btn btn-info addegg" (click)="addbloodtiterfunction(injection)">Add Titer</button>
+            </div>
+            <div class="form-group" *ngIf="injection.bloodtiter && injection.bloodtiter.trim()!=''" >
+              <p class="read-only-input" >{{injection.bloodtiter}}</p>
+              </div>
+          </td>
+          <td *ngIf="injection.complete=='Not Complete'">
+            <div class="form-group">
+              <button [style.font-size.px]="9" class="btn btn-info addegg" (click)="completeimmune(injection, displayChicken)">Mark Complete</button>
+            </div>
+          </td>
+          <td *ngIf="injection.complete=='Completed'">
+            <div class="form-group">
+              <p class="read-only-input">{{injection.complete}}</p>
+            </div>
+          </td>
+        </ng-container>
+      </tr>
+    </table>
+  </div>
+
+  <div class="form-group" *ngIf="enableEdit">
+    <label>Immunization Schedule
+      <span class="star">*</span>
+      <button type="button" class="btn btn-outline-secondary help-tooltip" placement="top" ngbTooltip="List of Injections">?</button>
+    </label>
+    <table class="table table-bordered" style="margin-bottom: 0px;">
+      <tr >
+        <th style="width:5%;"></th>
+        <th style="width:18%;">Date<span class="star">*</span></th>
+        <th style="width:5%;">Days<span class="star">*</span></th>
+        <th style="width:22%;">Adjuvant<span class="star">*</span></th>
+        <th style="width:5%;">Amount</th>
+        <th style="width:10%;">Unit</th>
+        <th >Serum Titer</th>
+        <th style="width:15%;">Status</th>
+      </tr>
+
+      <tr *ngFor="let injection of updatedInjections; let i = index">
+        <ng-container>
+          <td style="vertical-align:center; ">
+            <button class="btn icon-btn" style="margin:0px;" (click)="removeinjection(i)">
+              <i class="fas fa-times" style="width:3px; margin-left:1px;margin-right:1px;"></i>
+            </button>
+          </td>
+          <td  >
+            <div class="form-group">
+              <div class="inputGroup">
+                <input
+                  readonly
+                  class="form-control font-12"
+                  angular-mydatepicker
+                  name="injectdate"
+                  [(ngModel)]="injectdates[i]"
+                  [options]="injectdateoptions"
+                  (dateChanged)="changeinjectiondate($event, injection, i)"
+                  #dp="angular-mydatepicker"
+                  (click)="dp.toggleCalendar()"/>
+                <div class="input-group-append">
+                  <button type="button" class="btn btn-secondary" (click)="dp.clearDate()">
+                    ×
+                  </button>
+                </div>
+              </div>
+
+              <!-- <my-date-picker class="form-control" name="injectdate" [options]="injectdateoptions" [(ngModel)]="injectdates[i]" (dateChanged)="changeinjectiondate($event, injection, i)"></my-date-picker> -->
+            </div>
+          </td>
+          <td >
+            <div class="form-group">
+              <input autocomplete="off" class="form-control" type="text" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57"
+                [(ngModel)]="injection.daysafterimmune" name="daysafterimmune">
+            </div>
+          </td>
+          <td >
+            <div class="form-group">
+              <input autocomplete="off" class="form-control" #adjuvantKey (keyup)="adjuvantFilter(injection, adjuvantKey.value)" (paste)="adjuvantFilter(injection, adjuvantKey.value)" [(ngModel)]="injection.adjuvant"
+                (focus)="onfocusIndex = i">
+              <div class="recommend" *ngIf="adjuvantfilterList!== undefined && onfocusIndex == i && enableEdit">
+                <p class="recItem" *ngFor="let adjuvant of adjuvantfilterList" (click)="selectAdjuvant(injection, adjuvant); onfocusIndex = -1">{{adjuvant.name}}</p>
+              </div>
+            </div>
+          </td>
+          <td >
+            <div class="form-group">
+              <input autocomplete="off" class="form-control" type="text" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57"
+                [(ngModel)]="injection.drugamount" name="drugamount">
+            </div>
+          </td>
+          <td >
+            <div class="form-group">
+              <select class="form-control" [(ngModel)]="injection.unit">
+                <option *ngFor="let u of unitList" [value]="u" [selected]="injection.unit==u">{{u}}</option>
+              </select>
+            </div>
+          </td>
+          <td >
+            <div class="form-group">
+              <select  class="form-control selectstyle"  [(ngModel)]="injection.bloodtiter" >
+                <option *ngFor="let titer of yolkTiterList"  [value]="titer" [selected]="injection.bloodtiter == titer">{{titer}}</option>
+              </select>
+            </div>
+            <div class="form-group" *ngIf="injection.bloodtiter && injection.bloodtiter.trim()!=''" >
+              <p class="read-only-input" >{{injection.bloodtiter}}</p>
+              </div>
+          </td>
+          <td >
+            <div class="form-group">
+              <select  class="form-control selectstyle"  [(ngModel)]="injection.complete" >
+                <option *ngFor="let immune of immustatusoptions"  [value]="immune" [selected]="injection.status == immune">{{immune}}</option>
+              </select>
+            </div>
+          </td>
+        </ng-container>
+      </tr>
+    </table>
+
+    <table style="width:100%;">
+      <tr>
+        <button class="btn btn-outline-primary new-ingre" (click)="addNewInjection()"><i class="fas fa-plus"></i> New Injection</button>
+      </tr>
+    </table>
+
+  </div>
+<br>
+  <div [hidden]="!linearChart" >
+    <canvas id="canvas" #canvas>{{linearChart}}</canvas>
+  </div>
+
+
+
+  <div class="form-group submit-buttons">
+    <button *ngIf="enableEdit" class="btn btn-primary" (click)="save();">{{isNew?'Save':'Update'}}</button>
+    <button type="button" class="btn btn-primary" (click)="cancelEdit()">Close</button>
+  </div>
+
+
+</div>
+
+<ng-template #addbloodtiter let-c="close" >
+    <div class="modal-header">
+      <h4 class="modal-title">Add Serum Titer</h4>
+      <button type="button" class="close" aria-label="Close" (click)="canceladdbloodtiter()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-header">
+      <h6  class="modal-title">
+        Chicken Id: {{displayChicken.chickenid}}, Injection Date: {{injectionaddtiter.injectdate|date: dateFormatDisplay}}
+      </h6> 
+    </div>
+  
+    <div class="modal-body"> 
+      <label >Serum Titer</label>
+      <select  class="form-control selectstyle"  [(ngModel)]="injectionaddtiter.bloodtiter" style="width:150px;">
+          <option *ngFor="let titer of yolkTiterList"  [value]="titer" [selected]="injectionaddtiter.bloodtiter == titer">{{titer}}</option>
+        </select>
+
+            
+      <div style="text-align: right;">
+        <button type="button" class="btn btn-primary"  (click)="savebloodtiter(injectionaddtiter);">save</button>
+        <button type="button" class="btn btn-outline-dark" (click)="canceladdbloodtiter()">Cancel</button>
+       </div>
+    </div>
+  </ng-template>

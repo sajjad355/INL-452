@@ -1,0 +1,162 @@
+<span class="field-title">Client Information</span>
+<div *ngIf="message" class="alert alert-warning">{{message}}</div>
+<table class="table table-sm table-borderless">
+  <tr>
+    <td style="width:40%;">   
+      <span class="field-sub-title">Company:
+        <button type="button" 
+                class="btn btn-outline-secondary help-tooltip" 
+                placement="top" 
+                ngbTooltip="Company Name">?</button>
+      </span>
+      <div *ngIf="editingEnabled">
+        <table class="table table-sm table-borderless">             
+          <tr>
+             <td>
+              <input autocomplete="off" 
+                      type="text"
+                      class="form-control input-sm"
+                      (keyup.enter)="searchClient()"
+                      [(ngModel)]="currentClient.companyName"
+                      [ngModelOptions]="{standalone: true}" >
+
+              <div class="search-result" *ngIf="clientSearchResults">
+                <div class="search-result-inner" *ngIf="clientSearchResults.length > 0">
+                  <p class="search-result-item" 
+                    *ngFor="let searchResult of clientSearchResults" 
+                    (click)="chooseClientFromList(searchResult)">
+                    {{searchResult.companyName}}
+                  </p>
+                </div>
+                <p *ngIf="!findClient" class="no-result">No result found</p>
+              </div>
+             </td>
+             <td>   
+              <label type="button" 
+                     class="btn icon-btn"
+                     (click)="searchClient()">
+                <i class="fas fa-search"></i>
+              </label>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <span class="form-control" 
+            *ngIf="!editingEnabled">
+            {{currentClient?.companyName}}
+      </span>
+    </td>
+    
+    <td style="width:30%;">
+      <span class="field-sub-title">Contact Name:
+        <button type="button" 
+                class="btn btn-outline-secondary help-tooltip" 
+                placement="top" 
+                ngbTooltip="The client contact from the company">?</button>
+      </span>
+      <select *ngIf="editingEnabled"
+              class="form-control"  
+              #companyContact 
+              (change)="setContact(companyContact.value)">
+        <option value="-1">select contact</option>
+        <ng-container *ngFor="let contact of currentClient?.clientContacts">
+          <option *ngIf="contact.active"
+                  [value]="contact.clientContactId" 
+                  [selected]="currentContact?.clientContactId == contact.clientContactId">
+            {{contact.name}}
+          </option>
+        </ng-container>
+      </select>
+      <span class="form-control" 
+               *ngIf="!editingEnabled">
+              {{currentContact?.name}}
+      </span>
+    </td>
+    <td style="width:30%;">
+      <span class="field-sub-title">Shipping Address:
+        <button type="button" 
+                class="btn btn-outline-secondary help-tooltip" 
+                placement="top" 
+                ngbTooltip="The selected shipping address">?</button>
+      </span>
+      <select *ngIf="editingEnabled"
+              class="form-control"  
+              #companyShippingAddress 
+              (change)="setShippingAddress(companyShippingAddress.value)">
+        <option value="-1">select address</option>      
+        <ng-container *ngFor="let shippingAddress of currentClient?.shippingAddresses">
+          <option *ngIf="shippingAddress.active"
+                  [value]="shippingAddress.addressId" 
+                  [selected]="currentShippingAddress?.addressId == shippingAddress.addressId">
+            {{shippingAddress?.locationName}} ({{shippingAddress?.city}}{{(shippingAddress?.city && shippingAddress?.province && ', ')}}{{shippingAddress?.province}})
+          </option>
+        </ng-container>
+      </select>
+      <span class="form-control" 
+               *ngIf="!editingEnabled">
+              {{currentShippingAddress?.locationName}} ({{currentShippingAddress?.city}}{{(currentShippingAddress?.city && currentShippingAddress?.province) && ', '}}{{currentShippingAddress?.province}})
+      </span>
+    </td>
+  </tr>
+  <tr *ngIf="useOptionalFields">
+    <td style="width:40%;">
+      <span class="field-sub-title">Billing Address:
+        <button type="button" 
+                class="btn btn-outline-secondary help-tooltip" 
+                placement="top" 
+                ngbTooltip="The selected billing address">?</button>
+      </span>
+      <textarea class="form-control" 
+                [value]="getBillingAddress()" 
+                [readonly]="true" 
+                rows="6">
+      </textarea>          
+    </td>
+    <td style="width:30%;">
+      <span class="field-sub-title">Billing Contact:
+        <button type="button" 
+                class="btn btn-outline-secondary help-tooltip" 
+                placement="top" 
+                ngbTooltip="The client billing contact">?</button>
+      </span>
+      <select class="form-control" 
+              *ngIf="editingEnabled" 
+              #billingAttention 
+              (change)="setBillingAttention(billingAttention.value)">
+          <option value="-1">select contact</option>
+
+        <ng-container *ngFor="let contact of currentClient?.clientContacts">
+          <option *ngIf="contact.active"
+                [value]="contact.name" 
+                [selected]="currentBillingAttention == contact.name">
+            {{contact.name}}
+          </option>
+        </ng-container>
+      </select>
+      <span class="form-control" *ngIf="!editingEnabled">{{currentBillingAttention}}</span>
+    </td>
+    <td style="width:30%;">
+      <span class="field-sub-title">Shipping Contact:
+        <button type="button" 
+                class="btn btn-outline-secondary help-tooltip" 
+                placement="top" 
+                ngbTooltip="The client shipping contact">?</button>
+      </span>
+      <select class="form-control" 
+              *ngIf="editingEnabled" 
+              #shippingAttention 
+              (change)="setShippingAttention(shippingAttention.value)">
+          <option value="-1">select contact</option>
+          <ng-container *ngFor="let contact of currentClient?.clientContacts">
+            <option *ngIf="contact.active"
+                [value]="contact.name" 
+                [selected]="currentShippingAttention == contact.name">
+              {{contact.name}}
+            </option>
+          </ng-container>
+      </select>
+      <span class="form-control" *ngIf="!editingEnabled">{{currentShippingAttention}}</span>
+    </td>
+
+  </tr>
+</table>    

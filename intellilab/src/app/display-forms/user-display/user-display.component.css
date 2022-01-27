@@ -1,0 +1,86 @@
+.reset-modal {
+  max-width: 400px !important;
+}
+
+.recommend {
+  position: absolute;
+  background-color: white;
+  border: 1px solid lightgrey;
+  box-shadow: 3px 3px 5px 0px lightgrey;
+  max-width: 90%;
+}
+
+.recItem {
+  width: 100%;
+  background-color: white;
+  margin: 0px;
+  transition: 1s background-color;
+  -moz-transition: 1s background-color;
+  -o-transition: 1s background-color;
+  -webkit-transition: 1s background-color;
+}
+
+.recItem:hover {
+  background-color: lightgrey;
+}
+
+.new-ingre {
+  width: 100%;
+  margin: 0px;
+  border-radius: 0px;
+}
+
+.submit-buttons{
+  text-align: right;
+}
+
+.angular-with-newlines {
+  white-space: pre-wrap;
+
+}
+
+.testarea{
+  border-radius: 3px;
+  border-color: lightgrey;
+}
+
+.star{
+  color:red;
+}
+
+.catforcomponent{
+  padding:0px; 
+  text-align: center; 
+  color: red;
+  font-size: 11px;
+}
+
+input.form-control{
+  padding:8px, 0px;
+  height:38px;
+}
+
+select.form-control{
+  padding:0px;
+  font-size:12px;
+}
+
+label{
+  margin-bottom: 0px;
+}
+
+div.form-group{
+  margin-bottom:5px;
+}
+
+p{
+  border:0px;
+  margin-bottom:0px;
+}
+
+#specialinput{
+  font-size:12px;
+  min-height:39px;
+  direction:ltr;
+
+}

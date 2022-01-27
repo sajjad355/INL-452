@@ -1,0 +1,57 @@
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+.roller-container{
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  // border: red 2px solid;
+}
+
+.btn-block{
+  // border: 2px blue solid;
+  height: 30px;
+  width: 200px;
+  margin: 10px 60px 10px 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.roller-btn{
+  color: #b6ceff;
+  font-weight: bold;
+  font-size: large;
+}
+
+.roller-btn:hover{
+  color:  #527cff;
+  cursor: pointer;
+  transform: translatey(-3px);
+  transition: transform ease-in-out .3s;
+  .arrow-left{
+    transform: translatex(-8px);
+    transition: transform ease-in-out  .3s;
+  }
+
+  .arrow-right{
+    transform: translatex(8px);
+    transition: transform ease-in-out  .3s;
+  }
+}
+
+// .arrow-left:hover{
+//   transform: translatex(-8px);
+//   color:  #527cff;
+//   transition: transform ease-in-out .3s;
+// }
+
+// .arrow-right:hover{
+//     transform: translatex(8px);
+//     color:  #527cff;
+//     transition: transform ease-in-out .3s;
+// }

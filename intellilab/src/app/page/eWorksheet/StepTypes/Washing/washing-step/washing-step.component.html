@@ -1,0 +1,216 @@
+
+
+<mat-checkbox *ngIf="mode === 'experiment'" color = "primary" [checked]="isExcluded" (change)="skipStep()" class = "relative-bottom-20">
+  <span class = "skip-text">Skip this step</span>
+</mat-checkbox>
+
+  <form [formGroup]="form" *ngIf="isExcluded === 0">
+
+  <!-- Operation 1 -->
+  <!-- <hr> -->
+  <strong>Washing Buffer</strong>
+    <div class="padding-left-35p">
+    <app-auto-complete *ngIf="mode === 'design'" [controllerName]="'buffer'" [listContent]="inventoryList" [inputWidth] = "'400px'" [initSelection]="editData && editData.buffer? editData.buffer : ''" [matLabel]="'Washing Buffer'" (userSelection)="autoUpdate($event, 'item')" (warnData) = "initWarn($event)"></app-auto-complete>
+    <div class="warn-container">
+      <!-- <mat-form-field *ngIf="mode !== 'design'" appearance="outline" class="display-block-200 width-400">
+        <mat-label>Buffer Name</mat-label>
+        <input *ngIf="mode === 'experiment'" matInput type="text" [value]="this.editData.buffer" readonly>
+        <input *ngIf="mode === 'review'" matInput type="text" [value]="this.reviewData.buffer" readonly>
+      </mat-form-field> -->
+      <app-text-field *ngIf="mode === 'experiment'" [text]="this.editData.buffer" [tag]="'Buffer Name'"></app-text-field>
+      <app-text-field *ngIf="mode === 'review'" [text]="this.reviewData.buffer" [tag]="'Buffer Name'"></app-text-field>
+      <span *ngIf="itemExpired && mode === 'experiment'" class="material-icons color-warn md-36 relative-top-right" [matTooltip]="'item is expired'" [matTooltipPosition]="'above'">
+        notification_important
+      </span>
+    </div>
+    <!-- <mat-error *ngIf="form.get('X').invalid">Please enter washing buffer name.</mat-error> -->
+
+    <div class="warn-container">
+      <mat-form-field *ngIf="mode === 'design'" appearance="outline" class="display-block-200">
+        <mat-label>Buffer Supplier</mat-label>
+        <input *ngIf="mode === 'design'" matInput type="text" formControlName="supplier" (change) = "updateInfo(); checkInputExist()">
+        <!-- <input *ngIf="mode === 'experiment'" matInput type="text"  [value]="this.editData.supplier" readonly>
+        <input *ngIf="mode === 'review'" matInput type="text"  [value]="this.reviewData.supplier" readonly> -->
+      </mat-form-field>
+
+      <app-text-field *ngIf="mode === 'experiment'" [text]="this.editData.supplier" [tag]="'Buffer Supplier'"></app-text-field>
+      <app-text-field *ngIf="mode === 'review'" [text]="this.reviewData.supplier" [tag]="'Buffer Supplier'"></app-text-field>
+
+      <span *ngIf="!supplier_exist" class="material-icons color-warn md-36 relative-top-right" [matTooltip]="toolTipMessage" [matTooltipPosition]="'above'">
+        error
+      </span>
+    </div>
+    <!-- <mat-error *ngIf="form.get('Y').invalid">Please enter washing buffer supplier name.</mat-error> -->
+
+    <app-auto-complete *ngIf="bufferLotNumList && mode === 'experiment'" [controllerName]="'bufferLot_user'" [listContent]="bufferLotNumList" [inputWidth] = "'200px'" [initSelection]="editData && editData.bufferLot_user? editData.bufferLot_user : ''" [listContentType]="'string'" [matLabel]="'Lot Number'" (userSelection)="autoUpdate($event, 'lotNum')"></app-auto-complete>
+
+    <!-- <mat-form-field *ngIf="mode === 'review' && dataType === 'instance'" appearance="outline">
+      <mat-label>Lot Number</mat-label>
+      <input matInput type="text"  [value]="this.reviewData.bufferLot_user" readonly>
+    </mat-form-field> -->
+
+    <app-text-field *ngIf="mode === 'review' && dataType === 'instance'" [text]="this.reviewData.bufferLot_user" [tag]="'Lot Number'"></app-text-field>
+    </div>
+<!-- End of Operation 1 -->
+
+
+<!-- Operation 2 -->
+  <!-- <hr class="margin-top-70"> -->
+  <hr>
+  <strong>Plate Dispensing Volume</strong>
+
+  <div class='plate-container'>
+    <div class="width-35p relative-bottom-6">
+      <mat-checkbox *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance')"
+      color = "primary"
+      [checked]="SDC"
+      (change) = "toggleSDC()"
+      [disabled]="mode === 'review'"
+      >
+      <span [ngClass]="(mode ==='experiment')?'skip-text':'skip-text-nohover'">
+        Solution Dispensing Completed
+      </span>
+      </mat-checkbox>
+    </div>
+
+    <div class="width-65p">
+      <mat-form-field *ngIf="mode === 'design'" appearance="outline">
+        <mat-label>Dispense Volume (per well)</mat-label>
+        <input *ngIf="mode === 'design'" matInput type="number"   formControlName="dispenseValue" (change) = "updateInfo()">
+      </mat-form-field>
+
+      <app-text-field *ngIf="mode === 'experiment'"
+      [text]="this.editData.dispenseValue + ' ' + (editData && editData.dispenseUnit)"
+      [tag]="'DV (per well)'"
+      [tagFullName]="'Dispense Volume (per well)'"
+      [toolTipType]="'fullName'">
+      </app-text-field>
+
+      <app-text-field *ngIf="mode === 'review'"
+      [text]="this.reviewData.dispenseValue + ' ' + (reviewData && reviewData.dispenseUnit)"
+      [tag]="'DV (per well)'"
+      [tagFullName]="'Dispense Volume (per well)'"
+      [toolTipType]="'fullName'">
+      </app-text-field>
+
+      <div *ngIf="mode === 'design'" class="unit-container margin-left-50">
+        <app-drop-down-list *ngIf="mode === 'design'" [listContent]="literUnits" [defaultOption] = "dispenseUnit_copy" [placeHolderValue]="'Unit'" [mode]="'simple'" [width]="'150px'" [targetUnit]="'dispenseUnit'" (unit) = "onChangeUnit($event)"></app-drop-down-list>
+      </div>
+    </div>
+  </div>
+
+<!-- End of Operation 2 -->
+
+
+<!-- Operation 3 -->
+<!-- <hr class="margin-top-70"> -->
+<hr>
+<strong>Washing Requirement</strong>
+<div class="padding-left-35p">
+  <mat-form-field *ngIf="mode === 'design'" appearance="outline" class="display-block-200">
+    <mat-label>Wash Cycle</mat-label>
+    <input *ngIf="mode === 'design'" matInput type="number" formControlName="washTime" (change) = "updateInfo()">
+    <!-- <input *ngIf="mode === 'experiment'" matInput type="number" [value]="this.editData.washTime" readonly>
+    <input *ngIf="mode === 'review'" matInput type="text" [value]="this.reviewData.washTime" readonly> -->
+  </mat-form-field>
+
+  <app-text-field *ngIf="mode === 'experiment'" [text]="this.editData.washTime" [tag]="'Wash Cycle'"></app-text-field>
+  <app-text-field *ngIf="mode === 'review'" [text]="this.reviewData.washTime" [tag]="'Wash Cycle'"></app-text-field>
+
+
+  <mat-form-field *ngIf="mode === 'design'" appearance="outline">
+    <mat-label>Solution Volume</mat-label>
+    <input *ngIf="mode === 'design'" matInput type="number" formControlName="washValue" (change) = "updateInfo()">
+    <!-- <input *ngIf="mode === 'experiment'" matInput type="number" [value]="this.editData.washValue" readonly>
+    <input *ngIf="mode === 'review'" matInput type="text" [value]="this.reviewData.washValue" readonly> -->
+  </mat-form-field>
+
+  <app-text-field *ngIf="mode === 'experiment'" [text]="this.editData.washValue + ' ' + (editData && editData.dispenseUnit)" [tag]="'Solution Volume'"></app-text-field>
+  <app-text-field *ngIf="mode === 'review'" [text]="this.reviewData.washValue + ' ' + (reviewData && reviewData.dispenseUnit)" [tag]="'Solution Volume'"></app-text-field>
+
+
+    <div *ngIf="mode === 'design'" class="unit-container margin-left-50">
+      <app-drop-down-list *ngIf="mode === 'design'" [listContent]="literUnits" [defaultOption] = "washUnit_copy" [placeHolderValue]="'Unit'" [mode]="'simple'" [width]="'150px'" [targetUnit]="'washUnit'" (unit) = "onChangeUnit($event)"></app-drop-down-list>
+
+      <!-- <mat-form-field *ngIf="mode !== 'design'" appearance="outline" class="width-150">
+        <mat-label>Unit</mat-label>
+        <input matInput type="text" [value]="(editData && editData.dispenseUnit) || (reviewData && reviewData.dispenseUnit)" readonly>
+      </mat-form-field> -->
+    </div>
+  </div>
+  <!-- End of Operation 3 -->
+
+  <!-- Operation 4 -->
+  <hr *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance')">
+  <strong *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance')">Washer Program</strong>
+  <div *ngIf="mode === 'experiment' || (mode === 'review' && dataType === 'instance')" class="padding-left-35p">
+
+    <mat-form-field *ngIf="mode === 'experiment'" appearance="outline">
+      <mat-label>Program Name</mat-label>
+      <!-- <mat-select *ngIf="mode === 'experiment'" [(value)] = "washProgramName" (selectionChange) = "updateInfo()"> -->
+        <mat-select *ngIf="mode === 'experiment'" formControlName="PBST" (selectionChange) = "updateInfo()">
+        <mat-option *ngFor="let program of programNames" [value] = "program"  >{{program}}</mat-option>
+      </mat-select>
+      <!-- <input *ngIf="mode === 'review' && dataType === 'instance'" matInput type="text" [value]="this.reviewData.PBST" readonly> -->
+    </mat-form-field>
+
+    <app-text-field *ngIf="mode === 'review' && dataType === 'instance'" [text]="this.reviewData.PBST" [tag]="'Program Name'"></app-text-field>
+  </div>
+  <!-- End of Operation 4 -->
+
+
+  <mat-expansion-panel *ngIf="(mode === 'experiment' || (mode === 'review' && equipments.length > 0)) && isExcluded === 0" class="margin-top-70 margin-bottom-15 margin-left-1 margin-right-1"
+    (afterExpand)="showEquipment = !showEquipment" (afterCollapse)="showEquipment = !showEquipment">
+
+      <mat-expansion-panel-header>
+        <mat-panel-title *ngIf="!showEquipment">Record Equipments</mat-panel-title>
+        <mat-panel-title *ngIf="showEquipment">Collapse</mat-panel-title>
+        <mat-panel-description *ngIf="!showEquipment">
+          <span>(Click to edit equipments in below)</span>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <app-equipment-ws (updateEquip)="updateEquip($event)" [initData]="equipments" [stepInfo]="{stepType: stepType, mode: mode}"></app-equipment-ws>
+
+  </mat-expansion-panel>
+
+</form>
+
+
+<!-- Comment Display Section for approved and rejected worksheet review -->
+<hr *ngIf="mode === 'review' && dataType === 'instance' && commentData.experimentComment">
+<strong *ngIf="mode === 'review' && dataType === 'instance' && commentData.experimentComment">Experiment Comment</strong>
+<div *ngIf="mode === 'review' && dataType === 'instance' && commentData.experimentComment"  class="padding-left-35p">
+  <!-- <mat-form-field appearance="outline" class="display-block width-500">
+    <mat-label>Experiment Comment</mat-label>
+    <textarea matInput [rows]="6" [cols]="60" [value]="commentData.experimentComment" readonly></textarea>
+  </mat-form-field> -->
+  <app-text-field [mode]="'textarea'" [text]="commentData.experimentComment" [tag]="'Comment'"></app-text-field>
+</div>
+
+
+<hr *ngIf="mode === 'review' && dataType === 'instance' && !enableComment && commentData.reviewComment">
+<strong *ngIf="mode === 'review' && dataType === 'instance' && !enableComment && commentData.reviewComment">Review Comment</strong>
+<div *ngIf="mode === 'review' && dataType === 'instance' && !enableComment && commentData.reviewComment" class="padding-left-35p">
+  <!-- <mat-form-field appearance="outline" class="display-block width-500">
+    <mat-label>Review Comment</mat-label>
+    <textarea matInput [rows]="6" [cols]="60" [value]="commentData.reviewComment" readonly></textarea>
+  </mat-form-field> -->
+  <app-text-field [mode]="'textarea'" [text]="commentData.reviewComment" [tag]="'Comment'"></app-text-field>
+</div>
+
+<button *ngIf="enableComment && !showComment && ((mode === 'review' && dataType === 'instance') || mode === 'experiment')" mat-raised-button color="primary" (click)="showComment = !showComment" class="width-300 display-block primary-btn-animation">{{mode === 'experiment' ? 'Create Experiment Comment' : 'Create Review Comment'}}</button>
+<!-- End of Comment Display Section -->
+
+
+<!-- Comment Section -->
+<div *ngIf="enableComment">
+  <div *ngIf="mode === 'experiment' && showComment === true">
+    <app-step-comment [commentType]="'experiment'" [initCommentData]="commentData.experimentComment" (commentPayload)="updateComment($event)" (cancel)="cancelComment($event)"></app-step-comment>
+  </div>
+
+  <div *ngIf="mode === 'review' && dataType === 'instance' && showComment === true">
+    <app-step-comment [commentType]="'review'" (commentPayload)="updateComment($event)"  (cancel)="cancelComment($event)"></app-step-comment>
+  </div>
+</div>
+<!-- End of Comment Section -->

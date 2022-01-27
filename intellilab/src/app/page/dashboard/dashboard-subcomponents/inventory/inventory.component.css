@@ -1,0 +1,91 @@
+.collapsedSummary {
+    margin-bottom: 0;
+}
+
+.collapsedSummary th {
+    font-weight: bold;
+    text-align: center;
+    color: #808080;
+}
+
+.collapsedSummary th:hover {
+    cursor: pointer;
+}
+
+th.attention {
+    background-color: rgba(57, 232, 30, 0.2);
+}
+
+th.warning {
+    background-color: rgba(241, 236, 66, 0.2);
+
+}
+
+th.danger {
+    background-color: rgba(242, 93, 67, 0.2);
+}
+
+td.danger {
+    color: red;
+}
+
+.collapseBtn {
+    display: inline-block;
+    float:right;
+    margin-top: 2px;
+    margin-right: 10px;
+}
+
+h4{
+    padding: 5px;
+    padding-left: 20px;
+    background-color: #17a2b8;
+    color: white;
+    margin-top: -1px;
+    border-radius: 5px 5px 0px 0px;
+}
+
+h4>small>a{
+    font-size: 14px;
+    color:white;
+    font-style: italic;
+    cursor: pointer;
+}
+
+h4>small>a:hover{
+    background-color: white;
+    color:#4b4b4b;
+    border-radius: 2px;
+}
+
+.invent-container>h6>small>a{
+    font-size: 14px;
+    color:white;
+    font-style: italic;
+    cursor: pointer;
+}
+
+.invent-container{
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.invent-container h6{
+    background: #747272;
+    color: white;
+    border-radius: 0px;
+    margin-bottom: 0px;
+    padding-left: 10px;
+
+}
+
+.invent-content{
+    border:0.1em solid #747272;
+    border-radius: 0px 0px 5px 5px
+}
+
+.invent-body{
+    padding: 0px;
+    margin: 0px;
+    margin-top: -15px;
+} 

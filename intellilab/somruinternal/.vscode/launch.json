@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SomruinternalApplication<somruinternal>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.internal.service.somruinternal.SomruinternalApplication",
+            "projectName": "somruinternal",
+            "args": ""
+        }
+    ]
+}

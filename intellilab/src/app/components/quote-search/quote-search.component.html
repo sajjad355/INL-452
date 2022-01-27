@@ -1,0 +1,27 @@
+<table class="table table-sm table-borderless">
+  <tr>
+    <td style="width:80%;">                
+      <input autocomplete="off" 
+        type="text"
+        class="form-control input-sm"
+        (keyup.enter)="searchQuote()"
+        [(ngModel)]="quoteNumber"
+        [ngModelOptions]="{standalone: true}" >
+      <div class="search-result" *ngIf="quoteSearchResults">
+        <div class="search-result-inner" *ngIf="quoteSearchResults.length > 0">
+          <p class="search-result-item" 
+            *ngFor="let searchResult of quoteSearchResults" 
+            (click)="selectQuote(searchResult.quoteId)">
+            {{searchResult.quoteNumber ? 'Quote Number: '+searchResult.quoteNumber : ''}}{{(searchResult.quoteNumber && searchResult.quoteNumber.length > 0 && searchResult.clientCompany.companyName && searchResult.clientCompany.companyName.length > 0) && ', '}}{{searchResult.clientCompany.companyName ? 'Client: '+searchResult.clientCompany.companyName : ''}}
+          </p>
+        </div>
+        <p *ngIf="!findQuote" class="no-result">No result found</p>
+      </div>
+    </td>
+    <td style="width:20%;">   
+      <label type="button" class="btn icon-btn" (click)="searchQuote()">
+        <i class="fas fa-search"></i>
+      </label>
+    </td>
+  </tr>
+</table>    

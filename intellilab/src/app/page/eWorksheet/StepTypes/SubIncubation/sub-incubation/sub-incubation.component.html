@@ -1,0 +1,118 @@
+
+<br>
+
+<form [formGroup]="form">
+
+  <!-- Operation 1 -->
+  <strong>Incubation&nbsp;{{displayIndex}}</strong>
+    <div class="padding-left-35p">
+
+      <mat-form-field *ngIf="mode === 'design'" appearance="outline" class="display-block-200">
+        <mat-label>Temperature (°C)</mat-label>
+        <input *ngIf="mode === 'design'"
+        matInput type="text"
+        formControlName = "incubateAtValue"
+        (change) = "updateInfo()"
+        [readOnly]="timer.complete || isTimerRunning ? true : false">
+      </mat-form-field>
+
+      <app-text-field *ngIf="mode === 'review' || mode === 'experiment'"
+      [text]="reviewData?.incubateAtValue || editData?.incubateAtValue"
+      [tag]="'Temperature (°C)'"></app-text-field>
+
+      <mat-form-field *ngIf="mode === 'design'" appearance="outline" >
+        <mat-label>Incubation Time</mat-label>
+        <input *ngIf="mode === 'design'"
+        matInput type="number"
+        formControlName = "incubateTimeValue"
+        (change) = "updateInfo(); updateTimerConfig()"
+        [readOnly]="timer.complete || isTimerRunning ? true : false">
+      </mat-form-field>
+
+      <app-text-field *ngIf="mode === 'review' || mode === 'experiment'"
+      [text]="((reviewData?.incubateTimeValue || editData?.incubateTimeValue) + ' ' + (reviewData?.incubateTimeUnit || editData?.incubateTimeUnit))"
+      [tag]="'Incubation Time'">
+      </app-text-field>
+
+      <div *ngIf="mode === 'design'" class="unit-container margin-left-50">
+        <app-drop-down-list *ngIf="mode === 'design'"
+        [listContent]="timeUnits"
+        [defaultOption] = "editData.incubateTimeUnit"
+        [placeHolderValue]="'Time Unit'"
+        [mode]="'simple'"
+        [width]="'150px'"
+        [targetUnit]="'incubateTimeUnit'"
+        (unit) = "onChangeUnit($event); updateTimerConfig()">
+        </app-drop-down-list>
+
+        <!-- <mat-form-field *ngIf="mode === 'experiment' && (timer.complete || isTimerRunning)" appearance="outline" class="width-150">
+          <mat-label>Time Unit</mat-label>
+          <input matInput type="text" [value]="timer.timeUnitSet" readonly>
+        </mat-form-field> -->
+      </div>
+
+      <!-- <div *ngIf="mode === 'design' || mode === 'experiment'" class="unit-container margin-left-50">
+        <app-drop-down-list *ngIf="mode === 'design' || (mode === 'experiment' && !timer.complete && !isTimerRunning)" [listContent]="timeUnits" [defaultOption] = "editData.incubateTimeUnit" [placeHolderValue]="'Time Unit'" [mode]="'simple'" [width]="'150px'" [targetUnit]="'incubateTimeUnit'" (unit) = "onChangeUnit($event); updateTimerConfig()"></app-drop-down-list>
+
+        <mat-form-field *ngIf="mode === 'experiment' && (timer.complete || isTimerRunning)" appearance="outline" class="width-150">
+          <mat-label>Time Unit</mat-label>
+          <input matInput type="text" [value]="timer.timeUnitSet" readonly>
+        </mat-form-field>
+      </div> -->
+
+      <mat-form-field *ngIf="mode === 'design'" appearance="outline" class="display-block-200">
+        <mat-label>Shaking RPM</mat-label>
+        <input *ngIf="mode === 'design'" matInput type="number"  formControlName = "incubateShakingValue" (change) = "updateInfo()" [readOnly]="timer.complete || isTimerRunning ? true : false">
+      </mat-form-field>
+      <app-text-field *ngIf="mode === 'review' || mode === 'experiment'"
+      [text]="reviewData?.incubateShakingValue || editData?.incubateShakingValue"
+      [tag]="'Shaking RPM'">
+      </app-text-field>
+
+    </div>
+ </form>
+  <!-- End of Operation 1 -->
+  <hr *ngIf="timer.complete || (this.mode === 'review' && this.dataType === 'instance')">
+  <strong *ngIf="timer.complete || (this.mode === 'review' && this.dataType === 'instance')">Time Spent</strong>
+  <div *ngIf="timer.complete || (this.mode === 'review' && this.dataType === 'instance')" class="padding-left-35p">
+    <!-- <mat-form-field *ngIf="this.mode !== 'review'" appearance="outline" class="display-block-200">
+      <mat-label>Timer Spent</mat-label>
+      <input *ngIf="this.mode !== 'review'" matInput type="text" [value]="timer.formattedTime" readonly>
+    </mat-form-field> -->
+    <app-text-field *ngIf="mode === 'review' || 'experiment'"
+    [text]="reviewData?.timer.formattedTime || timer?.formattedTime"
+    [tag]="'Timer'">
+    </app-text-field>
+  </div>
+
+  <mat-expansion-panel *ngIf="mode === 'experiment' && !timer.complete" [disabled]="disableTimerPanel" (afterExpand)="displayEvent()" (afterCollapse)="displayEvent()" class="margin-bottom-15 margin-left-1 margin-right-1">
+    <mat-expansion-panel-header *ngIf="!disableTimerPanel">
+      <mat-panel-title *ngIf="!hidePanelText" class="margin-right-15p">Show Timer </mat-panel-title>
+      <mat-panel-title *ngIf="hidePanelText">Collapse</mat-panel-title>
+
+      <mat-panel-description  *ngIf="!hidePanelText && !showPanelTime">
+        <span>(Display a count down timer in below)</span>
+      </mat-panel-description>
+
+      <mat-panel-description  *ngIf="showPanelTime && !isTimeOverDue && !hidePanelText">
+         <span>Remaining Time:&nbsp;{{panelTime}}</span>
+      </mat-panel-description>
+
+      <mat-panel-description  *ngIf="isTimeOverDue && !hidePanelText" [style.color]="'red'">
+          <span>Time Overdue:&nbsp;{{panelTime}}</span>
+      </mat-panel-description>
+
+    </mat-expansion-panel-header>
+
+    <mat-expansion-panel-header *ngIf="disableTimerPanel"[matTooltip]="'Timer will be available after the current incubation is filled out'" [matTooltipPosition]="'above'">
+      <mat-panel-title>Timer is temporarily disabled</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <!-- <app-step-timer></app-step-timer> -->
+    <app-step-timer #timer_view *ngIf="!disableTimerPanel" [receiveTime]="timer.timeValueSet" [receiveTimeUnit]="timer.timeUnitSet" [startDate]="timer.timerStartDate" [parentConfig]="parentConfig" (sendTime)="saveTime($event)" (displayTime)="notifyTime($event)" (launchDate)="saveTimerDate($event)"></app-step-timer>
+
+  </mat-expansion-panel>
+
+
+
+

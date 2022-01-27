@@ -1,0 +1,15 @@
+<div role="group" class="toggle-edit-input-container" [formGroup]="form" (focusin)="onFocusIn($event)"
+  (focusout)="onFocusOut($event)">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ label }}</mat-label>
+
+    <input #input matInput formControlName="input" [disabled]="disabled" (input)="_handleInput(form.controls.input)">
+    <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+    <mat-error *ngIf="form.controls.input.errors?.nameExists">
+      {{ form.controls.input.getError("nameExists") }}
+    </mat-error>
+    <mat-error *ngIf="form.controls.input.errors?.required">
+      {{ label }} is required
+    </mat-error>
+  </mat-form-field>
+</div>

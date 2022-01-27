@@ -1,0 +1,50 @@
+div {
+  min-height: 150px;
+  width: 450px;
+  /* border: 2px blue solid; */
+  font-family: "Raleway", sans-serif;
+}
+
+mat-dialog-content {
+  /* border: 1px red solid; */
+  text-align: center;
+  font-weight: bolder;
+
+}
+
+.width-150 { width: 150px }
+
+.color-red { color: rgb(242, 69, 61) }
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  /* border: 1px green solid; */
+}
+
+.confirm-btn{
+ transition: font-size 200ms ease-out
+}
+
+.cancel-btn{
+  transition: font-size 200ms ease-out
+}
+
+.confirm-btn:hover {
+  border: 2px #3f51b5 solid;
+  background-color: white;
+  color: #3f51b5;
+  font-size: large;
+}
+
+.cancel-btn:hover {
+  border: 2px #f44336 solid;
+  background-color: white;
+  color: #f44336;
+  font-size: large;
+}
+
+p{
+  margin-top: 1rem;
+}

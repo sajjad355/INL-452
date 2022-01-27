@@ -1,0 +1,161 @@
+<div class="tab-container">
+  <h2>Product</h2>
+  <div>
+     <b>Search Product</b>
+     &nbsp;
+     <label for="activeCheckBox">Active Products Only:</label>
+     <input type="checkbox"
+            [(ngModel)]="search.active"
+            id="activeCheckBox" >
+  </div>
+  <div class="input-group">
+    <span class="input-group-text" id="basic-addon1" (click)="page =1;searchProduct();">
+      <i class="fa fa-search" aria-hidden="true"></i>
+    </span>
+    <input autocomplete="off"
+           type="text"
+           class="form-control"
+           placeholder="Search Product by Name or Cat"
+           aria-describedby="basic-addon1"
+           [(ngModel)]="search.searchValue"
+           (keyup.enter)="page=1; searchProduct();">
+  </div>
+
+  <div class="row control-box">
+    <div ngbDropdown style="display: inline-block;">
+      <button class="btn btn-default menu-btn" id="dropdownBasic1" ngbDropdownToggle>
+        <i class="fa fa-list" aria-hidden="true"></i> Edit View</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+        <button *ngFor="let mode of columnList; let i = index;" class="dropdown-item" (click)="toggleViewCol(i)">
+          <input autocomplete="off" type="checkbox" [checked]="viewColumn[i]">{{mode}}</button>
+      </div>
+    </div>
+
+
+    <button class="btn btn-default menu-btn"  *ngIf="canManageProducts" routerLink="/main/products/new">
+      <i class="fa fa-plus" aria-hidden="true"></i> New Product
+    </button>
+  </div>
+
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-container">
+
+    <table class="table table-scroll">
+      <thead>
+        <tr>
+          <th colspan="2" *ngIf="viewColumn[0]">Cat#</th>
+          <th colspan="4" *ngIf="viewColumn[1]">Name</th>
+          <th *ngIf="viewColumn[2]">Type</th>
+          <th *ngIf="viewColumn[3]">Size</th>
+          <th *ngIf="viewColumn[4]">Price(USD)</th>
+          <th *ngIf="viewColumn[5]">Edit Status</th>
+          <th *ngIf="viewColumn[6]">Host</th>
+          <th *ngIf="viewColumn[7]">Clonality</th>
+          <th *ngIf="viewColumn[8]">Isotype</th>
+          <th *ngIf="viewColumn[9]">Immunogen</th>
+          <th *ngIf="viewColumn[10]">Description</th>
+          <th *ngIf="viewColumn[11]">Purification</th>
+          <th *ngIf="viewColumn[12]">Buffer</th>
+          <th *ngIf="viewColumn[14]">Specificity</th>
+          <th *ngIf="viewColumn[15]">Storage</th>
+          <th *ngIf="viewColumn[16]">Safety</th>
+          <th *ngIf="viewColumn[17]">Comment</th>
+          <th *ngIf="viewColumn[18]">Pack Size</th>
+          <th *ngIf="viewColumn[19]">Active</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products; let i = index" [routerLink]="['/main/products', p.salesItemId]" class="shadow-row">
+          <td colspan="2" *ngIf="viewColumn[0]">{{p.catalogNumber}}</td>
+          <td colspan="4" *ngIf="viewColumn[1]" [id]="p.salesItemId">
+            <a class="productName">{{p.name}}</a>
+          </td>
+          <td *ngIf="viewColumn[2]">{{p.type}}</td>
+          <td *ngIf="viewColumn[3]">{{p.unitSize}} {{p.unit}}</td>
+          <td *ngIf="viewColumn[4]">{{p.unitPrice | currency : 'USD' : '' }}</td>
+          <td *ngIf="viewColumn[5]">{{p.status}}</td>
+          <td *ngIf="viewColumn[6]">{{p.host}}</td>
+          <td *ngIf="viewColumn[7]">{{p.clonality}}</td>
+          <td *ngIf="viewColumn[8]">{{p.isotype}}</td>
+          <td *ngIf="viewColumn[9]">{{p.immunogen}}</td>
+          <td *ngIf="viewColumn[10]">{{p.description}}</td>
+          <td *ngIf="viewColumn[11]">{{p.purification}}</td>
+          <td *ngIf="viewColumn[12]">{{p.buffer}}</td>
+          <td *ngIf="viewColumn[14]">{{p.specificity}}</td>
+          <td *ngIf="viewColumn[15]">{{p.storage}}</td>
+          <td *ngIf="viewColumn[16]">{{p.safety}}</td>
+          <td *ngIf="viewColumn[17]">{{p.comment}}</td>
+          <td *ngIf="viewColumn[18]">{{p.packSize}}</td>
+          <td *ngIf="viewColumn[19]">{{p.active}}</td>
+        </tr>
+        <tr *ngIf="products == undefined || products.length < 1">
+          <td class="empty" colspan="19">Empty</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="allCount>10">
+    <p class="page-note"
+       [style.text-align]="'center'">
+       Product {{((page-1)*10)+1}} - {{page*10>allCount?allCount:page*10}} of {{allCount}} Product(s)
+    </p>
+    <ngb-pagination
+                   class="d-flex justify-content-center"
+                   [collectionSize]="allCount"
+                   [(page)]="page"
+                   [maxSize]="5"
+                   aria-label="Default pagination"
+                   (pageChange)="loadPage()">
+    </ngb-pagination>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-screen">
+    <img class="loading-img" src="../../../assets/images/loading.gif">
+  </div>
+</div>
+
+
+<div [style.right]="displayProduct ? 0 : '-100%'" class="slide">
+  <div class="edit-container">
+    <h2>
+
+      <div class="product-header-container" style="text-align:right;">
+        <h1>{{isNewProduct?'New Product':displayProduct?.name}}</h1>
+        <button  (click)="reset()"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="product-operation-container" *ngIf="!isNewProduct">
+        <span *ngIf="canManageProducts" (click)="enableEditProduct=true">
+          Edit
+        </span>
+
+
+        <span *ngIf="!isnew" (click)="generatePDF(displayProduct)">
+          <!-- <i class="fa fa-file-pdf far-10x"></i> -->
+          PDF
+        </span>
+      </div>
+
+      <small class="sub-head" *ngIf="message" style="color:salmon;">{{message}}</small>
+      <small class="sub-head" *ngIf="displayProduct?.enteredBy && displayProduct?.enteredTime">Entered by: {{displayProduct?.enteredBy}} at {{displayProduct?.enteredTime|date: dateFormatDisplay}}
+      </small>
+
+      <small class="sub-head" *ngIf="displayProduct?.reviewedBy && displayProduct?.editStatusTime">Reviewed by: {{displayProduct?.reviewedBy}} at {{displayProduct?.editStatusTime|date: dateFormatDisplay}}
+      </small>
+    </h2>
+
+    <app-product-display [product]="displayProduct"
+                         [enableEdit]="enableEditProduct"
+                         [isNew]="isNewProduct"
+                         (updateProduct)="saveProduct($event)"
+                         (cancel)="reset()">
+    </app-product-display>
+  </div>
+</div>
+
+
+
+
+
+
+
+

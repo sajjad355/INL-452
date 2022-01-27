@@ -1,0 +1,134 @@
+.page{
+    height: 100vh;
+    width: 100vw;
+    background-color: #17a2b8;
+    /* padding: 40vh; */
+    padding-top:10%;
+    /* position: absolute;
+    display: inline-block;
+    text-align: center; */
+    /* vertical-align: center; */
+}
+
+.container{
+    margin:0 auto;
+    width: 450px;
+    background-color: white;
+    border-radius: 0.25rem;
+    padding: 1rem;
+}
+
+.login-field{
+    display: block;
+}
+
+input{
+    text-align: center;
+}
+
+.login-btn{
+  width: 50%;
+  margin-top: 1rem;
+  background-color: rgba(23, 162, 184, 0.5);
+  color: white;
+  transition: all 0.3s ease;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  border: none;
+  outline: none;
+  font-weight: bold;
+  font-size: large;
+}
+
+.login-btn:hover{
+  background-color: rgba(23, 162, 184, 1);
+  transform:  translateY(-3px);
+}
+
+.button.forgetpassword{
+    padding:0px;
+    text-align:right;
+    font-weight: bold;
+    font-style:italic;
+    color: #17a2b8;
+    background-color: white;
+    width:auto;
+    margin:0px;
+    float:right;
+}
+
+.alert.alert-danger{
+    font-size:11px;
+    padding-left:20px;
+    text-align: center;
+}
+
+p.forgetpasswordbutton{
+    color:#17a2b8;
+    font-weight:bold;
+    background-color: transparent;
+    width:100px;
+}
+
+p.forgetpasswordbutton:hover{
+    text-decoration: underline;
+}
+
+label.text-danger{
+    text-align:left;
+    margin-bottom:0px;
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 120px;
+}
+
+.margin-bottom-4rem{
+  margin-bottom: 4rem;
+}
+
+
+a.discrete {
+  display: block;
+  width: 30%;
+  color:  rgba(0,0,0, .2);
+  font-size:  14px;
+  font-weight:  300;
+  transition:  all .3s ease;
+  margin-top:  1rem;
+}
+
+a.discrete:hover{
+  cursor: pointer;
+  color:  rgba(0,0,0, .4);
+  border-bottom:rgba(0,0,0, .4) 1px solid;
+  /* border-bottom:  solid 1px rgba(#000, .2); */
+}
+
+
+.roller-btn{
+  height: 30px;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 1rem;
+  /* margin: 10px 60px 10px 60px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(23, 162, 184, .5);
+
+  &:hover{
+    cursor: pointer;
+    color: rgba(23, 162, 184, 1);
+    .arrow-left{
+      transform: translatex(-8px);
+      transition: transform ease-in-out  .3s;
+    }
+  }
+}
+
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }

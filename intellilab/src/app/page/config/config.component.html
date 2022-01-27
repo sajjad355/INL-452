@@ -1,0 +1,30 @@
+<div id="config-type-select">
+  <label id="config-radio-group-label">Select configuration to edit:</label>
+  <mat-radio-group [value]="selectedConfigType">
+    <mat-radio-button
+      value="settings"
+      routerLink="/main/config/settings"
+    >
+      Settings
+    </mat-radio-button>
+    <mat-radio-button
+      value="locations"
+      routerLink="/main/config/locations"
+    >
+      Locations
+    </mat-radio-button>
+    <mat-radio-button
+      value="manufacturers_and_suppliers"
+      routerLink="manufacturers_and_suppliers"
+    >
+      Manufacturers and Suppliers
+    </mat-radio-button>
+    <mat-radio-button
+      value="folder_locations"
+      routerLink="folder_locations"
+    >
+      Folder Locations
+    </mat-radio-button>
+  </mat-radio-group>
+</div>
+<router-outlet></router-outlet>

@@ -1,0 +1,37 @@
+.orange600 { color: #FB8C00 }
+.font-heavy { font-weight: bolder; }
+
+.color-warn { color: #f44336 }
+.material-icons.md-36 { font-size: 36px; }
+.warn-container {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.margin-left-15{ margin-left: 15px;  }
+.margin-bottom-15{ margin-bottom: 15px; }
+
+.relative-top-right {
+  position: relative;
+  bottom: 35px;
+  right: 16px;
+}
+
+.cat-style {
+  height: 20px;
+  width: 120px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(52, 207, 83);
+  color: white;
+  border-radius: 10px;
+  margin-right: 10px;
+  transition: width 300ms ease;
+}
+
+.cat-style:hover{
+  width: 240px;
+}
+

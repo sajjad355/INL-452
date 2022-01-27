@@ -1,0 +1,62 @@
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+$primary: mat-palette($mat-cyan, 600, 300, 900);
+
+.setting-details-container {
+  max-width: 80vw;
+  min-width: 40vw;
+  position: relative;
+}
+
+.setting-form {
+  padding: 20px;
+  min-height: calc(100vh - 40px);
+}
+
+.detail-content {
+  padding: 20px;
+  margin-bottom: 100px;
+}
+
+::ng-deep mat-form-field {
+  margin-bottom: 30px;
+}
+
+td {
+  vertical-align: middle;
+  border: none;
+
+  &::ng-deep mat-form-field {
+    margin-bottom: 0;
+  }
+}
+
+th {
+  background-color: mat-color($primary);
+  color: mat-color($primary, default-contrast);
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.btn-add-new {
+  left: 50%;
+  margin: -20px;
+}
+
+.btn-save {
+  height: 40px;
+  width: 100px;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  margin: 100px 50px 0 20px;
+  bottom: 50px;
+
+  &.saved {
+    background-color: green;
+    color: #fff;
+  }
+}

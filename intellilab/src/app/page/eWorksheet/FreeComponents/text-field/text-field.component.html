@@ -1,0 +1,26 @@
+
+
+		<div *ngIf="mode === 'input'" class="text">
+
+      <div class="text__field">
+        <span class = "part1">{{text}}</span>
+
+      </div>
+
+      <div *ngIf="!toolTipType" class="msg msg--primary uppercase">{{tag}}</div>
+
+      <div *ngIf="toolTipType === 'fullName'" class="msg msg--primary uppercase"
+      [matTooltip]="tagFullName"
+      [matTooltipPosition]="'above'">{{tag}}</div>
+
+      <div *ngIf="toolTipType === 'infoTip'" class="msg msg--primary uppercase"
+      [matTooltip]="infoTip"
+      [matTooltipPosition]="'right'">{{tag}}</div>
+
+		</div>
+
+
+      <textarea *ngIf="mode === 'textarea'" class="area-box" [rows]="6" [cols]="30" [value]="text" readonly></textarea>
+      <div *ngIf="mode === 'textarea'" class="area-tag area-tag-primary uppercase">{{tag}}</div>
+
+

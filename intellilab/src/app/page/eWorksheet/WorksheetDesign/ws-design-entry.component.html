@@ -1,0 +1,409 @@
+
+<nav class="nav__cont">
+  <ul class="nav">
+    <li class="nav__items ">
+      <div class="item-container">
+        <span class="material-icons md-30 icon-color nav-icon-border" matTooltip="Go back to Intelli Lab home page" [matTooltipPosition]="'below'">
+          home
+        </span>
+        <!-- <a [routerLink]="'/main'" >Intelli Lab</a> -->
+        <a (click)="toHome()" >Intelli Lab</a>
+      </div>
+
+    </li>
+
+    <li *ngIf="privilege.design" class="nav__items ">
+      <div class="item-container">
+        <span class="material-icons md-30 icon-color nav-icon-border" matTooltip="Create or review worksheet designs" [matTooltipPosition]="'below'">
+          design_services
+        </span>
+        <a [routerLink]="'/ws_review_copy'">Design</a>
+      </div>
+    </li>
+
+    <li *ngIf="privilege.experiment" class="nav__items ">
+      <div class="item-container">
+        <span class="material-icons md-30 icon-color nav-icon-border" matTooltip="Execute worksheet designs" [matTooltipPosition]="'below'">
+          science
+        </span>
+        <a [routerLink]="['/ws_experiment/analyst', designConfig.userId]">Experiment</a>
+      </div>
+    </li>
+
+    <li *ngIf="privilege.review" class="nav__items ">
+      <div class="item-container">
+        <span class="material-icons md-30 icon-color nav-icon-border" matTooltip="Review and comment submitted worksheets" [matTooltipPosition]="'below'">
+          grading
+        </span>
+        <a [routerLink]="['/ws_experiment/scientist', designConfig.userId]">Review</a>
+      </div>
+    </li>
+
+  </ul>
+</nav>
+<div class="content-container">
+<app-ws-header [tooBarTitle]="'Design Creation'" [buttonList]="headerButtonList" [hideBackButton]="hideBackButton"></app-ws-header>
+
+
+<div *ngIf="isLoading" class="loader-container">
+  <div class="loader"></div>
+</div>
+
+
+<!-- different design steps are grouped with tabs -->
+  <mat-tab-group  (selectedTabChange)="tabChange($event)">
+
+  <!-- 1 -> tab section for template information -->
+  <mat-tab>
+
+    <ng-template mat-tab-label>
+      <div  class="tab-animation">
+        <span>Template Info&nbsp;&nbsp;</span>
+        <span *ngIf="!infoTab_complete" class="material-icons edit">
+          edit
+        </span>
+
+        <span *ngIf="infoTab_complete" class="material-icons complete">
+          check_circle
+        </span>
+      </div>
+    </ng-template>
+
+
+    <mat-card class="mat-elevation-z8">
+      <div class="info-container">
+        <div class="info-input-container">
+
+          <mat-form-field appearance="fill" *ngIf = "newDesign || isCopy" class="margin-bottom-10">
+            <mat-label>Study Number</mat-label>
+            <input type="text" matInput [(ngModel)]="designConfig.studyNum" (change) = "checkInfoTab()"/>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" *ngIf = "newDesign || isCopy" class="margin-bottom-10">
+            <mat-label>Worksheet Number</mat-label>
+            <input type="text" matInput [(ngModel)]="designConfig.wsNum" (change) = "checkInfoTab()"/>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" *ngIf = "newDesign || isCopy" class="margin-bottom-10">
+            <!-- <mat-label>Template Name</mat-label> -->
+            <mat-label>Drug Name</mat-label>
+            <input type="text" matInput [(ngModel)]="designConfig.templateName" (change) = "checkInfoTab()" />
+          </mat-form-field>
+          <!-- <br> -->
+
+          <mat-form-field appearance="fill" *ngIf = "newDesign || isCopy" class="margin-bottom-10">
+            <mat-label>Experiment Objective</mat-label>
+            <input type="text" matInput [(ngModel)]="designConfig.exObjective" (change) = "checkInfoTab()" />
+          </mat-form-field>
+          <!-- <br> -->
+
+          <mat-form-field appearance="fill" *ngIf = "newDesign || isCopy" class="margin-bottom-10">
+            <mat-label>Experiment Type</mat-label>
+            <mat-select [(value)] = "designConfig.exType" (selectionChange) = "checkInfoTab()">
+              <mat-option *ngFor="let ex_type of ex_types" [value] = "ex_type"  >{{ex_type}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <!-- <br> -->
+
+          <div *ngIf="!newDesign">
+
+            <p class="color-gray"><strong *ngIf =  "!newDesign && !isCopy">Study Number:&nbsp;&nbsp;{{designConfig.studyNum}}</strong></p>
+
+            <p class="color-gray"><strong *ngIf =  "!newDesign && !isCopy">Worksheet Number:&nbsp;&nbsp;{{designConfig.wsNum}}</strong></p>
+
+            <p class="color-gray"><strong *ngIf =  "!newDesign && !isCopy">Drug Name:&nbsp;&nbsp;{{designConfig.templateName}}</strong></p>
+
+            <p class="color-gray"><strong>Creation Date:&nbsp;&nbsp;{{dateFormat(initDate)}}</strong></p>
+
+            <p class="color-gray"><strong>Version Number:&nbsp;&nbsp;{{this.designConfig.version}}</strong></p>
+
+            <p class="color-gray"><strong *ngIf =  "!newDesign && !isCopy">Experiment Objective:&nbsp;&nbsp;{{this.designConfig.exObjective}}</strong></p>
+
+            <p class="color-gray"><strong *ngIf =  "!newDesign && !isCopy">Experiment Type:&nbsp;&nbsp;{{this.designConfig.exType}}</strong></p>
+          </div>
+
+
+          <mat-form-field appearance="fill" class="margin-bottom-10">
+            <mat-label>Author</mat-label>
+            <input type="text" matInput [(ngModel)]="designConfig.scientist" (change) = "checkInfoTab()"/>
+          </mat-form-field>
+          <!-- <br> -->
+
+
+            <mat-form-field *ngIf="newDesign" class="margin-bottom-10">
+              <input
+                matInput
+                [matDatepicker]="picker"
+                placeholder="Date"
+                [(ngModel)]="initDate"
+                (change) = "checkInfoTab()"
+                (dateChange) = "checkInfoTab()"
+              />
+
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+
+          <!-- <br> -->
+        </div>
+
+        <div>
+          <img src="../../../../assets/eWorksheet/Somru-Logo-high.jpg" alt="Somru Logo" class="info-img">
+        </div>
+
+      </div>
+    </mat-card>
+  </mat-tab>
+
+    <!-- 1 -> End of tab section for template information  -->
+
+
+
+    <!-- 2 -> tab section for step type selections -->
+  <mat-tab>
+
+    <ng-template mat-tab-label>
+      <div  class="tab-animation">
+        <span>Step Selection&nbsp;&nbsp;</span>
+        <span *ngIf="!selectionTab_complete" class="material-icons edit">
+          edit
+        </span>
+
+        <span *ngIf="selectionTab_complete" class="material-icons complete">
+          check_circle
+        </span>
+      </div>
+    </ng-template>
+
+    <div class="buttonContainer">
+      <button class="btn-size-150 btn-margin-top-20 primary-btn-animation" mat-raised-button color="primary" (click) = "addStep()"> Add Step </button>
+    </div>
+    <br>
+    <br>
+
+    <app-drop-down-list *ngFor = "let step of steps"
+    [index] = "step.stepIndex"
+    [listContent]="step.stepListContent"
+    [defaultOption] = "step.stepType"
+    [placeHolderValue]="'Step Type'"
+    [displayLabel]="step.stepIndex === labelIndex && displayLabel ? true : false"
+    (selection) = "updateStep($event)"
+    (removedStep) = "removeStep($event)"
+    (stepMove)="stepMove($event)"></app-drop-down-list>
+
+  </mat-tab>
+  <!-- 2 -> End of tab section for step type selections -->
+
+
+
+  <!-- 3 -> tab section for configuring steps' basic parameters -->
+  <mat-tab>
+      <ng-template mat-tab-label>
+        <div  class="tab-animation">
+          <span>Step Configuration&nbsp;&nbsp;</span>
+          <span *ngIf="!configTab_complete" class="material-icons edit">
+            edit
+          </span>
+
+          <span *ngIf="configTab_complete" class="material-icons complete">
+            check_circle
+          </span>
+        </div>
+      </ng-template>
+
+
+      <!-- Panel for plate map uploading -->
+      <mat-expansion-panel class="mat-elevation-z8">
+        <mat-expansion-panel-header [collapsedHeight]="'50px'">
+          <mat-panel-title>
+            <div class="panel-title-container">
+              <span class="platemap-counter" matTooltip="The number of attached platemap(s)" [matTooltipPosition]="'above'">{{designConfig.files.length}}</span>
+              <strong class="margin-left-10 italic color-blue">Plate Maps and Files</strong>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-file-upload #fileupload [initData]="files_base64" (uploadChange)="onFileChange($event)"></app-file-upload>
+      </mat-expansion-panel>
+
+      <!-- Mat card for design comment -->
+      <mat-card  class="mat-elevation-z8">
+        <div>
+          <app-step-comment
+          #designComment_view
+          [hasTopBreak]="false"
+          [commentType]="'design'"
+          [initCommentData]="designConfig.designComment"
+          (commentPayload)="updateComment($event)"
+          (cancel)="cancelComment($event)">
+          </app-step-comment>
+        </div>
+      </mat-card>
+
+
+      <mat-card *ngIf="!isLoading" class="mat-elevation-z8">
+      <div class="wrapper margin-bottom-50">
+        <section class="header-stepper">
+
+          <div class="logo-and-nav-wrap">
+
+              <div class="stepper-nav-wrap">
+                 <nav  class="steps">
+
+                  <div *ngFor="let step of stepInitData; let index = index" class="breadcrumb-wrap" (click) = "updateStepperIndex(index)" [class.select-effect]="stepperIndex === index">
+
+                    <span class="sep"><i class="fa fa-caret-right"></i></span>
+                    <span class="breadcrumb">
+                      <a class = "step-label"
+                      [matTooltip]="step.stepType === 'Blocking' ?
+                      'Blocking Addition' : step.stepType === 'Capture' ?
+                      'Capture Preparation and Addition' : step.stepType === 'Coating' ?
+                      'Coating Preparation and Addition' : step.stepType === 'Detection' ?
+                      'Detection Preparation and Addition' : step.stepType === 'Test' ?
+                      'Sample Preparation' : step.stepType === 'Washing' ?
+                      'Washing' : step.stepType === 'Substrate' ?
+                      'Substrate Addition' : step.stepType === 'Stop' ?
+                      'Stop Solution Addition' : step.stepType
+                    "
+                    [matTooltipPosition] = "'below'"
+                    [matTooltipShowDelay]="1000">
+                        {{step.stepValid ? '' : (step.stepType ? '! ' : '')}}
+                        {{step.stepType === 'Test' ? 'Sample Preparation' : (step.stepType ? step.stepType : '?')}}
+                      </a>
+                    </span>
+
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </section>
+
+
+          <section  class="ws-tab-container">
+
+            <div *ngFor="let step of stepInitData; let index = index" class="ws-tab-content z-index-10" [class.hide]="stepperIndex != index">
+
+
+                <app-washing-step  *ngIf="step.stepType === 'Washing' && (loadStepDetail || step.isAlreadyLoad)"
+                [mode] = "mode"
+                [stepType]="step.stepType"
+                [dataType]="dataType"
+                (userData)="dataReceiver($event)"
+                [stepIndex]="step.stepIndex"
+                [editData]= "step.stepData"
+                [inventoryList]="inventoryList"></app-washing-step>
+
+
+              <app-general-step *ngIf="(
+                        step.stepType === 'Blocking' ||
+                       step.stepType === 'Capture'  ||
+                       step.stepType === 'Coating'  ||
+                       step.stepType === 'Detection'||
+                       step.stepType === 'Test'
+              ) && (loadStepDetail || step.isAlreadyLoad)"
+              [mode] = "mode"
+              [stepType]="step.stepType"
+              [dataType]="dataType"
+              (userData)="dataReceiver($event)"
+              [stepIndex]="step.stepIndex"
+              [editData]= "step.stepData"
+               [inventoryList]="inventoryList">
+              </app-general-step>
+
+
+            <app-substrate-step *ngIf="step.stepType === 'Substrate' && (loadStepDetail || step.isAlreadyLoad)"
+            [mode] = "mode"
+            [stepType]="step.stepType"
+            [dataType]="dataType"
+            (userData)="dataReceiver($event)"
+            [stepIndex]="step.stepIndex"
+            [editData]= "step.stepData"
+            [inventoryList]="inventoryList">
+          </app-substrate-step>
+
+
+            <app-stop-step *ngIf="step.stepType === 'Stop' && (loadStepDetail || step.isAlreadyLoad)"
+            [mode] = "mode"
+            [stepType]="step.stepType"
+            [dataType]="dataType"
+            (userData)="dataReceiver($event)"
+            [stepIndex]="step.stepIndex"
+            [editData]= "step.stepData"
+            [inventoryList]="inventoryList">
+          </app-stop-step>
+
+          <app-calibrator *ngIf="step.stepType === 'Calibrator Preparation' ||
+          step.stepType === 'QC Preparation' ||
+          step.stepType === 'Sample Dilution' ||
+          step.stepType === 'MRD' &&
+          (loadStepDetail || step.isAlreadyLoad)"
+            [mode] = "mode"
+            [stepType]="step.stepType"
+            [dataType]="dataType"
+            (userData)="dataReceiver($event)"
+            [stepIndex]="step.stepIndex"
+            [editData]= "step.stepData"
+            [inventoryList]="inventoryList">
+          </app-calibrator>
+
+
+
+
+            <mat-card *ngIf = "!step.stepType" class="notification">
+              <strong>Please select step type</strong>
+            </mat-card>
+
+
+            </div>
+            </section>
+          </div>
+
+
+          <!-- Bottom stepper for design -->
+
+              <app-roller-button *ngIf="steps && steps.length > 1" (rollerMove)="rollerListener($event)"></app-roller-button>
+
+          <!-- End of bottom stepper for design -->
+
+
+      </mat-card>
+
+
+  </mat-tab>
+  <!-- 3 -> End of tab section for configuring steps' basic parameters -->
+</mat-tab-group>
+
+<alert id="studyNum"></alert>
+<alert id="wsNum"></alert>
+<alert id='drug-name'></alert>
+<alert id='author-name'></alert>
+<alert id="ex-type"></alert>
+<alert id="ex-ob"></alert>
+<alert id="date"></alert>
+<alert id="success"></alert>
+<alert></alert>
+
+<div *ngIf="steps.length > 0 && tabIndex === 2" class="btn-container">
+  <button mat-raised-button color="primary" (click)="onSave()" class="btn-size-150 primary-btn-animation mat-elevation-z10">
+    <span>Save</span>
+    <span class="material-icons btn-icon">
+      save
+    </span>
+  </button>
+
+  <button mat-raised-button color="primary" (click)="onFinalize()" class="btn-size-150 primary-btn-animation mat-elevation-z10">
+    <span>Finalize</span>
+    <span class="material-icons btn-icon">
+      verified
+    </span>
+  </button>
+</div>
+
+
+</div>
+<!-- End of content container -->
+
+

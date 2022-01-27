@@ -1,0 +1,29 @@
+<div class="col-md-12 fake-body" *ngIf="error">
+  <div class="error-container row">
+    <div class="col-md-6">
+      <div class="error-left">
+        <div>
+          <p class="error-title">Well, this is unexpected...</p>
+          <p class="error-code">Error code: {{ error.status }}</p>
+          <p class="error-message"><span style="font-weight: bold;">Error:</span> {{ error.error }}</p>
+          <p class="error-message"><span style="font-weight: bold;">API Path:</span> {{ error.path ? error.path : 'N/A' }}</p>
+          <!-- <p class="error-message"><span style="font-weight: bold;">Message:</span> {{ renderMessage((error['message'] ? error['message'] : 'N/A'), 100) }}</p> -->
+          <p class="error-message"><span style="font-weight: bold;">Exception Tag:</span> {{ error.tag }}</p>
+          <p class="error-message pt-4"><button (click)="copyToClipboard()">{{ copyToClipboardButton }}</button> to copy the full debug message to clipboard, or
+            <button (click)="email()">Email this issue</button>
+          </p>
+          <p class="back-link font-weight-bold" (click)="goBack()">← Back</p>
+        </div>
+        <div id="error-console">
+          {{ error['message'] ? error['message'] : 'N/A' }}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="error-right">
+        <button (click)="goBack()">✕</button>
+        <img src="../../../assets/images/error.png" />
+      </div>
+    </div>
+  </div>
+</div>
