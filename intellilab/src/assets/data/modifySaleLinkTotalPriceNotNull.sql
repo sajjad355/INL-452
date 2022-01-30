@@ -1,1 +1,0 @@
-ALTER TABLE somrusoft.sale_link MODIFY total_price DOUBLE NOT NULL;

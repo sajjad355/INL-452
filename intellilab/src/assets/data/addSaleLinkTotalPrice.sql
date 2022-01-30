@@ -1,1 +1,0 @@
-ALTER TABLE somrusoft.sale_link ADD COLUMN total_price DOUBLE;

@@ -1,9 +1,0 @@
-package com.internal.service.somruinternal.repository2;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.internal.service.somruinternal.model2.IncubationInstanceTimer;
-
-public interface IncubationInstanceTimerRepository extends JpaRepository<IncubationInstanceTimer, Long>{
-
-}

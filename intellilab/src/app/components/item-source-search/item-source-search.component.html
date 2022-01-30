@@ -1,7 +1,0 @@
-<select class="form-control" id="sourceSelection" #sourceSelection (change)="selectSource(sourceSelection.value);">
-  <option value="">Select {{ type }}</option>
-  <option *ngFor="let source of itemSources" [value]="source.dbid" [selected]="selected && selected === source.name">
-    {{ source.name + (source.approvalType ? ' ('+source.approvalType+')' : '') }}
-    {{ (!source.approvalType || (source.approvalType && source.approvalType.trim().length < 1)) ? ' (NA)' : '' }}
-  </option>
-</select>

@@ -1,1 +1,0 @@
-ALTER TABLE somrusoft.sale_link DROP total_price;
